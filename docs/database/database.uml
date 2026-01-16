@@ -1,0 +1,69 @@
+@startuml
+entity Seller {
+  +seller_id: INT <PK>
+  +name: STR
+  +location: STR
+  +openingTime: Time
+  +closingTime: Time
+  +telephoneNumber: Str
+  +email: Str
+  +websiteURL: Str
+}
+entity Bundle_posting{
+    +posting_id: INT <Pk>
+    +seller_id: INT <FK>
+    +category: STR
+    +contents_description: STR
+    +allergens: INT
+    +quantity: INT
+    +price: FLoat
+    +pickup_window_start: Time
+    +pickup_window_end: Time
+}
+
+entity Reservation{
+    +reservation_id: INT <PK>
+    +posting_id: INT <FK>
+    +consumer_id: INT <FK>
+    +timestamp: Time
+    +claim_code: Int
+    +status: Str
+}
+entity Consumer{
+        +consumer_id: INT <PK>
+        +display_name: STR
+        +email: STR
+}
+entity IssueReport{
+    +issue_id: INT <PK>
+    +posting_id INT <FK>
+    +consumer_id <FK>
+    +type: STR
+    +description: STR
+    +status: STR
+    +seller_response: STR
+
+}
+entity ForcastInput{
+    +record_id: INT <PK>
+    +day_of_week: INT
+    +time: Time
+    +price: Float
+    +category: STR
+    +weather_flag: INT
+    +observed_reservations: INT
+    +observed_no_show: INT
+
+}
+entity ForcastOutput{
+    +output_id: INT <PK>
+    +posting_id: INT <FK>
+    +predicted_reservation: INT
+    +predicted_no_show_prob: INT
+    +confidence: INT
+    +rational: STR
+    +time_reccomendation: Time
+
+}
+
+@enduml
