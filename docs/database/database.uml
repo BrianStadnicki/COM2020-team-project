@@ -59,11 +59,19 @@ entity ForcastOutput{
     +output_id: INT <PK>
     +posting_id: INT <FK>
     +predicted_reservation: INT
-    +predicted_no_show_prob: INT
+    +predicted_no_show_prob: INT 
     +confidence: INT
     +rational: STR
     +time_reccomendation: Time
 
 }
+
+Reservation "0..*" }-- "1" Consumer : Creates <
+IssueReport "0..*" }-- "1" Consumer : Submits <
+Reservation "0..*" }-- "1" Bundle_posting : Is For >
+Bundle_posting "0..*" }-- "1" Seller : Creates <
+ForcastInput "1" -- "1" Bundle_posting : is sent into <
+ForcastOutput "1" -- "1" Bundle_posting : Is Created For >
+
 
 @enduml
