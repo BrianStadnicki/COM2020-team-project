@@ -17,6 +17,7 @@ entity Bundle_posting{
     +allergens: INT
     +quantity: INT
     +price: FLoat
+    +creation_time:Time
     +pickup_window_start: Time
     +pickup_window_end: Time
 }
@@ -36,25 +37,15 @@ entity Consumer{
 }
 entity IssueReport{
     +issue_id: INT <PK>
-    +posting_id INT <FK>
-    +consumer_id <FK>
+    +posting_id: INT <FK>
+    +consumer_id: INT <FK>
     +type: STR
     +description: STR
     +status: STR
     +seller_response: STR
 
 }
-entity ForcastInput{
-    +record_id: INT <PK>
-    +day_of_week: INT
-    +time: Time
-    +price: Float
-    +category: STR
-    +weather_flag: INT
-    +observed_reservations: INT
-    +observed_no_show: INT
 
-}
 entity ForcastOutput{
     +output_id: INT <PK>
     +posting_id: INT <FK>
@@ -68,9 +59,9 @@ entity ForcastOutput{
 
 Reservation "0..*" }-- "1" Consumer : Creates <
 IssueReport "0..*" }-- "1" Consumer : Submits <
+IssueReport "0..*" }-- "1" Bundle_posting : Responds to >
 Reservation "0..*" }-- "1" Bundle_posting : Is For >
 Bundle_posting "0..*" }-- "1" Seller : Creates <
-ForcastInput "1" -- "1" Bundle_posting : is sent into <
 ForcastOutput "1" -- "1" Bundle_posting : Is Created For >
 
 
