@@ -16,8 +16,8 @@ entity Bundle_posting{
     +contents_description: STR
     +allergens: INT
     +quantity: INT
-    +price: FLoat
-    +creation_time:Time
+    +price: Float
+    +creation_time: epoch
     +pickup_window_start: Time
     +pickup_window_end: Time
 }
@@ -26,7 +26,7 @@ entity Reservation{
     +reservation_id: INT <PK>
     +posting_id: INT <FK>
     +consumer_id: INT <FK>
-    +timestamp: Time
+    +timestamp: epoch
     +claim_code: Int
     +status: Str
 }
@@ -43,18 +43,18 @@ entity IssueReport{
     +description: STR
     +status: STR
     +seller_response: STR
-
+    +creation_time: epoch
 }
 
-entity ForcastOutput{
+entity ForecastOutput{
     +output_id: INT <PK>
     +posting_id: INT <FK>
     +predicted_reservation: INT
     +predicted_no_show_prob: INT 
     +confidence: INT
-    +rational: STR
-    +time_reccomendation: Time
-
+    +rationale: STR
+    +time_recommendation: Time
+    +type: STR
 }
 
 Reservation "0..*" }-- "1" Consumer : Creates <
@@ -62,7 +62,7 @@ IssueReport "0..*" }-- "1" Consumer : Submits <
 IssueReport "0..*" }-- "1" Bundle_posting : Responds to >
 Reservation "0..*" }-- "1" Bundle_posting : Is For >
 Bundle_posting "0..*" }-- "1" Seller : Creates <
-ForcastOutput "1" -- "1" Bundle_posting : Is Created For >
+ForecastOutput "1" -- "1" Bundle_posting : Is Created For >
 
 
 @enduml
