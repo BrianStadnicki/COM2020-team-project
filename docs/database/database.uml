@@ -9,6 +9,7 @@ entity Seller {
   +email: Str
   +websiteURL: Str
 }
+
 entity Bundle_posting{
     +posting_id: INT <Pk>
     +seller_id: INT <FK>
