@@ -6,6 +6,7 @@ python -m venv .env
 source .env/bin/activate
 python -m pip install -r requirements.txt
 python manage.py migrate
+python manage.py createsuperuser
 ```
 
 ## Running server
@@ -50,4 +51,11 @@ python manage.py runserver
 
 ```sh
 ruff format
+```
+
+### After changing the database schema
+
+```sh
+python manage.py makemigrations
+python manage.py migrate
 ```
