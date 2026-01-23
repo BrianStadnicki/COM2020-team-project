@@ -1,9 +1,9 @@
 ## Initial setup
 
 ```sh
+cd food-waste-rescue
 python -m venv .env
 source .env/bin/activate
-cd food-waste-rescue
 python -m pip install -r requirements.txt
 python manage.py migrate
 ```
