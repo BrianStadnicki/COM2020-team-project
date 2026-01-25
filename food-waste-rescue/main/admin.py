@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
-from main.models import Consumer
+from main.models import Consumer, User
 from main.models import Seller
 
 class ConsumerInline(admin.StackedInline):
@@ -17,5 +16,4 @@ class SellerInline(admin.StackedInline):
 class UserAdmin(BaseUserAdmin):
     inlines = (ConsumerInline, SellerInline)
 
-admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
