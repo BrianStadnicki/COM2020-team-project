@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import datetime
 
 class User(AbstractUser):
     USER_TYPES = (
@@ -17,21 +18,64 @@ class Seller(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=100, default = "seller")
     location = models.CharField(max_length=100, default="Exeter University")
-    opening_time = models.TimeField(default="09:00")
-    closing_time = models.TimeField(default="17:00")
+    opening_time = models.TimeField(default=datetime.time(9,00))
+    closing_time = models.TimeField(default=datetime.time(17,00))
     telephone_number = models.CharField(max_length=100, default="0000000000")
     website_url = models.URLField(default="https://www.test.com")
 
 class Bundle_posting(models.Model):
-    pass
+    posting_id = models.IntegerField(primary_key=True)
+    seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    category = models.CharField(max_length=100,default="food")
+    allegerns = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=0)
+    price = models.DecimalField(decimal_places=2,default=0.00)
+    creation_time = models.DateTimeField(default=datetime.now,blank=True)
+    pickup_window_start = models.TimeField(default=datetime.time(18,00))
+    pickup_window_end = models.TimeField(default=datetime.time(19,00))
+
+    
 
 
 class Reservation(models.Model):
-    pass
-
+    reservation_id = models.IntegerField(primary_key=True)
+    posting_id = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
+    consumer_id = models.ForeignKey(Consumer,on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField(default=datetime.now,blank=True)
+    claim_code = models.IntegerField(default=0)
+    STATUSES = (
+        ("C", "collected"),
+        ("N", "No Show" ),
+        ("R", "Reserved"),
+        ("E", "Expired")
+    )
+    status = models.CharField(max_length=1,choices=STATUSES,default="R")
+    
 class IssueReport(models.Model):
-    pass
+    issue_id = models.IntegerField(primary_key=True)
+    posting_id = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
+    consumer_id = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    TYPES = (
+        ("C","collection"),
+        ("A","Additional information"),
+        ("S","Seller")
+    )
+    typey = models.CharField(max_length=1,choices=TYPES,default="C")
+    description = models.CharField(max_length=1000,blank=True)
+    STATUSES = (
+        ("P","Pending"),
+        ("A", "Acknowledged"),
+        ("R", "Resolved")
+    )
+    status = models.CharField(max_length=1,choices=STATUSES,default="P")
+
 class Forecast_output(models.Model):
-    pass
+    output_id = models.IntegerField(primary_key=True)
+    posting_id = models.ForeignKey(Bundle_posting, on_delete=models.CASCADE)
+    predicted_reservations = models.IntegerField(default=0)
+    predicted_no_show_prob = models.IntegerField(default=0)
+    confidence = models.IntegerField(default=0)
+    rationale = models.CharField(max_length=1000,blank=True)
+    time_recommendation = models.TimeField(blank=True)
 
 
