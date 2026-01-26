@@ -26,22 +26,19 @@ class Seller(models.Model):
 class Bundle_posting(models.Model):
     posting_id = models.IntegerField(primary_key=True)
     seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
-    category = models.CharField(max_length=100,default="food")
+    category = models.CharField(max_length=100,default="Food")
     allegerns = models.IntegerField(default=0)
     quantity = models.IntegerField(default=0)
-    price = models.DecimalField(decimal_places=2,default=0.00)
-    creation_time = models.DateTimeField(default=datetime.now,blank=True)
+    price = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
+    creation_time = models.DateTimeField(default=datetime.time(00,00),blank=True)
     pickup_window_start = models.TimeField(default=datetime.time(18,00))
     pickup_window_end = models.TimeField(default=datetime.time(19,00))
 
-    
-
-
 class Reservation(models.Model):
     reservation_id = models.IntegerField(primary_key=True)
-    posting_id = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
+    posting_id = models.ForeignKey(Bundle_posting,default=0 ,on_delete=models.CASCADE)
     consumer_id = models.ForeignKey(Consumer,on_delete=models.CASCADE)
-    time_stamp = models.DateTimeField(default=datetime.now,blank=True)
+    time_stamp = models.DateTimeField(default=datetime.time(00,00),blank=True)
     claim_code = models.IntegerField(default=0)
     STATUSES = (
         ("C", "collected"),
@@ -60,7 +57,7 @@ class IssueReport(models.Model):
         ("A","Additional information"),
         ("S","Seller")
     )
-    typey = models.CharField(max_length=1,choices=TYPES,default="C")
+    type = models.CharField(max_length=1,choices=TYPES,default="C")
     description = models.CharField(max_length=1000,blank=True)
     STATUSES = (
         ("P","Pending"),

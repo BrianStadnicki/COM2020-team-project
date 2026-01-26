@@ -22,7 +22,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Reservation)
-admin.site.register(Forecast_output)
-admin.site.register(IssueReport)
-admin.site.register(Bundle_posting)
+# admin.site.register(Reservation)
+# admin.site.register(Forecast_output)
+# admin.site.register(IssueReport)
+# admin.site.register(Bundle_posting)

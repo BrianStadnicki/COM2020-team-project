@@ -59,3 +59,17 @@ ruff format
 python manage.py makemigrations
 python manage.py migrate
 ```
+
+### Troubleshooting for command failure
+
+```sh
+python manage.py makemigrations
+```
+
+Delete COM2020-team-project/food-waste-rescue/main/migrations/0002*.py
+
+```sh
+python manage.py migrate
+```
+
+Delete db.sqlite3
