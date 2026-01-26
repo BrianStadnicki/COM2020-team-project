@@ -1,15 +1,20 @@
 ## Initial setup
 
 ```sh
+cd food-waste-rescue
 python -m venv .env
 source .env/bin/activate
-cd food-waste-rescue
 python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
 ```
 
 ## Running server
 
 ```sh
+source .env/bin/activate
+cd food-waste-rescue
+python manage.py migrate
 python manage.py runserver
 ```
 
@@ -46,4 +51,11 @@ python manage.py runserver
 
 ```sh
 ruff format
+```
+
+### After changing the database schema
+
+```sh
+python manage.py makemigrations
+python manage.py migrate
 ```

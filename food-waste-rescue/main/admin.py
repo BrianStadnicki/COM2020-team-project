@@ -1,3 +1,19 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from main.models import Consumer, User
+from main.models import Seller
 
-# Register your models here.
+class ConsumerInline(admin.StackedInline):
+    model = Consumer
+    can_delete = False
+    verbose_name_plural = "consumer"
+
+class SellerInline(admin.StackedInline):
+    model = Seller
+    can_delete = False
+    verbose_name_plural = "seller"
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (ConsumerInline, SellerInline)
+
+admin.site.register(User, UserAdmin)
