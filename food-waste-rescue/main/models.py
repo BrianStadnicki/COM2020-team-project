@@ -74,5 +74,5 @@ class Forecast_output(models.Model):
     confidence = models.IntegerField(default=0)
     rationale = models.CharField(max_length=1000,blank=True)
     time_recommendation = models.TimeField(blank=True)
-
+    type = models.CharField(max_length=100,default="Linear Regression")
 
