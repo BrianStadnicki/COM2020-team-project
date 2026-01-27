@@ -3,15 +3,15 @@ entity Seller {
   +seller_id: INT <PK>
   +name: STR
   +location: STR
-  +openingTime: Time
-  +closingTime: Time
-  +telephoneNumber: Str
-  +email: Str
-  +websiteURL: Str
+  +opening_time: Time
+  +closing_time: Time
+  +telephone_number: STR
+  +email: STR
+  +websiteURL: STR
 }
 
 entity Bundle_posting{
-    +posting_id: INT <Pk>
+    +posting_id: INT <PK>
     +seller_id: INT <FK>
     +category: STR
     +contents_description: STR
@@ -28,8 +28,8 @@ entity Reservation{
     +posting_id: INT <FK>
     +consumer_id: INT <FK>
     +timestamp: epoch
-    +claim_code: Int
-    +status: Str
+    +claim_code: INT
+    +status: STR
 }
 entity Consumer{
         +consumer_id: INT <PK>
