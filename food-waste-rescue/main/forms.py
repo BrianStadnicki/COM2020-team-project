@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-import models
+from .models import User
+from .models import Seller
 
 class GenericSignupForm(UserCreationForm):
     user_type = forms.CharField(max_length=10, choices=models.User.USER_TYPES, default="consumer")
@@ -14,9 +14,7 @@ class GenericSignupForm(UserCreationForm):
         model = User 
         fields = ['user_type','display_name','email','password','confirm_password'] 
  
-    
-    
-class SellerSignupForm(UserCreationForm):  
+class SellerExtraForm(UserCreationForm):  
     location = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Location"}))
     opening_time = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Opening Time"}))
     closing_time = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Closing Time"}))
