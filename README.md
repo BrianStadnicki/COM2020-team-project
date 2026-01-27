@@ -1,15 +1,46 @@
 ## Initial setup
 
+linux:
+
 ```sh
+cd food-waste-rescue
 python -m venv .env
 source .env/bin/activate
-cd food-waste-rescue
 python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
 ```
+
+windows:
+
+```sh
+cd food-waste-rescue
+python -m venv .env
+windows: Set-ExecutionPolicy Unrestricted -Scope Process
+.env\Scripts\activate
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+```
+
 
 ## Running server
 
+windows:
 ```sh
+cd food-waste-rescue
+windows: Set-ExecutionPolicy Unrestricted -Scope Process
+.env\Scripts\activate
+python manage.py migrate
+python manage.py runserver
+```
+
+linux:
+
+```sh
+source .env/bin/activate
+cd food-waste-rescue
+python manage.py migrate
 python manage.py runserver
 ```
 
@@ -46,4 +77,11 @@ python manage.py runserver
 
 ```sh
 ruff format
+```
+
+### After changing the database schema
+
+```sh
+python manage.py makemigrations
+python manage.py migrate
 ```
