@@ -2,10 +2,13 @@
 
 {% block content %}
 
+<h1>Create an Account</h1>
+
 {% if form.errors %}
     <p>Error signing up. Please check your details.</p>
 {% endif %}
 
+{# Show Django messages (e.g., "Check your details") #}
 {% if messages%}
 <ul class="messages">
     {% for message in messages %}
@@ -14,35 +17,37 @@
 </ul>
 {% endif %}
 
-<h1>Create an account</h1>
+{# Show non-field errors (e.g. password mismatch) #}
+{{ form.non_field_errors }}
 
 <form method="post" action="/accounts/register/">
 {% csrf_token %}
-
-{% if form.errors %}
-    <p>Passwords do not match. Please try again.</p>
-{% endif %}
 
 <table>
 <tr>
     <td>{{ form.user_type.label_tag }}</td>
     <td>{{ form.user_type }}</td>
+    {{form.user_type.errors}}
 </tr>
 <tr>
     <td>{{ form.username.label_tag }}</td>
     <td>{{ form.username }}</td>
+    {{form.username.errors}}
 </tr>
 <tr>
     <td>{{ form.email.label_tag }}</td>
     <td>{{ form.email}}</td>
+    {{form.email.errors}}
 </tr>
 <tr>
     <td>{{ form.password1.label_tag }}</td>
     <td>{{ form.password1}}</td>
+    {{form..password1.errors}}
 </tr>
 <tr>
     <td>{{ form.password2.label_tag }}</td>
     <td>{{ form.password2}}</td>
+    {{form.password2.errors}}
 </tr>
 </table>
 
