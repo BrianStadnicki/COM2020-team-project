@@ -35,13 +35,16 @@ def registerUser(request):
 
 
 def sellerExtra(request, user_id):
-    user = user.objects.get(id=user_id)
+    user = User.objects.get(id=user_id)
     if request.method == "POST":
         form = SellerExtraForm(request.POST)
         if form.is_valid():
-            seller = form.save()
+            seller = form.save(commit=False)
+            seller.user_id = user_id
+            seller.save()
+            form.save_m2m()
             messages.success(request, "Seller profile completed!")
             return redirect("login")
     else:
         form = SellerExtraForm()
-    return render(request, "user/seller_extra.html", {"form":form})
+    return render(request, "registration/seller_extra.html", {"form":form})

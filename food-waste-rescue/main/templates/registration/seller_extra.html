@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% if form.errors %}
+    <p>Error signing up. Please check your details.</p>
+{% endif %}
+
+{% if messages%}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<h1>Enter Seller Details</h1>
+
+<form method="post" action="">
+{% csrf_token %}
+
+<table>
+<tr>
+    <td>{{ form.location.label_tag }}</td>
+    <td>{{ form.location}}</td>
+</tr>
+<tr>
+    <td>{{ form.opening_time.label_tag }}</td>
+    <td>{{ form.opening_time}}</td>
+</tr>
+<tr>
+    <td>{{ form.closing_time.label_tag }}</td>
+    <td>{{ form.closing_time}}</td>
+</tr>
+<tr>
+    <td>{{ form.telephone_number.label_tag }}</td>
+    <td>{{ form.telephone_number}}</td>
+</tr>
+<tr>
+    <td>{{ form.website_url.label_tag }}</td>
+    <td>{{ form.website_url}}</td>
+</tr>
+</table>
+
+<input type="submit" value="Sign Up - Seller">
+<input type="hidden" name="next" value="{{ next }}">
+</form>
+
+{% endblock %}
