@@ -4,15 +4,13 @@ from .models import User
 from .models import Seller
 
 class GenericSignupForm(UserCreationForm):
-    user_type = forms.CharField(max_length=10, choices=models.User.USER_TYPES, default="consumer")
-    display_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Display Name"}))  
+    user_type = forms.ChoiceField(choices=User.USER_TYPES)
+    username = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Display Name"}))  
     email = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Email"}))  
-    password = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Password"}))
-    confirm_password = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Confirm Password"})) 
  
     class Meta:  
         model = User 
-        fields = ['user_type','display_name','email','password','confirm_password'] 
+        fields = ['user_type', 'username', 'email','password1', 'password2'] 
  
 class SellerExtraForm(UserCreationForm):  
     location = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Location"}))
@@ -22,5 +20,5 @@ class SellerExtraForm(UserCreationForm):
     website_URL = forms.CharField(max_length=100, widget=forms.TextInput(attrs={"placeholder": "Website URL"}))
  
     class Meta:  
-        model = User
-        fields = ['user_type','display_name','email','password','confirm_password','location','opening_time','closing_time','telephone_number','website_URL']  
+        model = Seller
+        fields = ['location','opening_time','closing_time','telephone_number','website_URL']  

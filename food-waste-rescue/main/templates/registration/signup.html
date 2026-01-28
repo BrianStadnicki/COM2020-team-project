@@ -8,7 +8,7 @@
 
 <h1>Create an account</h1>
 
-<form method="post" action="% url 'register' %}">
+<form method="post" action="/accounts/register/">
 {% csrf_token %}
 
 {% if form.errors %}
@@ -21,20 +21,20 @@
     <td>{{ form.user_type }}</td>
 </tr>
 <tr>
-    <td>{{ form.display_name.label_tag }}</td>
-    <td>{{ form.display_name }}</td>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
 </tr>
 <tr>
     <td>{{ form.email.label_tag }}</td>
     <td>{{ form.email}}</td>
 </tr>
 <tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
+    <td>{{ form.password1.label_tag }}</td>
+    <td>{{ form.password1}}</td>
 </tr>
 <tr>
-    <td>{{ form.confirm_password.label_tag }}</td>
-    <td>{{ form.confirm_password }}</td>
+    <td>{{ form.password2.label_tag }}</td>
+    <td>{{ form.password2}}</td>
 </tr>
 </table>
 

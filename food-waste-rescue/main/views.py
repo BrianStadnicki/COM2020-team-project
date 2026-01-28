@@ -3,9 +3,10 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import SellerExtraForm, UserRegisterForm
+from .forms import SellerExtraForm, GenericSignupForm
 from django.template.loader import get_template
 from django.template import Context
+from .models import User
 
 def testView(request):
     return render(request, "main/test.html")
@@ -13,26 +14,25 @@ def testView(request):
 ########### register here ##################################### 
 def registerUser(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        form = GenericSignupForm(request.POST)
         if form.is_valid():
             user = form.save() #returns custom user instance
 
             if user.user_type == "seller":
                 return redirect("seller-extra", user_id=user.id)
             else:
-                Consumer.objects.create(user=user)
-                messages.success(request, "Account created!")
-                user_type = form.cleaned_data["user_type"],
-                display_name=form.cleaned_data.get("display_name"),  
-                email=form.cleaned_data("email"),  
-                password=form.cleaned_data("password"),
-                confirm_password=form.cleaned_data("confirm_password"),
+                #user = User.objects.create_user(form.cleaned_data.get("username"),form.cleaned_data("email"),form.cleaned_data("password1"),form.cleaned_data["user_type"],form.cleaned_data("password2")),
                 messages.success(request, f'Your account has been created! You are now able to log in')
                 return redirect("login")
         else:
             messages.info(request, f'Check your details.')
-            form = UserRegisterForm()
-            return render(request, 'user/register.html', {'form': form, 'title':'register here'})
+            form = GenericSignupForm()
+            return render(request, 'registration/signup.html', {'form': form, 'title':'register here'})
+    else:
+        form = GenericSignupForm()
+        return render(request, 'registration/signup.html', {'form': form, 'title':'register here'})
+            
+
 
 def sellerExtra(request, user_id):
     user = user.objects.get(id=user_id)
