@@ -67,7 +67,7 @@
 >
 >>Ed: Finalise database UML model. Produce DB documentation.
 >
->>Hazel: Finish designing analytics and forecasting features.
+>>Hazel: Continue designing analytics and forecasting features.
 >
 >>Laura: Reformatting and finalising requirements.
 >
@@ -89,11 +89,17 @@
 > - All team members shown the scrum board setup, issue management and tracking, and proper development and review processes.
 >- Ensured that local web app setup correctly for all team members.
 >- Django RBAC authentication, and use.
+>- Specified analytics metrics to use.
+>- Bootstrap styling methods.
 
 >#### **Goals**
 >- Begin programming.
 >- Collate progress documentation.
 >- Implement database models.
+>- Set up initial views.
+>- Set up page urls.
+>- Set up login and sign up forms.
+>- Finalise analytics design.
 
 >#### **Actions**
 >>Ben: Collate minutes and scrumboard exports. Create risk register, and document scrum management system.
@@ -102,12 +108,12 @@
 >
 >>Ed: Implement database models.
 >
->>Hazel: 
+>>Hazel: Finish analytics planning.
 >
->>Laura: 
+>>Laura: Documentation formatting.
 >
->>Livi: 
+>>Livi: Set up login and sign up forms.
 >
 >>Rose: Finish wireframes and start creating views.
 >
->>Tang: 
+>>Tang: Set up page urls. Start creating seeded dataset.
