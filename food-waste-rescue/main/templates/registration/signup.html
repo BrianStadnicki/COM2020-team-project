@@ -42,7 +42,7 @@
 <tr>
     <td>{{ form.password1.label_tag }}</td>
     <td>{{ form.password1}}</td>
-    {{form..password1.errors}}
+    {{form.password1.errors}}
 </tr>
 <tr>
     <td>{{ form.password2.label_tag }}</td>
@@ -54,5 +54,7 @@
 <input type="submit" value="Sign Up">
 <input type="hidden" name="next" value="{{ next }}">
 </form>
+
+<a href="{% url 'login' %}">Login</a>
 
 {% endblock %}

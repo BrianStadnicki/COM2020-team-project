@@ -14,6 +14,9 @@
 </ul>
 {% endif %}
 
+{# Show non-field errors (e.g. password mismatch) #}
+{{ form.non_field_errors }}
+
 <h1>Enter Seller Details</h1>
 
 <form method="post" action="">
@@ -23,26 +26,31 @@
 <tr>
     <td>{{ form.location.label_tag }}</td>
     <td>{{ form.location}}</td>
+    {{form.location.errors}}
 </tr>
 <tr>
     <td>{{ form.opening_time.label_tag }}</td>
     <td>{{ form.opening_time}}</td>
+    {{form.opening_time.errors}}
 </tr>
 <tr>
     <td>{{ form.closing_time.label_tag }}</td>
     <td>{{ form.closing_time}}</td>
+    {{form.closing_time.errors}}
 </tr>
 <tr>
     <td>{{ form.telephone_number.label_tag }}</td>
     <td>{{ form.telephone_number}}</td>
+    {{form.telephone_number.errors}}
 </tr>
 <tr>
     <td>{{ form.website_url.label_tag }}</td>
     <td>{{ form.website_url}}</td>
+    {{form.website_url.errors}}
 </tr>
 </table>
 
-<input type="submit" value="Sign Up - Seller">
+<input type="submit" value="Save Seller Details">
 <input type="hidden" name="next" value="{{ next }}">
 </form>
 

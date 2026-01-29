@@ -17,16 +17,21 @@
     {% endif %}
 {% endif %}
 
+{# Show non-field errors (e.g. password mismatch) #}
+{{ form.non_field_errors }}
+
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
 <table>
 <tr>
     <td>{{ form.username.label_tag }}</td>
     <td>{{ form.username }}</td>
+    {{form.username.errors}}
 </tr>
 <tr>
     <td>{{ form.password.label_tag }}</td>
     <td>{{ form.password }}</td>
+    {{form.password.errors}}
 </tr>
 </table>
 
@@ -34,12 +39,12 @@
 <input type="hidden" name="next" value="{{ next }}">
 </form>
 
-{# Assumes you set up the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-
+{# Remove this later #}
 <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
     <button type="submit">Logout</button>
 </form>
+
+<a href="{% url 'register' %}">Sign Up</a>
 
 {% endblock %}
