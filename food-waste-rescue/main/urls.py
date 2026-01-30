@@ -12,6 +12,7 @@ urlpatterns = [
     
     #seller paths
     path("seller/", views.seller_view, name="seller_view_url"),
+    path("seller/profile/", views.seller_profile_view, name="seller_profile_view_url"),
     path("seller/reports/", views.seller_reports_view, name ="seller_reports_view_url"),
     path("seller/response/", views.seller_response_view, name="seller_response_view_url"),
     path("seller/accessbility/", views.seller_accessibility_view, name="seller_accessibility_view_url"),

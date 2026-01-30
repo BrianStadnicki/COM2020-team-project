@@ -1,6 +1,9 @@
+from urllib import request
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
+from django import forms
+# from .forms import ...
 
 def test_view(request):
     return render(request, "main/test.html")
@@ -18,11 +21,27 @@ def reservations_view(request):
 def seller_view(request):
     return render(request, "main/seller.html")
 
+def seller_profile_view(request):
+    return render(request, "main/seller_profile.html") 
+
 def seller_reports_view(request):
     return render(request, "main/seller_reports.html")
 
 def seller_response_view(request):
-    return render(request, "main/seller_response.html")
+    
+    # Temporary form until created forms can be imported 
+    form_class = forms.Form
+    form = form_class()
+    # 
+    
+    if request.method == "POST":   
+        form = form_class(request.POST)  
+        if form.is_valid():
+            # form.save() and/or something else
+            pass
+    else: 
+        form = form_class()
+    return render(request, "main/seller_response.html") # , {"form":form}
 
 def seller_accessibility_view(request):
     return render(request, "main/seller_accessibility.html")
@@ -31,10 +50,38 @@ def seller_bundles_view(request):
     return render(request, "main/seller_bundles.html")
 
 def seller_create_bundles_view(request):
-    return render(request, "main/seller_create_bundles.html")
+    
+    # Temporary form until created forms can be imported 
+    form_class = forms.Form
+    form = form_class()
+    # 
+    
+    if request.method == "POST":   
+        form = form_class(request.POST)  
+        if form.is_valid():
+            # form.save() and/or something else
+            pass
+    else: 
+        form = form_class()
+    
+    return render(request, "main/seller_create_bundles.html") #, {"form":form}
 
 def seller_finalise_bundles_view(request):
-    return render(request, "main/seller_finalise_bundles.html")
+
+    # Temporary form until created forms can be imported 
+    form_class = forms.Form
+    form = form_class()
+    # 
+    
+    if request.method == "POST":   
+        form = form_class(request.POST)  
+        if form.is_valid():
+            # form.save() and/or something else
+            pass
+    else: 
+        form = form_class()
+
+    return render(request, "main/seller_finalise_bundles.html") #, {"form":form}
 
 def seller_reservations_view(request):
     return render(request, "main/seller_reservations.html")
@@ -51,7 +98,7 @@ def consumer_view(request):
     return render(request, "main/consumer.html")
 
 def consumer_profile_view(request):
-    return render(request, "main/consumer_profile.html")
+    return render(request, "main/consumer_profile.html") 
 
 def consumer_accessibility_view(request):
     return render(request, "main/consumer_accessibility.html")
@@ -60,7 +107,21 @@ def consumer_impact_view(request):
     return render(request, "main/consumer_impact.html")
 
 def consumer_details_view(request):
-    return render(request, "main/consumer_details.html")
+    
+    # Temporary form until created forms can be imported 
+    form_class = forms.Form
+    form = form_class()
+    # 
+    
+    if request.method == "POST":   
+        form = form_class(request.POST)  
+        if form.is_valid():
+            # form.save() and/or something else
+            pass
+    else: 
+        form = form_class()    
+    
+    return render(request, "main/consumer_details.html") #, {"form":form}
 
 def consumer_bundles_view(request):
     return render(request, "main/consumer_bundles.html")
