@@ -4,6 +4,7 @@ Django uses view functions (also referred to as views) to take web requests and 
 
 The structure of the web application will be abstracted as follows:
 
+```
 main/
 ├── seller/
 │   ├── profile/
@@ -30,3 +31,4 @@ main/
     ├── reports/
     ├── company/
     └── developer_company/
+```
