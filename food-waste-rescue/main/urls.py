@@ -1,5 +1,7 @@
 from django.urls import include, path
+from debug_toolbar.toolbar import debug_toolbar_urls
 from . import views
+from django.conf import settings
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -17,3 +19,10 @@ urlpatterns = [
     path("impact", views.impact_view, name="impact_view_url"),
     path("accessibility", views.accessibility_view, name="accessibility_view_url"),
 ]
+
+if not settings.TESTING:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
+    urlpatterns = [
+        *urlpatterns,
+    ] + debug_toolbar_urls()
