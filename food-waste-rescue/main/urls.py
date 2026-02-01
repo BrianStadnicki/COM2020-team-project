@@ -16,4 +16,7 @@ urlpatterns = [
     path("report/new", views.report_new_view, name="report_new_view_url"),
     path("impact", views.impact_view, name="impact_view_url"),
     path("accessibility", views.accessibility_view, name="accessibility_view_url"),
+    path("test/", views.test_view, name="test_view_url"),
+    path('accounts/register/', views.registerUser, name="register"),
+    path('accounts/registerseller<int:user_id>/', views.sellerExtra, name="seller-extra"),
 ]

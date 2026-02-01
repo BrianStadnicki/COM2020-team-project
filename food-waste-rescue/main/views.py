@@ -1,8 +1,7 @@
-from urllib import request
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from django.urls import reverse
-from django import forms
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import SellerExtraForm, GenericSignupForm
+from .models import User
 
 def test_view(request):
     return render(request, "main/test.html")
@@ -87,3 +86,44 @@ Seller: View/Change accessibility settings
 """
 def accessibility_view(request):
     return render(request, "main/accessibility.html")
+
+########### register here ##################################### 
+def registerUser(request):
+    if request.user.is_authenticated:
+        return redirect("/") #TODO: Change to home page
+    else:    
+        if request.method == 'POST':
+            form = GenericSignupForm(request.POST)
+            if form.is_valid():
+                user = form.save() #returns custom user instance
+
+                if user.user_type == "seller":
+                    return redirect("seller-extra", user_id=user.id)
+                else:
+                    #user = User.objects.create_user(form.cleaned_data.get("username"),form.cleaned_data("email"),form.cleaned_data("password1"),form.cleaned_data["user_type"],form.cleaned_data("password2")),
+                    messages.success(request, f'Your account has been created! You are now able to log in')
+                    return redirect("login")
+            else:
+                messages.info(request, f'Check your details.')
+                form = GenericSignupForm()
+                return render(request, 'registration/signup.html', {'form': form, 'title':'register here'})
+        else:
+            form = GenericSignupForm()
+            return render(request, 'registration/signup.html', {'form': form, 'title':'register here'})
+            
+
+
+def sellerExtra(request, user_id):
+    user = User.objects.get(id=user_id)
+    if request.method == "POST":
+        form = SellerExtraForm(request.POST)
+        if form.is_valid():
+            seller = form.save(commit=False)
+            seller.user_id = user_id
+            seller.save()
+            form.save_m2m()
+            messages.success(request, "Seller profile completed!")
+            return redirect("login")
+    else:
+        form = SellerExtraForm()
+    return render(request, "registration/seller_extra.html", {"form":form})

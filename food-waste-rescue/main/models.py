@@ -8,7 +8,7 @@ class User(AbstractUser):
         ("seller", "Seller")
     )
 
-    user_type = models.CharField(max_length=10, choices=USER_TYPES, default="consumer")
+    user_type = models.CharField(max_length=10, choices=USER_TYPES)
 
 class Consumer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
