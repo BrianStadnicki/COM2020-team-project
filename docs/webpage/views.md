@@ -5,30 +5,34 @@ Django uses view functions (also referred to as views) to take web requests and 
 The structure of the web application will be abstracted as follows:
 
 ```
-main/
-├── seller/
-│   ├── profile/
-│   ├── reports/
-│   ├── response/
-│   ├── accessibility/
-│   ├── bundles/
-│   │   ├── create/
-│   │   └── finalise/
-│   ├── reservations/
-│   ├── analytics/
-│   └── activity/
-│
-├── consumer/
-│   ├── profile/
-│   ├── accessibility/
-│   ├── impact/
-│   ├── details/
-│   ├── bundles/
-│   ├── reservations/
-│   └── reports/
-│
-└── developer/
-    ├── reports/
-    ├── company/
-    └── developer_company/
+CS  CS
+GET PUT     /user
+CS  S
+GET PUT     /seller  
+CS
+GET         /bundles/
+CS  S
+GET POST    /bundles/new
+S
+POST        /bundles/new/confirm
+CS  C   C
+GET PUT DEL /bundles/<int:id>
+CS
+GET         /reservations/
+CS  S   CS
+GET PUT DEL /reservations/<int:id>
+S
+GET         /analytics/
+S   S
+GET POST    /activity
+CS
+GET         /reports/
+CS  CS
+GET POST    /reports/new
+CS  CS
+GET PUT     /reports/<int:id>
+C
+GET         /impact
+CS
+GET         /accessibility
 ```
