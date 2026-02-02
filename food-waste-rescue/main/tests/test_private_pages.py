@@ -69,7 +69,7 @@ class TestSellerOnlyPages(TestCase):
 
     def test_bundle_new_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
-        url = reverse("bundle_new")
+        url = reverse("bundle_new_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
@@ -77,8 +77,16 @@ class TestSellerOnlyPages(TestCase):
     def test_bundle_new_forbidden_for_consumer(self):
         """Consumers should get 403 Forbidden for Seller-only pages"""
         self.client.login(username="consumer1", password="consumerpass1")
-        url = reverse("bundle_new")
+        url = reverse("bundle_new_view_url")
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
+
+    def test_bundle_new_allows_seller(self):
+        """Sellers should get 200 OK for Seller-only pages"""
+        self.client.login(username="seller1", password="sellerpass1")
+        url = reverse("bundle_new_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/bundle_new.html")
     
     # ----------------------------------------------------------------------------
