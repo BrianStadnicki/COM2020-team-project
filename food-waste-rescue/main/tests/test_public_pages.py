@@ -20,6 +20,7 @@ class TestPublicPages(TestCase):
     relevant view).
     """
 
+    #passes
     def test_login_page_is_public(self):
         """
         Testing that the login page is publicly accessible
@@ -28,6 +29,7 @@ class TestPublicPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "registration/login.html")
 
+    #passes
     def test_register_page_is_public(self):
         """
         Testing that the registration / signup page is publicly accessible (this page 
@@ -38,6 +40,7 @@ class TestPublicPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "registration/signup.html")
 
+    #passes
     def test_seller_extra_page_is_public_with_mock_user(self):
         """
         Testing the seller-extra page with a mock "Seller"
