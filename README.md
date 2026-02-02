@@ -117,7 +117,7 @@ cd food-waste-rescue
 
 3. Run a test suite, e.g.:
 ```sh
-python manage.py test maun.tests.test_public_pages
+python manage.py test main.tests.test_public_pages
 ```
 
 4. You should see something like:

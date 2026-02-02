@@ -63,3 +63,22 @@ class TestSellerOnlyPages(TestCase):
             password="sellerpass1",
             user_type="seller"
         )
+
+    # -----------------------------------------------------------------------------
+    #Tests for bundle_new_view 
+
+    def test_bundle_new_redirects_for_anonymous(self):
+        """Anonymous users should get 302 Redirect and be redirected to login"""
+        url = reverse("bundle_new")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login", response.url)
+    
+    def test_bundle_new_forbidden_for_consumer(self):
+        """Consumers should get 403 Forbidden for Seller-only pages"""
+        self.client.login(username="consumer1", password="consumerpass1")
+        url = reverse("bundle_new")
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 403)
+    
+    # ----------------------------------------------------------------------------
