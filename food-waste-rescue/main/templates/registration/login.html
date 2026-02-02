@@ -1,31 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Signup</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block content %}
 
     <nav class="navbar">
             <div class="container-fluid">
                 <h1 class="navabar-brand">Login</h1>
             </div>
     </nav>
-    <div class="container-fluid">
+
+{% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+    <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+{# Show non-field errors (e.g. password mismatch) #}
+{{ form.non_field_errors }}
+
+<div class="container-fluid">
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+
         <div class="input-group mb-3">
-        <span class="input-group-text" id="displayName">username</span>
-        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            <label class="input-group-text" for="username">{{ form.username.label }}</label>
+            <input type="text" class="form-control" name="username">
+            {{form.username.errors}}
         </div>
 
         <div class="input-group mb-3">
-        <span class="input-group-text" id="Password">Password</span>
-        <input type="text" class="form-control" placeholder="Password" aria-label="Username" aria-describedby="basic-addon1">
+            <label class="input-group-text" for="password">{{ form.password.label }}</label>
+            <input type="text" class="form-control" name="password">
+            {{form.password.errors}}
         </div>
+        
+        <div class="d-flex">
+            <input type="submit" class="me-auto btn btn-primary" value="Login">
+            <a class="ms-auto btn btn-secondary" href="{% url 'login' %}">Login</a>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
 
-        <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary">Login</button>
-        <button type="button" class="btn btn-primary">Signup</button>
-        </div>
-    </div>
+
+{# Remove this later #}
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+
+<a href="{% url 'register' %}">Sign Up</a>
+
+{% endblock %}
