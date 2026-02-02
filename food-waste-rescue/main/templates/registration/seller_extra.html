@@ -1,47 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Signup</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <nav class="navbar">
-            <div class="container-fluid">
-                <h1 class="navabar-brand">Enter Seller Details</h1>
-            </div>
-    </nav>
+{% block content %}
 
-    <div class="container-fluid">
-        <form method="post" action="">
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="email_input">Email Address</span>
-                <input type="email" class="form-control" id="email_input" placeholder="name@exeter.ac.uk" aria-describedby="emailHelp">
-            </div>
-            <div class = "input-group mb-3">
-                <span class="input-group-text" id="display_name">Display Name</span>
-                <input type="text" class="form-control" id="display_name" placeholder="DisplayName">
-            </div>
-            <div class = "input-group mb-3">
-                <span class="input-group-text" id="opening_time">Opening Time</span>
-                <input type="text" class="form-control" id="opening_time" placeholder="09:00">
-            </div>
-            <div class = "input-group mb-3">
-                <span class="input-group-text" id="closing_time">Closing Time</span>
-                <input type="text" class="form-control" id="closing_time" placeholder="17:00">
-            </div>
-            <div class = "input-group mb-3">
-                <span class="input-group-text" id="telephone_number">Telephone Number</span>
-                <input type="text" class="form-control" id="telephone_number" placeholder="440123456789">
-            </div>
-            <div class = "input-group mb-3">
-                <span class="input-group-text" id="website_url">Website URL</span>
-                <input type="text" class="form-control" id="website_url" placeholder="https://www.exeter.ac.uk/">
-            </div>
-        <button type="button" class="btn btn-primary">Sign Up!</button>
-        </form>
-    
-</body>
-</html>
+{% if form.errors %}
+    <p>Error signing up. Please check your details.</p>
+{% endif %}
+
+{% if messages%}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{# Show non-field errors (e.g. password mismatch) #}
+{{ form.non_field_errors }}
+
+<nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navabar-brand">Enter Seller Details</h1>
+        </div>
+</nav>
+
+<div class="container-fluid">
+    <form method="post" action=""> {% csrf_token %}
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="location">Location</span>
+            <input type="text" class="form-control" name="location" placeholder="Exeter">
+        </div>
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="opening_time">Opening Time</span>
+            <input type="text" class="form-control" name="opening_time" placeholder="09:00">
+        </div>
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="closing_time">Closing Time</span>
+            <input type="text" class="form-control" name="closing_time" placeholder="17:00">
+        </div>
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="telephone_number">Telephone Number</span>
+            <input type="text" class="form-control" name="telephone_number" placeholder="440123456789">
+        </div>
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="website_url">Website URL</span>
+            <input type="text" class="form-control" name="website_url" placeholder="https://www.exeter.ac.uk/">
+        </div>
+    <button type="submit" value="Save Seller Details" class="btn btn-primary">Sign Up!</button>
+</form>
+
+{% endblock %}
