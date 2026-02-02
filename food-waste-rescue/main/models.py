@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import datetime
+from django.utils import timezone
+from decimal import Decimal
 
 class User(AbstractUser):
     USER_TYPES = (
@@ -24,21 +26,32 @@ class Seller(models.Model):
     website_url = models.URLField(default="https://www.test.com")
 
 class Bundle_posting(models.Model):
-    posting_id = models.IntegerField(primary_key=True)
-    seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     category = models.CharField(max_length=100,default="Food")
-    allegerns = models.IntegerField(default=0)
     quantity = models.IntegerField(default=0)
-    price = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
-    creation_time = models.DateTimeField(default=datetime.time(00,00),blank=True)
+    price = models.DecimalField(decimal_places=2, max_digits=10, default=Decimal('0.00'))
+    creation_time = models.DateTimeField(default=timezone.now,blank=True)
     pickup_window_start = models.TimeField(default=datetime.time(18,00))
     pickup_window_end = models.TimeField(default=datetime.time(19,00))
+    allergen_celery = models.BooleanField(default=False)
+    allergen_crustacean = models.BooleanField(default=False)
+    allergen_dairy = models.BooleanField(default=False)
+    allergen_egg = models.BooleanField(default=False)
+    allergen_fish = models.BooleanField(default=False)
+    allergen_gluten = models.BooleanField(default=False)
+    allergen_lupin = models.BooleanField(default=False)
+    allergen_mollusc = models.BooleanField(default=False)
+    allergen_mustard = models.BooleanField(default=False)
+    allergen_nut = models.BooleanField(default=False)
+    allergen_peanut = models.BooleanField(default=False)
+    allergen_sesame = models.BooleanField(default=False)
+    allergen_soya = models.BooleanField(default=False)
+    allergen_sulphite = models.BooleanField(default=False)
 
 class Reservation(models.Model):
-    reservation_id = models.IntegerField(primary_key=True)
-    posting_id = models.ForeignKey(Bundle_posting,default=0 ,on_delete=models.CASCADE)
-    consumer_id = models.ForeignKey(Consumer,on_delete=models.CASCADE)
-    time_stamp = models.DateTimeField(default=datetime.time(00,00),blank=True)
+    posting = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
+    consumer = models.ForeignKey(Consumer,on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField(default=timezone.now,blank=True)
     claim_code = models.IntegerField(default=0)
     STATUSES = (
         ("C", "collected"),
@@ -49,9 +62,8 @@ class Reservation(models.Model):
     status = models.CharField(max_length=1,choices=STATUSES,default="R")
     
 class IssueReport(models.Model):
-    issue_id = models.IntegerField(primary_key=True)
-    posting_id = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
-    consumer_id = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    posting = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
     TYPES = (
         ("C","collection"),
         ("A","Additional information"),
@@ -67,12 +79,10 @@ class IssueReport(models.Model):
     status = models.CharField(max_length=1,choices=STATUSES,default="P")
 
 class Forecast_output(models.Model):
-    output_id = models.IntegerField(primary_key=True)
-    posting_id = models.ForeignKey(Bundle_posting, on_delete=models.CASCADE)
+    posting = models.ForeignKey(Bundle_posting, on_delete=models.CASCADE)
     predicted_reservations = models.IntegerField(default=0)
     predicted_no_show_prob = models.IntegerField(default=0)
     confidence = models.IntegerField(default=0)
     rationale = models.CharField(max_length=1000,blank=True)
     time_recommendation = models.TimeField(blank=True)
     type = models.CharField(max_length=100,default="Linear Regression")
-
