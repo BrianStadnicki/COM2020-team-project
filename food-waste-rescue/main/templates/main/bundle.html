@@ -1,27 +1,47 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="container">
+<div class="container-fluid">
+    <nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navbar-brand">Bundle {{post.id}}</h1>
+        </div>
+    </nav>
+</div>
 
-    <h1>Show Bundle</h1>
-    <hr>
+<div class="container-fluid">
     <div class="row">
 
         <div class="col-9">
 
-            <h2>Bundle Title</h2>
+            <h2>Bundle {{post.id}}</h2>
             <hr>
-            <p>This is a bundle description.</p>
+            <p>{{post.id}}</p>
             <hr>
 
             <div class="row">    
                 <div class="col">
-                    <p>Category</p>
-                    <p>Allergens: Nut, Fish</p>
+                    <p>{{post.category}}</p>
+                    <p>Allergens: 
+                        {% if post.allergen_celery %}Celery {% endif %}
+                        {% if post.allergen_crustacean %}Crustacean {% endif %}
+                        {% if post.allergen_dairy %}Dairy {% endif %}
+                        {% if post.allergen_egg %}Egg {% endif %}
+                        {% if post.allergen_fish %}Fish {% endif %}
+                        {% if post.allergen_gluten %}Gluten {% endif %}
+                        {% if post.allergen_lupin %}Lupin {% endif %}
+                        {% if post.allergen_mollusc %}Mollusc {% endif %}
+                        {% if post.allergen_mustard %}Mustard {% endif %}
+                        {% if post.allergen_nut %}Nut {% endif %}
+                        {% if post.allergen_peanut %}Peanut {% endif %}
+                        {% if post.allergen_sesame %}Sesame {% endif %}
+                        {% if post.allergen_soya %}Soya {% endif %}
+                        {% if post.allergen_sulphite %}Sulphite {% endif %}
+                    </p>
                 </div>
                 <div class="col">
-                    <p>Price: £10.00</p>
-                    <p>Available: 3</p>
+                    <p>Price: £{{post.price}}</p>
+                    <p>Available: {{post.quantity}}</p>
                     <button type="button" class="btn btn-outline-primary">Reserve</button>
                 </div>
             </div>
@@ -32,13 +52,13 @@
 
         <div class="col">
             
-            <h2>Company Name</h2>
-            <p>Location</p>
-            <h3>Opening Times</h3>
-            <p>09:00-17:00</p>
-            <p>Telephone</p>
-            <p>Email@gmail.com</p>
-            <p>website.url</p>
+            <h2>{{post.seller.display_name}}</h2>
+            <p>{{post.seller.location}}</p>
+            <p><strong>Opening Times</strong></p>
+            <p>{{post.seller.opening_time}} - {{post.seller.closing_time}}</p>
+            <p>{{post.seller.telephone_number}}</p>
+            <p>{{post.seller.user.email}}</p>
+            <p>{{post.seller.websire_url}}</p>
 
         </div>
 
