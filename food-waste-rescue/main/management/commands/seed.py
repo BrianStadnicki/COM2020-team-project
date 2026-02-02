@@ -44,6 +44,8 @@ def create_demo_user():
     """Create a fixed demo user"""
     logger.info("Creating demo user")
     demo_user = User.objects.create_user(username="demo", email="demo@exeter.ac.uk", password="demo")
+    demo_user.save()
+    logger.info("{} demo user created.".format(demo_user))
     return demo_user
 
 def create_demo_seller():
@@ -57,40 +59,44 @@ def create_demo_seller():
         location="Exeter", 
         opening_time="09:00", 
         closing_time="17:00", 
-        telephone_number="440123456789", 
+        telephone_number="441326370400", 
         website_url="https://www.exeter.ac.uk/")
+    demo_seller.save()
+    logger.info("{} demo seller created.".format(demo_seller))
     return demo_seller
 
-def create_consumer_profiles():
-    """Create consumer profiles"""
-    logger.info("Creating 400 consumer profiles")
-    
-    for i in range(400):
-        user = User.objects.create_user(username=f"consumer{i}", email=f"consumer{i}@exeter.ac.uk", password="consumer")
-        Consumer.objects.create(user=user, display_name=f"Consumer{i}")
+def create_consumer_profile(i):
+    """Create consumer profile"""
+    logger.info("Creating consumer profile")
+    user = User.objects.create_user(username=f"consumer{i}", email=f"consumer{i}@exeter.ac.uk", password="consumer")
+    consumer = Consumer.objects.create(user=user, display_name=f"Consumer{i}")
+    consumer.save()
+    logger.info("{} consumer created.".format(consumer))
+    return consumer
 
-def create_seller_profiles():
-    """Create seller profiles"""
-    logger.info("Creating 25 seller profiles")
+def create_seller_profile(i):
+    """Create seller profile"""
+    logger.info("Creating seller profile")
     
-    for i in range(25):
-        user = User.objects.create_user(username=f"seller{i}", email=f"seller{i}@exeter.ac.uk", password="seller")
-        Seller.objects.create(
-            user=user, 
-            display_name=f"Seller{i}", 
-            location="Exeter", 
-            opening_time="09:00", 
-            closing_time="17:00",
-            telephone_number="440123456789", 
-            website_url="https://www.exeter.ac.uk/")
+    user = User.objects.create_user(username=f"seller{i}", email=f"seller{i}@exeter.ac.uk", password="seller")
+    seller = Seller.objects.create(
+        user=user, 
+        display_name=f"Seller{i}", 
+        location="Exeter", 
+        opening_time="09:00", 
+        closing_time="17:00",
+        telephone_number="440123456789", 
+        website_url="https://www.exeter.ac.uk/")
         # Phone number, opening and closing times, website to be randomised, WIP.
+    seller.save()
+    logger.info("{} seller created.".format(seller))
+    return seller
 
-def create_bundle_postings():
-    """Create 250 bundle postings"""
-    logger.info("Creating bundle postings")
+def create_bundle_posting():
+    """Create bundle posting"""
+    logger.info("Creating bundle posting")
     
     categories =["Meals", "Bread & Pastries", "Groceries", "Flowers & Plants", "Pet Food", "Collect Now", "Collect Today", "Collect Tomorrow", "Vegetarian", "Vegan"]
-    # No seller type implemented in models.py? To implement maybe? If so, can improve the randomised categories logic.
     
     sellers = Seller.objects.all()
     for seller in sellers:
@@ -104,59 +110,43 @@ def create_bundle_postings():
                 price=round(random.uniform(1.00, 50.00), 2)
             )
             
-def create_reservations():
-    """Create reservations"""
-    logger.info("Creating reservations")
+    bundle_posting.save()
+    return bundle_posting
+            
+def create_reservation(status):
+    """Create reservation"""
+    logger.info("Creating reservation")
     
     consumers = Consumer.objects.all()
     postings = Bundle_posting.objects.all()
     
-    statuses = ["C", "N", "R", "E"] 
-    
-    # 80 no-shows
-    for _ in range(80):
-        Reservation.objects.create(
-            reservation_id=random.randint(0, 9999),
-            posting_id=random.choice(postings),
-            consumer_id=random.choice(consumers),
-            claim_code=random.randint(0, 9999),
-            status="N")
-        
-    # 50 expires
-    for _ in range(50):
-        Reservation.objects.create(
-            reservation_id=random.randint(0, 9999),
-            posting_id=random.choice(postings),
-            consumer_id=random.choice(consumers),
-            claim_code=random.randint(0, 9999),
-            status="E")
-        
-    # Remaining reservations to be randomised
-    for _ in range(270):
-        Reservation.objects.create(
-            reservation_id=random.randint(0, 9999),
-            posting_id=random.choice(postings),
-            consumer_id=random.choice(consumers),
-            claim_code=random.randint(0, 9999),
-            status=random.choice(statuses))
-        
-def create_issue_reports():
-    """Create issue reports"""
-    logger.info("Creating 150 issue reports")
+    reservation = Reservation.objects.create()
+    reservation.save()
+    return reservation
+
+def create_issue_report(type):
+    """Create issue report"""
+    logger.info("Creating issue report")
     
     consumers = Consumer.objects.all()
     postings = Bundle_posting.objects.all()
     
-    types = ["C", "A", "S"]
-    
-    for _ in range(150):
-        IssueReport.objects.create(
-            issue_id=random.randint(0, 9999),
-            posting_id=random.choice(postings),
-            consumer_id=random.choice(consumers),
-            type=random.choice(types),
-            description="This is terrible!"
-        )
+    report = IssueReport.objects.create()
+    report.save()
+    return report
         
-def run_seed():
-    pass
+def run_seed(self, mode):
+    """
+    Seed database based on mode and seed
+    """
+    
+    clear_data()
+    if mode == MODE_CLEAR:
+        return
+    
+    create_demo_user()
+    create_demo_seller()
+    create_consumer_profile()
+    create_bundle_posting()
+    create_reservation()
+    create_issue_report()
