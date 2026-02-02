@@ -40,3 +40,26 @@ For Consumers, 200 OK.
 For Sellers, 200 OK.
 
 """
+
+class TestSellerOnlyPages(TestCase):
+    """
+    This will test that Seller-only pages will return 200 OK for Sellers,
+    redirect to login for anonymous users, and return 403 Forbidden for Consumers.
+
+    The Seller-only pages are bundle_new_view, bundle_confirm_view, and analytics_view.
+    """
+    def setUp(self):
+        # Create a mock Consumer
+        self.consumer = User.objects.create_user(
+            username="consumer1",
+            email="mockconsumer@gmail.com",
+            password="consumerpass1",
+            user_type="consumer"
+        )
+        # Create a mock Seller
+        self.seller = User.objects.create_user(
+            username="seller1",
+            email="mockseller@gmail.com",
+            password="sellerpass1",
+            user_type="seller"
+        )
