@@ -11,59 +11,53 @@
 
 <div class="container-fluid">
     <div class="row">
-
         <div class="col-9">
-
-            <h2>Bundle {{post.id}}</h2>
-            <hr>
-            <p>{{post.id}}</p>
-            <hr>
-
-            <div class="row">    
-                <div class="col">
-                    <p>{{post.category}}</p>
-                    <p>Allergens: 
-                        {% if post.allergen_celery %}Celery {% endif %}
-                        {% if post.allergen_crustacean %}Crustacean {% endif %}
-                        {% if post.allergen_dairy %}Dairy {% endif %}
-                        {% if post.allergen_egg %}Egg {% endif %}
-                        {% if post.allergen_fish %}Fish {% endif %}
-                        {% if post.allergen_gluten %}Gluten {% endif %}
-                        {% if post.allergen_lupin %}Lupin {% endif %}
-                        {% if post.allergen_mollusc %}Mollusc {% endif %}
-                        {% if post.allergen_mustard %}Mustard {% endif %}
-                        {% if post.allergen_nut %}Nut {% endif %}
-                        {% if post.allergen_peanut %}Peanut {% endif %}
-                        {% if post.allergen_sesame %}Sesame {% endif %}
-                        {% if post.allergen_soya %}Soya {% endif %}
-                        {% if post.allergen_sulphite %}Sulphite {% endif %}
-                    </p>
-                </div>
-                <div class="col">
-                    <p>Price: £{{post.price}}</p>
-                    <p>Available: {{post.quantity}}</p>
-                    <button type="button" class="btn btn-outline-primary">Reserve</button>
+            <div class="card">
+                <div class="card-body">
+                    <p>{{post.id}}</p>
+                    <div class="row">    
+                        <div class="col">
+                            <p>{{post.category}}</p>
+                            <p>Allergens: 
+                                {% if post.allergen_celery %}Celery {% endif %}
+                                {% if post.allergen_crustacean %}Crustacean {% endif %}
+                                {% if post.allergen_dairy %}Dairy {% endif %}
+                                {% if post.allergen_egg %}Egg {% endif %}
+                                {% if post.allergen_fish %}Fish {% endif %}
+                                {% if post.allergen_gluten %}Gluten {% endif %}
+                                {% if post.allergen_lupin %}Lupin {% endif %}
+                                {% if post.allergen_mollusc %}Mollusc {% endif %}
+                                {% if post.allergen_mustard %}Mustard {% endif %}
+                                {% if post.allergen_nut %}Nut {% endif %}
+                                {% if post.allergen_peanut %}Peanut {% endif %}
+                                {% if post.allergen_sesame %}Sesame {% endif %}
+                                {% if post.allergen_soya %}Soya {% endif %}
+                                {% if post.allergen_sulphite %}Sulphite {% endif %}
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p>Price: £{{post.price}}</p>
+                            <p>Available: {{post.quantity}}</p>
+                        </div>
+                    </div>    
                 </div>
             </div>
-
+            <button type="button" class="btn btn-outline-primary mt-3">Reserve</button>
         </div>
-
-        <div class="vr p-0"></div>
-
-        <div class="col">
-            
-            <h2>{{post.seller.display_name}}</h2>
-            <p>{{post.seller.location}}</p>
-            <p><strong>Opening Times</strong></p>
-            <p>{{post.seller.opening_time}} - {{post.seller.closing_time}}</p>
-            <p>{{post.seller.telephone_number}}</p>
-            <p>{{post.seller.user.email}}</p>
-            <p>{{post.seller.websire_url}}</p>
-
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body">
+                    <h2>{{post.seller.display_name}}</h2>
+                    <p>{{post.seller.location}}</p>
+                    <p><strong>Opening Times</strong></p>
+                    <p>{{post.seller.opening_time}} - {{post.seller.closing_time}}</p>
+                    <p>{{post.seller.telephone_number}}</p>
+                    <p>{{post.seller.user.email}}</p>
+                    <p><a class="link-opacity-50-hover" href={{post.seller.website_url}}>{{post.seller.website_url}}</a></p>
+                </div>
+            </div>
         </div>
-
     </div>
-
 </div>
 
 {% endblock %}
