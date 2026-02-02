@@ -14,7 +14,7 @@
         <div class="col-3">
             <div class="card">
                 <div class="card-body">
-
+                    <h2>Filters</h2>
                 </div>
             </div>
         </div>
@@ -39,6 +39,8 @@
                             </div>
                         </div>
                     </div>
+                {% empty %}
+                    <h2>No posts!</h2>
                 {% endfor %}
             </div>
         </div>
