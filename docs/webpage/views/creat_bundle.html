@@ -8,84 +8,128 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   </head>
   <body>
+    <nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navbar-brand">Create Bundle</h1>
+        </div>
+    </nav>
     <div class="container-fluid">
-        <h1>Create Bundle</h1>
-        <hr>
+
         <form>
-            <div class="form-group">
-                <label for="Bundle-name">Bundle Name</label>
-                <input type="text" class="form-control" id="Bundle-name">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="bundle-name">Bundle Name</span>
+                <input type="text" class="form-control" placeholder="name" aria-label="bundle-name" aria-describedby="bundle-name">
                 </div>
-            <div class="form-group">
-                <label for="Catagory">Catagory</label>
-                <select class="form-control" id="Catagory"
-                <option>Select Catagory</option>
-                <option>Meat Bag</option>
-                <option>Medical Bag</option>
-                <option>Exotic Bag</option>
+                
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="catagory">Catagories</label>
+                <select class="form-select" id="Catagory"
+                    <option>Select Catagory</option>
+                    <option>Meat Bag</option>
+                    <option>Medical Bag</option>
+                    <option>Exotic Bag</option>
                 </select>
-            </div>
+                </div>
 
             Allergens
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-celery-check">
-                <label class="form-check-label" for="allergen-celery-check">celery</label>
+            <div class="d-flex flex-wrap">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-celery-check">
+                    <label class="form-check-label" for="allergen-celery-check">celery</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-gluten-check">
+                    <label class="form-check-label" for="allergen-gluten-check">gluten</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-crustaceans-check">
+                    <label class="form-check-label" for="allergen-crustaceans-check">crustaceans</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-eggs-check">
+                    <label class="form-check-label" for="allergen-eggs-check">eggs</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-fish-check">
+                    <label class="form-check-label" for="allergen-fish-check">fish</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-luqin-check">
+                    <label class="form-check-label" for="allergen-luqin-check">lupin</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-dairy-check">
+                    <label class="form-check-label" for="allergen-dairy-check">dairy</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-molluscs-check">
+                    <label class="form-check-label" for="allergen-molluscs-check">molluscs</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-mustard-check">
+                    <label class="form-check-label" for="allergen-mustard-check">mustard</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-nuts-check">
+                    <label class="form-check-label" for="allergen-nuts-check">nuts</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-peanuts-check">
+                    <label class="form-check-label" for="allergen-peanuts-check">peanuts</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-sesame-seeds-check">
+                    <label class="form-check-label" for="allergen-sesame-seeds-check">sesame seeds</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-soya-check">
+                    <label class="form-check-label" for="allergen-soya-check">soya</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" value="" id="allergen-sulphur-dioxide-sulphites-check">
+                    <label class="form-check-label" for="allergen-sulphur-dioxide-sulphites-check">sulphur dioxide/sulphites</label>
+                </div>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-gluten-check">
-                <label class="form-check-label" for="allergen-gluten-check">gluten</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-crustaceans-check">
-                <label class="form-check-label" for="allergen-crustaceans-check">crustaceans</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-eggs-check">
-                <label class="form-check-label" for="allergen-eggs-check">eggs</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-fish-check">
-                <label class="form-check-label" for="allergen-fish-check">fish</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-luqin-check">
-                <label class="form-check-label" for="allergen-luqin-check">lupin</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-dairy-check">
-                <label class="form-check-label" for="allergen-dairy-check">dairy</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-molluscs-check">
-                <label class="form-check-label" for="allergen-molluscs-check">molluscs</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-mustard-check">
-                <label class="form-check-label" for="allergen-mustard-check">mustard</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-nuts-check">
-                <label class="form-check-label" for="allergen-nuts-check">nuts</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-peanuts-check">
-                <label class="form-check-label" for="allergen-peanuts-check">peanuts</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-sesame-seeds-check">
-                <label class="form-check-label" for="allergen-sesame-seeds-check">sesame seeds</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-soya-check">
-                <label class="form-check-label" for="allergen-soya-check">soya</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="allergen-sulphur-dioxide-sulphites-check">
-                <label class="form-check-label" for="allergen-sulphur-dioxide-sulphites-check">sulphur dioxide/sulphites</label>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">£</span>
+                <span class="input-group-text">0.00</span>
+                <input type="text" class="form-control" aria-label="Pound amount (with dot and two decimal places)">
+              </div>
+
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="bundle-quantity">Quantity</span>
+                <input type="text" class="form-control" placeholder="1" aria-label="bundle-quantity" aria-describedby="bundle-label">
+                </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="bundle-quantity">Pick-up Window</span>
+                <input
+                type="time"
+                id="pick-up-start"
+                name="pick-up-start"
+                required/>
+                <input
+                type="time"
+                id="pick-up-start"
+                name="pick-up-start"
+                required/>
+                </div>
+
+            <div class="input-group">
+                <span class="input-group-text">Description</span>
+                <textarea class="form-control" aria-label="description"></textarea>
             </div>
         </form>
 
-        <div class=""
+        
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary">Discard</button>
+            <div class="ms-1">
+                <button type="button" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   </body>
 </html>
