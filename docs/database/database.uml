@@ -15,12 +15,25 @@ entity Bundle_posting{
     +seller_id: INT <FK>
     +category: STR
     +contents_description: STR
-    +allergens: INT
     +quantity: INT
     +price: Float
     +creation_time: epoch
     +pickup_window_start: Time
     +pickup_window_end: Time
+    +allergen_celery: Bool
+    +allergen_crustacean: Bool
+    +allergen_dairy: Bool
+    +allergen_egg: Bool
+    +allergen_fish: Bool
+    +allergen_gluten: Bool
+    +allergen_lupin: Bool
+    +allergen_mollusc: Bool
+    +allergen_mustard: Bool
+    +allergen_nut: Bool
+    +allergen_peanut: Bool
+    +allergen_sesame: Bool
+    +allergen_soya: Bool
+    +allergen_sulphite: Bool
 }
 
 entity Reservation{
