@@ -11,7 +11,10 @@ Consumer: Show all bundles, search by location and pick up time, pagination
 Seller: Show own bundles, pagination
 """
 def bundles_view(request):
-    return render(request, "main/bundles.html")
+
+    posts = Bundle_posting.objects.all()
+
+    return render(request, "main/bundles.html", {'posts': posts})
 
 """
 Consumer: Show bundle, make new reservation or view own reservation details
