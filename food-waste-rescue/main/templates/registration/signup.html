@@ -1,8 +1,12 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 
 {% block content %}
 
-<h1>Create an Account</h1>
+<nav class="navbar">
+    <div class="container-fluid">
+        <h1 class="navbar-brand">Create an Account</h1>
+    </div>
+</nav>
 
 {% if form.errors %}
     <p>Error signing up. Please check your details.</p>
@@ -20,41 +24,48 @@
 {# Show non-field errors (e.g. password mismatch) #}
 {{ form.non_field_errors }}
 
-<form method="post" action="/accounts/register/">
-{% csrf_token %}
+<div class="container-fluid">
+    <form method="post" action="/accounts/register/">
+        {% csrf_token %}
 
-<table>
-<tr>
-    <td>{{ form.user_type.label_tag }}</td>
-    <td>{{ form.user_type }}</td>
-    {{form.user_type.errors}}
-</tr>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-    {{form.username.errors}}
-</tr>
-<tr>
-    <td>{{ form.email.label_tag }}</td>
-    <td>{{ form.email}}</td>
-    {{form.email.errors}}
-</tr>
-<tr>
-    <td>{{ form.password1.label_tag }}</td>
-    <td>{{ form.password1}}</td>
-    {{form.password1.errors}}
-</tr>
-<tr>
-    <td>{{ form.password2.label_tag }}</td>
-    <td>{{ form.password2}}</td>
-    {{form.password2.errors}}
-</tr>
-</table>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="user_type">{{form.user_type.label}}</label>
+            <select class="form-select" name="user_type">
+                <option selected>Choose...</option>
+                <option value="consumer">Consumer</option>
+                <option value="seller">Seller</option>
+            </select>
+            {{form.user_type.errors}}
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="username">{{form.username.label}}</label>
+            <input type="text" class="form-control" name="username">
+            {{form.username.errors}}
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="email">{{form.email.label}}</label>
+            <input type="text" class="form-control" name="email">
+            {{form.email.errors}}
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="password1">{{form.password1.label}}</label>
+            <input type="password" class="form-control" name="password1">
+            {{form.password1.errors}}
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="password2">{{form.password2.label}}</label>
+            <input type="password" class="form-control" name="password2">
+            {{form.password2.errors}}
+        </div>
 
-<input type="submit" value="Sign Up">
-<input type="hidden" name="next" value="{{ next }}">
-</form>
+        <div class="d-flex">
+            <input type="submit" class="me-auto btn btn-primary" value="Sign up">
+            <a class="ms-auto btn btn-secondary" href="{% url 'login' %}">Login</a>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
 
-<a href="{% url 'login' %}">Login</a>
+
+</div>
 
 {% endblock %}
