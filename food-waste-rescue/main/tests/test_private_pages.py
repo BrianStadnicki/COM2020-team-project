@@ -67,6 +67,7 @@ class TestSellerOnlyPages(TestCase):
     # -----------------------------------------------------------------------------
     #Tests for bundle_new_view 
 
+    #currently failing: AssertionError: 200 != 302
     def test_bundle_new_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundle_new_view_url")
@@ -74,6 +75,7 @@ class TestSellerOnlyPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
+    #currently failing: AssertionError: 200 != 403
     def test_bundle_new_forbidden_for_consumer(self):
         """Consumers should get 403 Forbidden for Seller-only pages"""
         self.client.login(username="consumer1", password="consumerpass1")
@@ -81,6 +83,7 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
+    #passes
     def test_bundle_new_allows_seller(self):
         """Sellers should get 200 OK for Seller-only pages"""
         self.client.login(username="seller1", password="sellerpass1")
