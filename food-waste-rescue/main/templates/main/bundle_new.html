@@ -23,7 +23,7 @@
 
     <form method="post" action="">
         {% csrf_token %}
-        
+
         <div class="input-group mb-3">
             <span class="input-group-text" for="name">Bundle Name</span>
             <input type="text" class="form-control" placeholder="Bundle name" aria-label="bundle-name" aria-describedby="bundle-name" name="name">
@@ -124,7 +124,7 @@
 
         <div class="input-group">
             <span class="input-group-text">Description</span>
-            <textarea class="form-control" aria-label="description" name="description"></textarea>
+            <textarea class="form-control" aria-label="description" name="contents_description"></textarea>
         </div>
 
         <div class="d-flex justify-content-end">

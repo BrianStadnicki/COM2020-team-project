@@ -21,4 +21,4 @@ class SellerExtraForm(forms.ModelForm):
 class BundleNewForm(forms.ModelForm):
     class Meta:
         model = Bundle_posting
-        fields = ['category', 'quantity', 'price', 'pickup_window_start', 'pickup_window_end', 'allergen_celery', 'allergen_crustacean', 'allergen_dairy', 'allergen_egg', 'allergen_fish', 'allergen_gluten', 'allergen_lupin', 'allergen_mollusc', 'allergen_mustard', 'allergen_nut', 'allergen_peanut', 'allergen_sesame', 'allergen_soya', 'allergen_sulphite']
+        fields = ['name', 'category', 'quantity', 'price', 'pickup_window_start', 'pickup_window_end', 'allergen_celery', 'allergen_crustacean', 'allergen_dairy', 'allergen_egg', 'allergen_fish', 'allergen_gluten', 'allergen_lupin', 'allergen_mollusc', 'allergen_mustard', 'allergen_nut', 'allergen_peanut', 'allergen_sesame', 'allergen_soya', 'allergen_sulphite', 'contents_description']

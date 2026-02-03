@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm
-from .models import User, Bundle_posting
+from .models import User, Bundle_posting, Seller
 
 
 def test_view(request):
@@ -32,7 +32,7 @@ def bundle_new_view(request):
         form = BundleNewForm(request.POST)
         if form.is_valid():
             bundle = form.save(commit=False)
-            bundle.seller_id = request.user.id # TODO: change to seller id
+            bundle.seller_id = Seller.objects.get(user = request.user).id
             bundle.save()
             return redirect("bundle_view_url")
     else:
