@@ -14,7 +14,6 @@ class User(AbstractUser):
 
 class Consumer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    diplay_name = models.CharField(max_length=100, default = "consumer")
 
 class Seller(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
