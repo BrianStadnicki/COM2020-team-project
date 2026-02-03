@@ -99,3 +99,9 @@ python manage.py migrate
 ```
 
 Delete db.sqlite3
+
+### Add testing data
+
+```sh
+python manage.py testing_data
+```
