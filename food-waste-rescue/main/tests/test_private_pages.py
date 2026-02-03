@@ -79,6 +79,7 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
+        self.assertTrue(response.url.startswith("/accounts/login"))
     
     #currently failing: AssertionError: 200 != 403
     def test_bundle_new_forbidden_for_consumer(self):
@@ -107,7 +108,8 @@ class TestSellerOnlyPages(TestCase):
         url = reverse("bundle_confirm_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("accounts/login", response.url)
+        self.assertIn("/accounts/login", response.url)
+        self.assertTrue(response.url.startswith("/accounts/login"))
 
     #currently failing: AssertonError: 200 != 403
     def test_bundle_confirm_view_forbidden_for_consumer(self):
@@ -136,9 +138,10 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
+        self.assertTrue(response.url.startswith("/accounts/login"))
 
     def test_analytics_view_forbidden_for_consumer(self):
-        """Anonymous users should get 403 Forbidden for Seller-only pages"""
+        """Consumers should get 403 Forbidden for Seller-only pages"""
         self.client.login(username="consumer1", password="consumerpass1")
         url = reverse("analytics_view_url")
         response = self.client.get(url)
