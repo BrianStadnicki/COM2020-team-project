@@ -18,7 +18,6 @@ class Consumer(models.Model):
 
 class Seller(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    display_name = models.CharField(max_length=100, default = "seller")
     location = models.CharField(max_length=100, default="Exeter University")
     opening_time = models.TimeField(default=datetime.time(9,00))
     closing_time = models.TimeField(default=datetime.time(17,00))
@@ -28,6 +27,8 @@ class Seller(models.Model):
 class Bundle_posting(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     category = models.CharField(max_length=100,default="Food")
+    name = models.CharField(max_length=100, default="Meat bag")
+    contents_description = models.CharField(max_length=500,default="Chicken breast")
     quantity = models.IntegerField(default=0)
     price = models.DecimalField(decimal_places=2, max_digits=10, default=Decimal('0.00'))
     creation_time = models.DateTimeField(default=timezone.now,blank=True)
@@ -77,6 +78,8 @@ class IssueReport(models.Model):
         ("R", "Resolved")
     )
     status = models.CharField(max_length=1,choices=STATUSES,default="P")
+    creation_time = models.DateTimeField(default=timezone.now,blank=True)
+    seller_response = models.CharField(max_length=500,default="Hello consumer!")
 
 class Forecast_output(models.Model):
     posting = models.ForeignKey(Bundle_posting, on_delete=models.CASCADE)
