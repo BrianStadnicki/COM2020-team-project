@@ -227,7 +227,7 @@ class testSellerAndConsumerPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_bundles_view_allows_seller(self):
+    def test_bundle_view_allows_seller(self):
         """Sellers should get 200 OK"""
         self.client.login(username="seller2", password="sellerpass2")
         url = reverse("bundle_view_url", args=[1])
