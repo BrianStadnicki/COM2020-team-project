@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm
-from .models import User
+from .models import User, Bundle_posting
 
 
 def test_view(request):
@@ -19,7 +19,10 @@ Consumer: Show bundle, make new reservation or view own reservation details
 Seller: show/edit/delete bundle, change reservation status?
 """
 def bundle_view(request, id):
-    return render(request, "main/bundle.html")
+
+    post = get_object_or_404(Bundle_posting, pk=id)
+
+    return render(request, "main/bundle.html", {'post': post})
 
 """
 Seller: create new bundle

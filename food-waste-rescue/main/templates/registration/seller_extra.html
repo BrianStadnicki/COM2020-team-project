@@ -17,41 +17,36 @@
 {# Show non-field errors (e.g. password mismatch) #}
 {{ form.non_field_errors }}
 
-<h1>Enter Seller Details</h1>
+<nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navabar-brand">Enter Seller Details</h1>
+        </div>
+</nav>
 
-<form method="post" action="">
-{% csrf_token %}
+<div class="container-fluid">
+    <form method="post" action=""> {% csrf_token %}
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="location">Location</span>
+            <input type="text" class="form-control" name="location" placeholder="Exeter">
+        </div>
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="opening_time">Opening Time</span>
+            <input type="text" class="form-control" name="opening_time" placeholder="09:00">
+        </div>
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="closing_time">Closing Time</span>
+            <input type="text" class="form-control" name="closing_time" placeholder="17:00">
+        </div>
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="telephone_number">Telephone Number</span>
+            <input type="text" class="form-control" name="telephone_number" placeholder="440123456789">
+        </div>
+        <div class = "input-group mb-3">
+            <span class="input-group-text" id="website_url">Website URL</span>
+            <input type="text" class="form-control" name="website_url" placeholder="https://www.exeter.ac.uk/">
+        </div>
+    <button type="submit" value="Save Seller Details" class="btn btn-primary">Sign Up!</button>
 
-<table>
-<tr>
-    <td>{{ form.location.label_tag }}</td>
-    <td>{{ form.location}}</td>
-    {{form.location.errors}}
-</tr>
-<tr>
-    <td>{{ form.opening_time.label_tag }}</td>
-    <td>{{ form.opening_time}}</td>
-    {{form.opening_time.errors}}
-</tr>
-<tr>
-    <td>{{ form.closing_time.label_tag }}</td>
-    <td>{{ form.closing_time}}</td>
-    {{form.closing_time.errors}}
-</tr>
-<tr>
-    <td>{{ form.telephone_number.label_tag }}</td>
-    <td>{{ form.telephone_number}}</td>
-    {{form.telephone_number.errors}}
-</tr>
-<tr>
-    <td>{{ form.website_url.label_tag }}</td>
-    <td>{{ form.website_url}}</td>
-    {{form.website_url.errors}}
-</tr>
-</table>
-
-<input type="submit" value="Save Seller Details">
-<input type="hidden" name="next" value="{{ next }}">
 </form>
 
 {% endblock %}

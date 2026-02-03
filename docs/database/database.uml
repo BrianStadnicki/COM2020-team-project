@@ -14,6 +14,7 @@ entity Bundle_posting{
     +posting_id: INT <PK>
     +seller_id: INT <FK>
     +category: STR
+    +name: STR
     +contents_description: STR
     +quantity: INT
     +price: Float
