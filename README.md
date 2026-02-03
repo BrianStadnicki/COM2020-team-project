@@ -100,6 +100,18 @@ python manage.py migrate
 
 Delete db.sqlite3
 
+### Add testing data
+
+```sh
+python manage.py testing_data
+```
+
+### Add testing data
+
+```sh
+python manage.py testing_data
+```
+
 ### Running Unit Tests
 
 This project uses Django's built-in test runner.
