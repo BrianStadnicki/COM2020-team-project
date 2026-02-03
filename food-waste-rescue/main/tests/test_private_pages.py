@@ -304,3 +304,28 @@ class testSellerAndConsumerPages(TestCase):
         url = reverse("report_new_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+    
+    # ---------------------------------------------------------------------------
+
+    #Tests for impact_view
+
+    def test_impact_view_redirects_for_anonymous(self):
+        """Anonymous users should get 302 Redirect and be redirected to login"""
+        url = reverse("impact_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login", response.url)
+    
+    def test_impact_view_allows_consumer(self):
+        """Consumers should get 200 OK"""
+        self.client.login(username="consumer2", password="consumerpass2")
+        url = reverse("impact_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_impact_view_allows_seller(self):
+        """Sellers shoud get 200 OK"""
+        self.client.login(username="seller2", password="sellerpass2")
+        url = reverse("impact_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
