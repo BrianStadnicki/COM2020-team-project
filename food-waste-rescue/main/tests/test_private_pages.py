@@ -24,7 +24,7 @@ For anonymous users, redirect to login.
 For Consumers, 403 Forbidden.
 For Sellers, 200 OK.
 
-Public / both Seller and Consumer pages
+Both Seller and Consumer pages - still require login!
 bundles_view
 bundle_view
 reports_view
@@ -146,3 +146,30 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/analytics.html")
+
+    # --------------------------------------------------------------------------------
+
+class testSellerAndConsumerPages(TestCase):
+
+    """
+    This will test pages that are private (cannot be accessed by anonymous users),
+    however, are available for all logged in users (both Consumers and Sellers).
+    """
+
+    def setUp(self):
+        # Create a mock Consumer
+        self.consumer = User.objects.create_user(
+            username="consumer2",
+            email="mockconsumer2@gmail.com",
+            password="consumerpass2",
+            user_type="consumer"
+        )
+        # Create a mock Seller
+        self.seller = User.objects.create_user(
+            username="seller2",
+            email="mockseller2@gmail.com",
+            password="sellerpass2",
+            user_type="seller"
+        )
+
+    #Tests for bundles_view
