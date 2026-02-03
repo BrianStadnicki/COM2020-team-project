@@ -35,7 +35,7 @@ report_new_view
 impact_view
 accessibility_view
 reservations_view
-reservatuib_view(id)
+reservation_view(id)
 
 For anonymous users, redirect to login.
 For Consumers, 200 OK.
@@ -354,3 +354,30 @@ class testSellerAndConsumerPages(TestCase):
         url = reverse("accessibility_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    # ---------------------------------------------------------------------------
+
+    #Tests for reservations_view
+
+    def test_reservations_view_redirects_for_anonymous(self):
+        """Anonymous users should get 302 Redirect and be redirected to login"""
+        url = reverse("reservations_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login", response.url)
+    
+    def test_reservations_view_allows_consumer(self):
+        """Consumers should get 200 OK"""
+        self.client.login(username="consumer2", password="consumerpass2")
+        url = reverse("reservations_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_reservations_view_allows_seller(self):
+        """Sellers shoud get 200 OK"""
+        self.client.login(username="seller2", password="sellerpass2")
+        url = reverse("reservations_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+    
+
