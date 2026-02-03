@@ -1,10 +1,12 @@
 from django.test import TestCase
-from django.urls import reverse, resolve
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 """
+ACCESS CONTROL RULES
+
 Anonymous (not logged in) users should get 302 Redirect when trying to access
 pages that require logging in (every page with the exception of login, signup, 
 and seller-extra).
@@ -40,6 +42,9 @@ For Consumers, 200 OK.
 For Sellers, 200 OK.
 
 """
+
+# ----------------------------------------------------------------------------------
+# SELLER ONLY PAGES
 
 class TestSellerOnlyPages(TestCase):
     """
@@ -102,7 +107,7 @@ class TestSellerOnlyPages(TestCase):
         url = reverse("bundle_confirm_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("/bundle/confirm")
+        self.assertIn("accounts/login", response.url)
 
     #currently failing: AssertonError: 200 != 403
     def test_bundle_confirm_view_forbidden_for_consumer(self):
@@ -130,7 +135,7 @@ class TestSellerOnlyPages(TestCase):
         url = reverse("analytics_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("analytics/")
+        self.assertIn("/accounts/login", response.url)
 
     def test_analytics_view_forbidden_for_consumer(self):
         """Anonymous users should get 403 Forbidden for Seller-only pages"""
@@ -176,6 +181,7 @@ class testSellerAndConsumerPages(TestCase):
             user_type="seller"
         )
 
+    # -----------------------------------------------------------------------------
     #Tests for bundles_view
 
     def test_bundles_view_redirects_for_anonymous(self):
@@ -183,7 +189,7 @@ class testSellerAndConsumerPages(TestCase):
         url = reverse("bundles_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("bundles")
+        self.assertIn("/accounts/login", response.url)
     
     def test_bundles_view_allows_consumer(self):
         """Consumers should get 200 OK"""
@@ -200,4 +206,30 @@ class testSellerAndConsumerPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/bundle.html")
+    
+    # -----------------------------------------------------------------------------
+    #Tests for bundle_view
+
+    def test_bundle_view_redirects_for_anonymous(self):
+        """Anonymous users should get 302 Redirect and be redirected to login"""
+        url = reverse("bundle_view_url", args=[1])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("accounts/login", response.url)
+
+    def test_bundle_view_allows_consumer(self):
+        """Consumers should get 200 OK"""
+        self.client.login(username="consumer2", password="consumerpass2")
+        url = reverse("bundle_view_url", args=[1])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_bundles_view_allows_seller(self):
+        """Sellers should get 200 OK"""
+        self.client.login(username="seller2", password="sellerpass2")
+        url = reverse("bundle_view_url", args=[1])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    
 
