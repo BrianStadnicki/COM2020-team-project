@@ -120,3 +120,29 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/bundle_confirm.html")
+
+    # --------------------------------------------------------------------------------
+
+    #Tests for analytics_view
+
+    def test_analytics_view_redirects_for_anonymous(self):
+        """Anonymous users should get 302 Redirect and be redirected to login"""
+        url = reverse("analytics_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("analytics/")
+
+    def test_analytics_view_forbidden_for_consumer(self):
+        """Anonymous users should get 403 Forbidden for Seller-only pages"""
+        self.client.login(username="consumer1", password="consumerpass1")
+        url = reverse("analytics_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+    
+    def test_analytics_view_forbidden_for_consumer(self):
+        """Sellers should get 200 OK for Seller-only pages"""
+        self.client.login(username="seller1", password="sellerpass1")
+        url = reverse("analytics_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/analytics.html")
