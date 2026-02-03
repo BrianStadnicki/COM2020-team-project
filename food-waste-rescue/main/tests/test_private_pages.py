@@ -251,6 +251,7 @@ class testSellerAndConsumerPages(TestCase):
         url = reverse("reports_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/reports.html")
 
     def test_reports_view_allows_seller(self):
         """Sellers shoud get 200 OK"""
@@ -258,6 +259,7 @@ class testSellerAndConsumerPages(TestCase):
         url = reverse("reports_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/reports.html")
 
     # ---------------------------------------------------------------------------
 
