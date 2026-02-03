@@ -41,17 +41,33 @@ class TestPublicPages(TestCase):
         self.assertTemplateUsed(response, "registration/signup.html")
 
     #passes
-    def test_seller_extra_page_is_public_with_mock_user(self):
+    def test_seller_extra_page_is_public_with_mock_seller(self):
         """
         Testing the seller-extra page with a mock "Seller"
         """
-        user = User.objects.create_user(
+        seller = User.objects.create_user(
             username = "seller1",
             email = "mockuser@gmail.com",
             password = "password123",
-            user_type = "Seller",
+            user_type = "seller",
         )
-        url = reverse("seller-extra", args=[user.id])
+        url = reverse("seller-extra", args=[seller.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "registration/seller_extra.html")
+    
+    def test_seller_extra_blocks_consumer(self):
+        """Users should only be able to access 'seller-extra' if they selected 'Seller' in
+        the registration page."""
+        consumer = User.objects.create_user(
+            username="consumer1",
+            email="mockuser2@gmail.com",
+            password="password456",
+            user_type = "consumer"
+        )
+        url = reverse("seller-extra",args=[consumer.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
+    
+
