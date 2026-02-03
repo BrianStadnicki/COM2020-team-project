@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+    <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+<nav class="navbar">
+    <div class="container-fluid">
+        <h1 class="navbar-brand">Create Bundle</h1>
+    </div>
+</nav>
+<div class="container-fluid">
+
+    <form method="post" action="">
+        {% csrf_token %}
+        
+        <div class="input-group mb-3">
+            <span class="input-group-text" for="name">Bundle Name</span>
+            <input type="text" class="form-control" placeholder="Bundle name" aria-label="bundle-name" aria-describedby="bundle-name" name="name">
+            </div>
+            
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="category">Categories</label>
+            <select class="form-select" name="category"
+                <option>Select Category</option>
+                <option>Meat Bag</option>
+                <option>Medical Bag</option>
+                <option>Exotic Bag</option>
+            </select>
+            </div>
+
+        Allergens
+        <div class="d-flex flex-wrap">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_celery">
+                <label class="form-check-label" for="allergen_celery">celery</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_gluten">
+                <label class="form-check-label" for="allergen_gluten">gluten</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_crustacean">
+                <label class="form-check-label" for="allergen_crustacean">crustaceans</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_egg">
+                <label class="form-check-label" for="allergen_egg">eggs</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_fish">
+                <label class="form-check-label" for="allergen_fish">fish</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_luqin">
+                <label class="form-check-label" for="allergen_luqin">lupin</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_dairy">
+                <label class="form-check-label" for="allergen_dairy">dairy</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_mollusc">
+                <label class="form-check-label" for="allergen_mollusc">molluscs</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_mustard">
+                <label class="form-check-label" for="allergen_mustard">mustard</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_nut">
+                <label class="form-check-label" for="allergen_nut">nuts</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_peanut">
+                <label class="form-check-label" for="allergen_peanut">peanuts</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_sesame">
+                <label class="form-check-label" for="allergen_sesame">sesame seeds</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_soya">
+                <label class="form-check-label" for="allergen_soya">soya</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" value="" name="allergen_sulphite">
+                <label class="form-check-label" for="allergen_sulphite">sulphur dioxide/sulphites</label>
+            </div>
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text">£</span>
+            <span class="input-group-text">0.00</span>
+            <input type="text" class="form-control" aria-label="Pound amount (with dot and two decimal places)" name="price">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text" name="bundle-quantity">Quantity</span>
+            <input type="text" class="form-control" placeholder="1" aria-label="bundle-quantity" aria-describedby="bundle-label" name="quantity">
+            </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" name="bundle-quantity">Pick-up Window</span>
+            <input
+            type="time"
+            name="pickup_window_start"
+            required/>
+            <input
+            type="time"
+            name="pickup_window_end"
+            required/>
+            </div>
+
+        <div class="input-group">
+            <span class="input-group-text">Description</span>
+            <textarea class="form-control" aria-label="description" name="description"></textarea>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <input type="submit" value="Confirm" class="btn btn-primary" name="submit">
+        </div>
+    </form>
+
+</div>
+{% endblock %}
