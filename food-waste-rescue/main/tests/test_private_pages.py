@@ -139,7 +139,7 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
     
-    def test_analytics_view_forbidden_for_consumer(self):
+    def test_analytics_view_allows_seller(self):
         """Sellers should get 200 OK for Seller-only pages"""
         self.client.login(username="seller1", password="sellerpass1")
         url = reverse("analytics_view_url")
@@ -154,6 +154,10 @@ class testSellerAndConsumerPages(TestCase):
     """
     This will test pages that are private (cannot be accessed by anonymous users),
     however, are available for all logged in users (both Consumers and Sellers).
+
+    For anonymous users, redirect to login.
+    For Consumers, 200 OK.
+    For Sellers, 200 OK.
     """
 
     def setUp(self):
@@ -173,3 +177,27 @@ class testSellerAndConsumerPages(TestCase):
         )
 
     #Tests for bundles_view
+
+    def test_bundles_view_redirects_for_anonymous(self):
+        """Anonymous users should get 302 Redirect and be redirected to login"""
+        url = reverse("bundles_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("bundles")
+    
+    def test_bundles_view_allows_consumer(self):
+        """Consumers should get 200 OK"""
+        self.client.login(username="consumer2", password="consumerpass2")
+        url = reverse("bundles_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/bundle.html")
+
+    def test_bundles_view_allows_seller(self):
+        """Sellers should get 200 OK"""
+        self.client.login(username="seller2", password="sellerpass2")
+        url = reverse("bundles_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/bundle.html")
+
