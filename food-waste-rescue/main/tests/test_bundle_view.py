@@ -31,3 +31,5 @@ class TestBundleView(TestCase):
             seller = self.seller #only field without a default
             #the other fields will have defaults, but can be set values for testing purposes - determine if this is necessary
         )
+
+        #CONTINUE HERE
