@@ -9,9 +9,14 @@
             "name": "Python Debugger: Django",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}\\food-waste-rescue\\manage.py",
-            "python": "${workspaceFolder}\\food-waste-rescue\\.env\\Scripts\\python.exe",
-            "cwd": "${workspaceFolder}\\food-waste-rescue",
+            "program": "${workspaceFolder}/food-waste-rescue/manage.py",
+            "windows": {
+                "python": "${workspaceFolder}/food-waste-rescue/.env/Scripts/python.exe",
+            },
+            "linux": {
+                "python": "${workspaceFolder}/food-waste-rescue/.env/bin/python"
+            },
+            "cwd": "${workspaceFolder}/food-waste-rescue",
             "args": [
                 "runserver"
             ],
