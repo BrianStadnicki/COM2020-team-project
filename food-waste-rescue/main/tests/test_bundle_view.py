@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from main.models import Bundle_posting, Seller
+from django.utils import timezone
+from datetime import datetime, time
 
 User = get_user_model()
 
@@ -30,11 +32,11 @@ class TestBundleView(TestCase):
         self.bundle_posting = Bundle_posting.objects.create(
             seller = self.seller, 
             category = "Bakery",
-            name = "Test bundle",
-            contents_description = "Bread"
-            quantity = 5
-            price = 2.00
-            creation_time = timezone.make_aware(datetime(2026, 1, 1, 12, 0))
+            name = "Test Bundle",
+            contents_description = "Bread",
+            quantity = 5,
+            price = 2.00,
+            creation_time = timezone.make_aware(datetime(2026, 1, 1, 12, 0)),
             pickup_window_start=time(17, 00),
             pickup_window_end=time(18, 00),
             allergen_celery = False,
@@ -42,20 +44,20 @@ class TestBundleView(TestCase):
             allergen_dairy = False,
             allergen_egg = False,
             allergen_fish = False,
-            allergen_gluten = True
-            allergen_lupin = False
-            allergen_mollusc = False
-            allergen_mustard = False
-            allergen_nut = False
-            allergen_peanut = False
-            allergen_sesame = models.BooleanField(default=False)
-            allergen_soya = models.BooleanField(default=False)
-            allergen_sulphite = models.BooleanField(default=False)
+            allergen_gluten = True,
+            allergen_lupin = False,
+            allergen_mollusc = False,
+            allergen_mustard = False,
+            allergen_nut = False,
+            allergen_peanut = False,
+            allergen_sesame = False,
+            allergen_soya = False,
+            allergen_sulphite = False
         )
 
     def test_bundle_view_renders_correct_template(self):
         self.client.login(username="seller1", password="pass123")
-        url = reverse("bundle_view_url", args=[self.bundle.id])
+        url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -64,15 +66,20 @@ class TestBundleView(TestCase):
         # Checking that the Bundle_posting is associated with the correct seller
 
         # Checking database relationship directly:
-        self.assertEqual(self.bundle.seller, self.seller)
+        self.assertEqual(self.bundle_posting.seller, self.seller)
 
         #Check the view context contains the correct seller:
         response = self.client.get(url)
         self.assertEqual(response.context["post"].seller, self.seller)
 
-        
-
         # Content checks
 
-        self.assertContains(response, "Test Bundle")
+        self.assertContains(response, "Bakery") #testing for correct category
+        self.assertContains(response, "Test Bundle") #testing for correct name
+        self.assertContains(response, "Bread") #testing for correct contents_description
+        self.assertContains(response, "5") #testing for correct quantity
+        self.assertContains(response, "£2.00") #testing for correct price
+
+
+
         
