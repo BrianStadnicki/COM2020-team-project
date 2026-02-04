@@ -23,7 +23,12 @@ class BundleNewForm(forms.ModelForm):
         model = Bundle_posting
         fields = ['name', 'category', 'quantity', 'price', 'pickup_window_start', 'pickup_window_end', 'allergen_celery', 'allergen_crustacean', 'allergen_dairy', 'allergen_egg', 'allergen_fish', 'allergen_gluten', 'allergen_lupin', 'allergen_mollusc', 'allergen_mustard', 'allergen_nut', 'allergen_peanut', 'allergen_sesame', 'allergen_soya', 'allergen_sulphite', 'contents_description']
 
-class IssueReport(forms.ModelForm):
+class IssueReportNewForm(forms.ModelForm):
     class Meta:
         model = IssueReport
         fields = ['type','description']
+
+class IssueReportViewForm(forms.ModelForm):
+    class Meta:
+        model = IssueReport
+        fields = ['description', 'seller_response', 'status']

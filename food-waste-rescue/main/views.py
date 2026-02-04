@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReport
-from .models import User, Bundle_posting, Seller, Consumer
+from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
+from .models import User, Bundle_posting, Seller, Consumer, IssueReport
 
 
 def test_view(request):
@@ -77,7 +77,15 @@ Consumer: Show/add/close own report
 Seller: Show/add/close own report
 """
 def report_view(request, id):
-    return render(request, "main/report.html")
+    report = get_object_or_404(IssueReport, id=id)
+    if request.method =="POST":
+        form = IssueReportViewForm(request.POST or None, instance = report)
+        if form.is_valid() :
+            report = form.save()
+            return redirect("reports_view_url", {"id" : report.id})
+    else:
+        form = IssueReportViewForm(None, initial=report.__dict__)
+    return render(request, "main/report_view.html", {"form" : form, "edit" : True})
 
 """
 Consumer: Create new report
@@ -85,7 +93,7 @@ Seller: Create new report
 """
 def report_new_view(request, id):
     if request.method == "POST":
-        form = IssueReport(request.POST)
+        form = IssueReportNewForm(request.POST)
         if form.is_valid():
             report = form.save(commit=False)
             report.posting_id = id
@@ -93,7 +101,7 @@ def report_new_view(request, id):
             report.save()
             return redirect("report_view_url")
     else:
-        form = IssueReport()
+        form = IssueReportNewForm()
     return render(request, "main/report_new.html", {'form': form })
 
 """
