@@ -73,6 +73,40 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-title">
+                    <h2>Reservations</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Consumer</th>
+                                <th scope="col">Timestamp</th>
+                                <th scope="col">Claim Code</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                                <tr>
+                                    <th scope="row">{{ reservation.id }}</th>
+                                    <th>{{ reservation.consumer.user.username }}</th>
+                                    <th>{{ reservation.time_stamp }}</th>
+                                    <th>{{ reservation.claim_code }}</th>
+                                    <th>{{ reservation.status }}</th>
+                                </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-title">
                     <h2>Reports</h2>
                 </div>
                 <div class="card-body">

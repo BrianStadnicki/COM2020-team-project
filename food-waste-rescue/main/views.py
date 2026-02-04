@@ -63,7 +63,14 @@ def bundle_view(request, id):
             if (type[0] == report.type):
                 report.type = type[1]
 
-    return render(request, "main/bundle.html", {'post': post, 'reports': reports})
+    reservations = post.reservation_set.all() # type: ignore
+    
+    for reservation in reservations:
+        for status in reservation.STATUSES:
+            if status[0] == reservation.status:
+                reservation.status = status[1]
+
+    return render(request, "main/bundle.html", {'post': post, 'reports': reports, 'reservations': reservations})
 
 """
 Seller: create new bundle
