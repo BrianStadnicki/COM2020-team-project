@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm
-from .models import User, Bundle_posting, Seller
+from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
+from .models import User, Bundle_posting, Seller, Consumer, IssueReport
 
 
 def test_view(request):
@@ -43,10 +43,18 @@ Consumer: Show bundle, make new reservation or view own reservation details
 Seller: show/edit/delete bundle, change reservation status?
 """
 def bundle_view(request, id):
-
     post = get_object_or_404(Bundle_posting, pk=id)
+    reports = post.issuereport_set.all() # type: ignore
 
-    return render(request, "main/bundle.html", {'post': post})
+    for report in reports:
+        for status in report.STATUSES:
+            if status[0] == report.status:
+                report.status = status[1]
+        for type in report.TYPES:
+            if (type[0] == report.type):
+                report.type = type[1]
+
+    return render(request, "main/bundle.html", {'post': post, 'reports': reports})
 
 """
 Seller: create new bundle
@@ -58,7 +66,7 @@ def bundle_new_view(request):
             bundle = form.save(commit=False)
             bundle.seller_id = Seller.objects.get(user = request.user).id
             bundle.save()
-            return redirect("bundle_view_url", id = bundle.id)
+            return redirect("bundle_view_url", id=bundle.id)
     else:
         form = BundleNewForm()
     return render(request, "main/bundle_new.html", {"form": form, "edit": False})
@@ -111,21 +119,58 @@ Consumer: Show own reports
 Seller: Show own reports
 """
 def reports_view(request):
-    return render(request, "main/reports.html")
+    selected_status = request.GET.get("status", "")
+    selected_type = request.GET.get("type", "")
+
+    reports = IssueReport.objects.all()
+
+    if selected_status != "":
+        reports = reports.filter(status=selected_status)
+    if selected_type != "":
+        reports = reports.filter(type=selected_type)
+    
+    for report in reports:
+        for status in report.STATUSES:
+            if status[0] == report.status:
+                report.status = status[1]
+        for type in report.TYPES:
+            if (type[0] == report.type):
+                report.type = type[1]
+    
+    return render(request, "main/reports.html", {'reports': reports, "selected_status": selected_status, "selected_type": selected_type})
+
 
 """
 Consumer: Show/add/close own report
 Seller: Show/add/close own report
 """
 def report_view(request, id):
-    return render(request, "main/report.html")
+    report = get_object_or_404(IssueReport, id=id)
+    if request.method =="POST":
+        form = IssueReportViewForm(request.POST or None, instance = report)
+        if form.is_valid() :
+            report = form.save()
+            return redirect("report_view_url", id=report.id)
+    else:
+        form = IssueReportViewForm(None, initial=report.__dict__)
+    return render(request, "main/report_view.html", {"form" : form, "edit" : True, "bundle_id": report.posting.id})
 
 """
 Consumer: Create new report
 Seller: Create new report
 """
-def report_new_view(request):
-    return render(request, "main/report_new.html")
+def report_new_view(request, id):
+    if request.method == "POST":
+        form = IssueReportNewForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.posting_id = id
+            report.consumer_id = Consumer.objects.get(user = request.user).id
+            report.save()
+            return redirect("report_view_url", id=report.id)
+    else:
+        form = IssueReportNewForm()
+    return render(request, "main/report_new.html", {'form': form })
 
 """
 Consumer: View impact
