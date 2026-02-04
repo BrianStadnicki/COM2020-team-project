@@ -37,9 +37,9 @@
             <label class="input-group-text" for="status">Status</label>
             <select class="form-select" name="status">
                 <option selected>Choose...</option>
-                <option value="P" {% if form.initial.status == "P" %}selected{% endif %}>Pending</option>
-                <option value="A" {% if form.initial.status == "A" %}selected{% endif %}>Acknowledged</option>
-                <option value="S" {% if form.initial.status == "S" %}selected{% endif %}>Solved</option>
+                <option value="P" {% if form.initial.status == 'P' %}selected="selected"{% endif %}>Pending</option>
+                <option value="A" {% if form.initial.status == 'A' %}selected="selected"{% endif %}>Acknowledged</option>
+                <option value="S" {% if form.initial.status == 'S' %}selected="selected"{% endif %}>Solved</option>
             </select>
         </div>
 
