@@ -23,7 +23,7 @@ class TestBundleView(TestCase):
             user=self.user,
             location="Test Location",
             opening_time="09:00",
-            closing_time="17:00",
+            closing_time="18:00",
             telephone_number="0123456789",
             website_url="https://example.com"
         )
@@ -37,8 +37,8 @@ class TestBundleView(TestCase):
             quantity = 5,
             price = 2.00,
             creation_time = timezone.make_aware(datetime(2026, 1, 1, 12, 0)),
-            pickup_window_start=time(17, 00),
-            pickup_window_end=time(18, 00),
+            pickup_window_start=time(17, 0),
+            pickup_window_end=time(18, 0),
             allergen_celery = False,
             allergen_crustacean = False,
             allergen_dairy = False,
@@ -79,6 +79,22 @@ class TestBundleView(TestCase):
         self.assertContains(response, "Bread") #testing for correct contents_description
         self.assertContains(response, "5") #testing for correct quantity
         self.assertContains(response, "£2.00") #testing for correct price
+
+        # Content checks for allergens
+        self.assertNotContains(response, "Celery")
+        self.assertNotContains(response, "Crustacean")
+        self.assertNotContains(response, "Dairy")
+        self.assertNotContains(response, "Egg")
+        self.assertNotContains(response, "Fish")
+        self.assertContains(response, "Gluten")
+        self.assertNotContains(response, "Lupin")
+        self.assertNotContains(response, "Mollusc")
+        self.assertNotContains(response, "Mustanrd")
+        self.assertNotContains(response, "Nut")
+        self.assertNotContains(response, "Peanut")
+        self.assertNotContains(response, "Sesame")
+        self.assertNotContains(response, "Soya")
+        self.assertNotContains(response, "Sulphite")
 
 
 
