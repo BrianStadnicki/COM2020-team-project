@@ -31,4 +31,4 @@ class IssueReportNewForm(forms.ModelForm):
 class IssueReportViewForm(forms.ModelForm):
     class Meta:
         model = IssueReport
-        fields = ['description', 'seller_response', 'status']
+        fields = ['type', 'description', 'seller_response', 'status']

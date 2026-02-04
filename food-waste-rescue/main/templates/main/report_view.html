@@ -23,6 +23,17 @@
 
     <form method="post" action="">
         {% csrf_token %}
+
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="type">Type</label>
+            <select class="form-select" name="type">
+                <option>Choose...</option>
+                <option value="C" {% if form.initial.type == 'C' %}selected="selected"{% endif %}>Collection</option>
+                <option value="A" {% if form.initial.type == 'A' %}selected="selected"{% endif %}>Additional Information</option>
+                <option value="S" {% if form.initial.type == 'S' %}selected="selected"{% endif %}>Solved</option>
+            </select>
+        </div>
+
         <div class="input-group mb-3">
             <span class="input-group-text">Report</span>
             <textarea class="form-control" aria-label="Consumer Response" name="description" >{{form.initial.description}}</textarea>
