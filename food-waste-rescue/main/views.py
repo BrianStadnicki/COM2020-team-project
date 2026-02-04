@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm
-from .models import User, Bundle_posting, Seller
+from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReport
+from .models import User, Bundle_posting, Seller, Consumer
 
 
 def test_view(request):
@@ -83,8 +83,18 @@ def report_view(request, id):
 Consumer: Create new report
 Seller: Create new report
 """
-def report_new_view(request):
-    return render(request, "main/report_new.html")
+def report_new_view(request, id):
+    if request.method == "POST":
+        form = IssueReport(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.posting_id = id
+            report.consumer_id = Consumer.objects.get(user = request.user).id
+            report.save()
+            return redirect("report_view_url")
+    else:
+        form = IssueReport()
+    return render(request, "main/report_new.html", {'form': form })
 
 """
 Consumer: View impact
