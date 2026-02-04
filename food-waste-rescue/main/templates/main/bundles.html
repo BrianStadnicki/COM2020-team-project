@@ -36,7 +36,7 @@
                                 <label class="form-check-label" for="a{{ forloop.counter }}">{{allergen}}</label>
                             </div>
                         {% endfor %}
-                        <button type="submist" class="btn btn-outline-primary mt-3">Apply</button>
+                        <button type="submit" class="btn btn-outline-primary mt-3">Apply</button>
                     </form>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                     <div class="col-4">
                         <div class="card mb-4">
                             <div class="card-body">
-                                <h2>{{post.seller.display_name}}</h2>
+                                <h2>{{post.seller.user.username}}</h2>
                                 <div class="row">
                                     <div class="col">
                                         <p>{{post.name}}</p>
