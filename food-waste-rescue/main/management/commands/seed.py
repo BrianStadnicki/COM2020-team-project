@@ -41,6 +41,7 @@ class Command(BaseCommand):
 def clear_data():
     """Deletes all the table data"""
     logger.info("Delete all model data.")
+    fake.unique.clear()
     Consumer.objects.all().delete()
     Bundle_posting.objects.all().delete()
     Seller.objects.all().delete()
@@ -214,7 +215,7 @@ def create_reservation(status):
         posting = random.choice(postings),
         consumer = random.choice(consumers),
         time_stamp = time_stamp,
-        claim_code = random.randint(0,99999),
+        claim_code = fake.unique.random_int(min=0, max=99999),
         status = status
     )
     
