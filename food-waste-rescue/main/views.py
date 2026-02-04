@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import SellerExtraForm, GenericSignupForm
-from .models import User, Bundle_posting
+from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm
+from .models import User, Bundle_posting, Seller
+
 
 def test_view(request):
     return render(request, "main/test.html")
@@ -27,7 +28,16 @@ def bundle_view(request, id):
 Seller: create new bundle
 """
 def bundle_new_view(request):
-    return render(request, "main/bundle_new.html")
+    if request.method == "POST":
+        form = BundleNewForm(request.POST)
+        if form.is_valid():
+            bundle = form.save(commit=False)
+            bundle.seller_id = Seller.objects.get(user = request.user).id
+            bundle.save()
+            return redirect("bundle_view_url")
+    else:
+        form = BundleNewForm()
+    return render(request, "main/bundle_new.html", {"form": form})
 
 """
 Seller: See analytics, actually create
