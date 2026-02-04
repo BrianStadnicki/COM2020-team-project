@@ -128,7 +128,7 @@ def report_view(request, id):
             return redirect("report_view_url", id=report.id)
     else:
         form = IssueReportViewForm(None, initial=report.__dict__)
-    return render(request, "main/report_view.html", {"form" : form, "edit" : True})
+    return render(request, "main/report_view.html", {"form" : form, "edit" : True, "bundle_id": report.posting.id})
 
 """
 Consumer: Create new report
