@@ -106,7 +106,7 @@ def report_view(request, id):
         form = IssueReportViewForm(request.POST or None, instance = report)
         if form.is_valid() :
             report = form.save()
-            return redirect("reports_view_url", {"id" : report.id})
+            return redirect("report_view_url", id=report.id)
     else:
         form = IssueReportViewForm(None, initial=report.__dict__)
     return render(request, "main/report_view.html", {"form" : form, "edit" : True})
@@ -123,7 +123,7 @@ def report_new_view(request, id):
             report.posting_id = id
             report.consumer_id = Consumer.objects.get(user = request.user).id
             report.save()
-            return redirect("report_view_url")
+            return redirect("report_view_url", id=report.id)
     else:
         form = IssueReportNewForm()
     return render(request, "main/report_new.html", {'form': form })
