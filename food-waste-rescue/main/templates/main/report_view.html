@@ -30,7 +30,7 @@
                 <option>Choose...</option>
                 <option value="C" {% if form.initial.type == 'C' %}selected="selected"{% endif %}>Collection</option>
                 <option value="A" {% if form.initial.type == 'A' %}selected="selected"{% endif %}>Additional Information</option>
-                <option value="S" {% if form.initial.type == 'S' %}selected="selected"{% endif %}>Solved</option>
+                <option value="S" {% if form.initial.type == 'S' %}selected="selected"{% endif %}>Seller</option>
             </select>
         </div>
 
@@ -50,7 +50,7 @@
                 <option selected>Choose...</option>
                 <option value="P" {% if form.initial.status == 'P' %}selected="selected"{% endif %}>Pending</option>
                 <option value="A" {% if form.initial.status == 'A' %}selected="selected"{% endif %}>Acknowledged</option>
-                <option value="S" {% if form.initial.status == 'S' %}selected="selected"{% endif %}>Solved</option>
+                <option value="R" {% if form.initial.status == 'R' %}selected="selected"{% endif %}>Resolved</option>
             </select>
         </div>
 
