@@ -53,3 +53,26 @@ class TestBundleView(TestCase):
             allergen_sulphite = models.BooleanField(default=False)
         )
 
+    def test_bundle_view_renders_correct_template(self):
+        self.client.login(username="seller1", password="pass123")
+        url = reverse("bundle_view_url", args=[self.bundle.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/bundle.html")
+
+        # Checking that the Bundle_posting is associated with the correct seller
+
+        # Checking database relationship directly:
+        self.assertEqual(self.bundle.seller, self.seller)
+
+        #Check the view context contains the correct seller:
+        response = self.client.get(url)
+        self.assertEqual(response.context["post"].seller, self.seller)
+
+        
+
+        # Content checks
+
+        self.assertContains(response, "Test Bundle")
+        
