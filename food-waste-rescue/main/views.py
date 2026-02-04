@@ -94,7 +94,22 @@ Consumer: Show own reports
 Seller: Show own reports
 """
 def reports_view(request):
-    return render(request, "main/reports.html")
+    selected_status = request.GET.get("status", "")
+    if selected_status != "":
+        reports = IssueReport.objects.filter(status=selected_status)
+    else:
+        reports = IssueReport.objects.all()
+    
+    for report in reports:
+        for status in report.STATUSES:
+            if status[0] == report.status:
+                report.status = status[1]
+        for type in report.TYPES:
+            if (type[0] == report.type):
+                report.type = type[1]
+    
+    return render(request, "main/reports.html", {'reports': reports, "selected_status": selected_status})
+
 
 """
 Consumer: Show/add/close own report
