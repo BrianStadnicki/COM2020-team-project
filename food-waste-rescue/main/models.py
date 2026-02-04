@@ -54,7 +54,7 @@ class Reservation(models.Model):
     time_stamp = models.DateTimeField(default=timezone.now,blank=True)
     claim_code = models.IntegerField(default=0)
     STATUSES = (
-        ("C", "collected"),
+        ("C", "Collected"),
         ("N", "No Show" ),
         ("R", "Reserved"),
         ("E", "Expired")
@@ -65,7 +65,7 @@ class IssueReport(models.Model):
     posting = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
     consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
     TYPES = (
-        ("C","collection"),
+        ("C","Collection"),
         ("A","Additional information"),
         ("S","Seller")
     )
