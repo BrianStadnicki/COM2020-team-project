@@ -131,8 +131,6 @@ def create_bundle_posting(seller):
     
     categories =["Meals", "Bread & Pastries", "Groceries", "Flowers & Plants", "Pet Food", "Collect Now", "Collect Today", "Vegetarian", "Vegan"]
 
-    duration_minutes = random.choice([15, 30, 45, 60, 75, 90, 105, 120])
-
     # Creation time within last 6 weeks
     creation = fake.date_time_between(
         start_date="-6w",
@@ -205,6 +203,7 @@ def create_reservation(status):
     consumers = list(Consumer.objects.all())
     postings = list(Bundle_posting.objects.all())
     
+    # Ensure data is within the last 6 weeks
     time_stamp=fake.date_time_between(
         start_date="-6w",
         end_date="now",
@@ -229,6 +228,7 @@ def create_issue_report(type):
     consumers = list(Consumer.objects.all())
     postings = list(Bundle_posting.objects.all())
     
+    # Ensure issue report creation time is within the last 6 weeks
     creation_time=fake.date_time_between(
             start_date="-6w",
             end_date="now",
@@ -255,30 +255,38 @@ def run_seed(self, mode, seed):
     if mode == MODE_CLEAR:
         return
     
+    # Generate demo user and demo seller (fixed)
     demo_user = create_demo_user()
     print("------------------------------------")
     demo_seller = create_demo_seller()
 
     sellers = [demo_seller]
     
+    # Generate 100 consumers
     for _ in range(100):
         create_consumer_profile()
     
+    # Generate 25 sellers
     for _ in range(25):
         sellers.append(create_seller_profile())
     
+    # For each seller, there will be 25 bundle postings
     for seller in sellers:
         for _ in range(25):
             create_bundle_posting(seller)
 
+    # 80 no-shows
     for _ in range(80):
         create_reservation("N")
         
+    # 50 expires
     for _ in range(50):
         create_reservation("E")
         
+    # 270 reservations with random status
     for _ in range(270):
         create_reservation(random.choice(["C", "R", "N", "E"]))        
 
+    # 150 issues with random type
     for _ in range(150):
         create_issue_report(random.choice(["C","A","S"]))
