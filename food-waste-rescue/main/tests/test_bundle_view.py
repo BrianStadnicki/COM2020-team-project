@@ -15,7 +15,6 @@ class TestBundleView(TestCase):
             email="seller@example.com",
             password="pass123",
             user_type="seller",
-            display_name="Test Seller"
         )
 
         # Create seller profile
@@ -100,14 +99,14 @@ class TestBundleView(TestCase):
 
         self.assertContains(response, "seller1")
         self.assertContains(response, "Test Location")
-        self.assertContains(response, "9:00")
-        self.assertContains(response, "18:00")
+        self.assertContains(response, "9 a.m.")
+        self.assertContains(response, "6 p.m.")
         self.assertContains(response, "0123456789")
         self.assertContains(response, "https://example.com")
 
         # Content checks for pickup window
-        self.assertContains(response, "17:00")
-        self.assertContains(response, "18:00")
-        
+        self.assertContains(response, "5 p.m.")
+        self.assertContains(response, "6 p.m.")
+
 
         
