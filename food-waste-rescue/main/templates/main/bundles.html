@@ -15,6 +15,65 @@
             <div class="card">
                 <div class="card-body">
                     <h2>Filters</h2>
+                    <form>
+                        <p>Excluded Allergens</p>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a1">
+                            <label class="form-check-label" for="a1">Celery</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a2">
+                            <label class="form-check-label" for="a1">Crustacean</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a3">
+                            <label class="form-check-label" for="a1">Dairy</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a4">
+                            <label class="form-check-label" for="a1">Egg</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a5">
+                            <label class="form-check-label" for="a1">Fish</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a6">
+                            <label class="form-check-label" for="a1">Gluten</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a7">
+                            <label class="form-check-label" for="a1">Lupin</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a8">
+                            <label class="form-check-label" for="a1">Mollusc</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a9">
+                            <label class="form-check-label" for="a1">Mustard</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a10">
+                            <label class="form-check-label" for="a1">Nut</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a11">
+                            <label class="form-check-label" for="a1">Peanut</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a12">
+                            <label class="form-check-label" for="a1">Sesame</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a13">
+                            <label class="form-check-label" for="a1">Soya</label>
+                        </div>
+                        <div>
+                            <input class="form-check-input" type="checkbox" value="" id="a14">
+                            <label class="form-check-label" for="a1">Sulphite</label>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -27,7 +86,7 @@
                                 <h2>{{post.seller.display_name}}</h2>
                                 <div class="row">
                                     <div class="col">
-                                        <p>Bundle {{post.id}}</p>
+                                        <p>{{post.name}}</p>
                                         <p>{{post.category}}</p>
                                         <p>£{{post.price}}</p>
                                     </div>
