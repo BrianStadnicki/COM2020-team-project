@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db.models import Q
 from .forms import SellerExtraForm, GenericSignupForm
 from .models import User, Bundle_posting
 
@@ -12,9 +13,29 @@ Seller: Show own bundles, pagination
 """
 def bundles_view(request):
 
+    ALLERGENS = [
+    "Celery", "Crustacean", "Dairy", "Egg", "Fish", "Gluten", "Lupin",
+    "Mollusc", "Mustard", "Nut", "Peanut", "Sesame", "Soya", "Sulphite"
+    ]
+
     posts = Bundle_posting.objects.all()
 
-    return render(request, "main/bundles.html", {'posts': posts})
+    selected_category = request.GET.get("category", "")
+    selected_allergens = request.GET.getlist("excluded-allergens")
+
+    if selected_category and selected_category != "Select category":
+        posts = posts.filter(category=selected_category)
+    if selected_allergens:
+        q=Q()
+        for allergen in selected_allergens:
+            field = f"allergen_{allergen.lower()}"
+            q |= Q(**{field: True})
+        posts = posts.exclude(q)
+
+    categories = Bundle_posting.objects.values_list('category', flat=True).distinct()
+
+    return render(request, "main/bundles.html", {'posts': posts, 'categories': categories, 'allergens': ALLERGENS,
+                                                  "selected_category": selected_category, "selected_allergens":selected_allergens})
 
 """
 Consumer: Show bundle, make new reservation or view own reservation details
