@@ -58,7 +58,7 @@ def bundle_new_view(request):
             bundle = form.save(commit=False)
             bundle.seller_id = Seller.objects.get(user = request.user).id
             bundle.save()
-            return redirect("bundle_view_url")
+            return redirect("bundle_view_url", id=bundle.id)
     else:
         form = BundleNewForm()
     return render(request, "main/bundle_new.html", {"form": form})
