@@ -95,10 +95,14 @@ Seller: Show own reports
 """
 def reports_view(request):
     selected_status = request.GET.get("status", "")
+    selected_type = request.GET.get("type", "")
+
+    reports = IssueReport.objects.all()
+
     if selected_status != "":
-        reports = IssueReport.objects.filter(status=selected_status)
-    else:
-        reports = IssueReport.objects.all()
+        reports = reports.filter(status=selected_status)
+    if selected_type != "":
+        reports = reports.filter(type=selected_type)
     
     for report in reports:
         for status in report.STATUSES:
@@ -108,7 +112,7 @@ def reports_view(request):
             if (type[0] == report.type):
                 report.type = type[1]
     
-    return render(request, "main/reports.html", {'reports': reports, "selected_status": selected_status})
+    return render(request, "main/reports.html", {'reports': reports, "selected_status": selected_status, "selected_type": selected_type})
 
 
 """

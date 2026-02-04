@@ -19,10 +19,19 @@
                         <p>Status</p>
                         <select class="form-select" name="status">
                             <option value="" selected>Choose...</option>
-                            <option value="P" {% if form.initial.status == 'P' %}selected="selected"{% endif %}>Pending</option>
-                            <option value="A" {% if form.initial.status == 'A' %}selected="selected"{% endif %}>Acknowledged</option>
-                            <option value="S" {% if form.initial.status == 'S' %}selected="selected"{% endif %}>Solved</option>
+                            <option value="P" {% if selected_status == 'P' %}selected="selected"{% endif %}>Pending</option>
+                            <option value="A" {% if selected_status == 'A' %}selected="selected"{% endif %}>Acknowledged</option>
+                            <option value="S" {% if selected_status == 'S' %}selected="selected"{% endif %}>Solved</option>
                         </select>
+
+                        <p>Type</p>
+                        <select class="form-select" name="type">
+                            <option>Choose...</option>
+                            <option value="C" {% if selected_type == 'C' %}selected="selected"{% endif %}>Collection</option>
+                            <option value="A" {% if selected_type == 'A' %}selected="selected"{% endif %}>Additional Information</option>
+                            <option value="S" {% if selected_type == 'S' %}selected="selected"{% endif %}>Solved</option>
+                        </select>
+
                         <button type="submit" class="btn btn-outline-primary mt-3">Apply</button>
                     </form>
                 </div>
