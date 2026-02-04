@@ -140,7 +140,7 @@ def create_bundle_posting(seller):
         tzinfo=timezone.now().tzinfo
     )
 
-    # select a random pickup window from the list
+    # Select a random pickup window from the list
     window_start, window_end = random.choice(pickup_windows)
 
     open_minutes = seller.opening_time.hour * 60 + seller.opening_time.minute

@@ -105,3 +105,15 @@ Delete db.sqlite3
 ```sh
 python manage.py testing_data
 ```
+
+### Add demo data
+
+```sh
+python manage.py seed --mode=refresh --seed=123
+```
+
+Available modes:
+
+- refresh
+
+- clear
