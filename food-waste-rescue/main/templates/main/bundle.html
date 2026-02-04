@@ -45,7 +45,10 @@
                     </div>    
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-primary mt-3">Reserve</button>
+            <div class="d-flex">
+                <button type="button" class="btn btn-outline-primary mt-3 me-auto">Reserve</button>
+                <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
+            </div>
         </div>
         <div class="col-3">
             <div class="card">
