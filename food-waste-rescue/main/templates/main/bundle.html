@@ -46,7 +46,11 @@
                 </div>
             </div>
             <div class="d-flex">
-                <button type="button" class="btn btn-outline-primary mt-3 me-auto">Reserve</button>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                </form>
+
                 <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
             </div>
         </div>

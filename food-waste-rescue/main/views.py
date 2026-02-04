@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
 from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
-from .models import User, Bundle_posting, Seller, Consumer, IssueReport
+from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 
 
 def test_view(request):
@@ -44,6 +44,15 @@ Seller: show/edit/delete bundle, change reservation status?
 """
 def bundle_view(request, id):
     post = get_object_or_404(Bundle_posting, pk=id)
+    
+    if request.method == "POST":
+        reservation = Reservation(
+            posting = post,
+            consumer = Consumer.objects.get(user = request.user),
+            claim_code = 80085
+        )
+        reservation.save()
+
     reports = post.issuereport_set.all() # type: ignore
 
     for report in reports:
