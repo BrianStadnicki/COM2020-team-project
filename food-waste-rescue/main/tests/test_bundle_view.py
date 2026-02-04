@@ -96,6 +96,18 @@ class TestBundleView(TestCase):
         self.assertNotContains(response, "Soya")
         self.assertNotContains(response, "Sulphite")
 
+        # Content checks for Seller info
 
+        self.assertContains(response, "seller1")
+        self.assertContains(response, "Test Location")
+        self.assertContains(response, "9:00")
+        self.assertContains(response, "18:00")
+        self.assertContains(response, "0123456789")
+        self.assertContains(response, "https://example.com")
+
+        # Content checks for pickup window
+        self.assertContains(response, "17:00")
+        self.assertContains(response, "18:00")
+        
 
         
