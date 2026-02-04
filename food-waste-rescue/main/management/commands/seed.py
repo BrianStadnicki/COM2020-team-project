@@ -129,7 +129,7 @@ def create_bundle_posting(seller):
     ]
         
     
-    categories =["Meals", "Bread & Pastries", "Groceries", "Flowers & Plants", "Pet Food", "Collect Now", "Collect Today", "Collect Tomorrow", "Vegetarian", "Vegan"]
+    categories =["Meals", "Bread & Pastries", "Groceries", "Flowers & Plants", "Pet Food", "Collect Now", "Collect Today", "Vegetarian", "Vegan"]
 
     duration_minutes = random.choice([15, 30, 45, 60, 75, 90, 105, 120])
 
