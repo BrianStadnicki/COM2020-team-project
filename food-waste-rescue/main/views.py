@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
+from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 
 
@@ -46,12 +46,18 @@ def bundle_view(request, id):
     post = get_object_or_404(Bundle_posting, pk=id)
     
     if request.method == "POST":
-        reservation = Reservation(
-            posting = post,
-            consumer = Consumer.objects.get(user = request.user),
-            claim_code = 80085
-        )
-        reservation.save()
+        form = ReservationForm(request.POST)
+        if form.data["status"] == "create":
+            reservation = Reservation(
+                posting = post,
+                consumer = Consumer.objects.get(user = request.user),
+                claim_code = 1000
+            )
+            reservation.save()
+        elif form.data["status"] == "collected":
+            reservation = Reservation.objects.get(id=int(form.data["id"]))
+            reservation.status = "C"
+            reservation.save()
 
     reports = post.issuereport_set.all() # type: ignore
 

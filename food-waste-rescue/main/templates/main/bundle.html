@@ -48,6 +48,7 @@
             <div class="d-flex">
                 <form method="post" action="">
                     {% csrf_token %}
+                    <input type="hidden" value="create" name="status">
                     <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
                 </form>
 
@@ -79,7 +80,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">Collected?</th>
                                 <th scope="col">Consumer</th>
                                 <th scope="col">Timestamp</th>
                                 <th scope="col">Claim Code</th>
@@ -89,7 +90,16 @@
                         <tbody>
                             {% for reservation in reservations %}
                                 <tr>
-                                    <th scope="row">{{ reservation.id }}</th>
+                                    <th scope="row">
+                                        <form method="post" action="">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="collected" name="status">
+                                            <input type="hidden" value="{{ reservation.id }}" name="id">
+                                            {% if reservation.status != "Collected" %}
+                                                <input type="submit" value="Collected?" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                                            {% endif %}
+                                        </form>
+                                    </th>
                                     <th>{{ reservation.consumer.user.username }}</th>
                                     <th>{{ reservation.time_stamp }}</th>
                                     <th>{{ reservation.claim_code }}</th>
