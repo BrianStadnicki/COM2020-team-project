@@ -23,12 +23,12 @@
 
     <form method="post" action="">
         {% csrf_token %}
-        <div class="input-group">
+        <div class="input-group mb-3">
             <span class="input-group-text">Report</span>
             <textarea class="form-control" aria-label="Consumer Response" name="description" >{{form.initial.description}}</textarea>
         </div>
 
-        <div class="input-group">
+        <div class="input-group mb-3">
             <span class="input-group-text">Response</span>
             <textarea class="form-control" aria-label="Seller Response" name="seller_response" >{{form.initial.seller_response}}</textarea>
         </div>
