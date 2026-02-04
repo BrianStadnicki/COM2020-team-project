@@ -43,10 +43,18 @@ Consumer: Show bundle, make new reservation or view own reservation details
 Seller: show/edit/delete bundle, change reservation status?
 """
 def bundle_view(request, id):
-
     post = get_object_or_404(Bundle_posting, pk=id)
+    reports = post.issuereport_set.all() # type: ignore
 
-    return render(request, "main/bundle.html", {'post': post})
+    for report in reports:
+        for status in report.STATUSES:
+            if status[0] == report.status:
+                report.status = status[1]
+        for type in report.TYPES:
+            if (type[0] == report.type):
+                report.type = type[1]
+
+    return render(request, "main/bundle.html", {'post': post, 'reports': reports})
 
 """
 Seller: create new bundle
