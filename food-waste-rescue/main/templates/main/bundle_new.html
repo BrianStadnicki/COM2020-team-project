@@ -13,10 +13,15 @@
     {% else %}
     <p>Please login to see this page.</p>
     {% endif %}
+
 {% endif %}
 <nav class="navbar">
     <div class="container-fluid">
-        <h1 class="navbar-brand">Create Bundle</h1>
+        {% if edit %}
+            <h1 class="navbar-brand">Edit Bundle</h1>
+        {% else %}
+            <h1 class="navbar-brand">Create Bundle</h1>
+        {% endif %}
     </div>
 </nav>
 <div class="container-fluid">
@@ -26,104 +31,105 @@
 
         <div class="input-group mb-3">
             <span class="input-group-text" for="name">Bundle Name</span>
-            <input type="text" class="form-control" placeholder="Bundle name" aria-label="bundle-name" aria-describedby="bundle-name" name="name">
-            </div>
+            <input type="text" class="form-control" value="{{ form.initial.name }}" aria-label="bundle-name" aria-describedby="bundle-name" name="name">
+        </div>
             
         <div class="input-group mb-3">
             <label class="input-group-text" for="category">Categories</label>
-            <select class="form-select" name="category"
+            <select class="form-select" name="category" value="{{ form.initial.category }}">
                 <option>Select Category</option>
-                <option>Meat Bag</option>
-                <option>Medical Bag</option>
-                <option>Exotic Bag</option>
+                <option {% if form.initial.category == 'Meat Bag' %}selected="selected"{% endif %}>Meat Bag</option>
+                <option {% if form.initial.category == 'Medical Bag' %}selected="selected"{% endif %}>Medical Bag</option>
+                <option {% if form.initial.category == 'Exotic Bag' %}selected="selected"{% endif %}>Exotic Bag</option>
             </select>
             </div>
 
         Allergens
         <div class="d-flex flex-wrap">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_celery">
+                <input class="form-check-input" type="checkbox"name="allergen_celery" {% if form.initial.allergen_celery == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_celery">celery</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_gluten">
+                <input class="form-check-input" type="checkbox"name="allergen_gluten" {% if form.initial.allergen_gluten == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_gluten">gluten</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_crustacean">
+                <input class="form-check-input" type="checkbox"name="allergen_crustacean" {% if form.initial.allergen_crustacean == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_crustacean">crustaceans</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_egg">
+                <input class="form-check-input" type="checkbox"name="allergen_egg" {% if form.initial.allergen_egg == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_egg">eggs</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_fish">
+                <input class="form-check-input" type="checkbox"name="allergen_fish" {% if form.initial.allergen_fish == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_fish">fish</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_luqin">
-                <label class="form-check-label" for="allergen_luqin">lupin</label>
+                <input class="form-check-input" type="checkbox" name="allergen_lupin" {% if form.initial.allergen_lupin == True %}checked{% endif %}>
+                <label class="form-check-label" for="allergen_lupin">lupin</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_dairy">
+                <input class="form-check-input" type="checkbox"name="allergen_dairy" {% if form.initial.allergen_dairy == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_dairy">dairy</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_mollusc">
+                <input class="form-check-input" type="checkbox"name="allergen_mollusc" {% if form.initial.allergen_mollusc == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_mollusc">molluscs</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_mustard">
+                <input class="form-check-input" type="checkbox"name="allergen_mustard" {% if form.initial.allergen_mustard == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_mustard">mustard</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_nut">
+                <input class="form-check-input" type="checkbox"name="allergen_nut" {% if form.initial.allergen_nut == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_nut">nuts</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_peanut">
+                <input class="form-check-input" type="checkbox"name="allergen_peanut" {% if form.initial.allergen_peanut == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_peanut">peanuts</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_sesame">
+                <input class="form-check-input" type="checkbox"name="allergen_sesame" {% if form.initial.allergen_sesame == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_sesame">sesame seeds</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_soya">
+                <input class="form-check-input" type="checkbox"name="allergen_soya" {% if form.initial.allergen_soya == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_soya">soya</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_sulphite">
+                <input class="form-check-input" type="checkbox"name="allergen_sulphite" {% if form.initial.allergen_sulphite == True %}checked{% endif %}>
                 <label class="form-check-label" for="allergen_sulphite">sulphur dioxide/sulphites</label>
             </div>
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text">£</span>
-            <input type="number" value="0.00" class="form-control" aria-label="Pound amount (with dot and two decimal places)" name="price">
+            <input type="number" value="{{ form.initial.price }}" class="form-control" aria-label="Pound amount (with dot and two decimal places)" name="price" step="0.01">
           </div>
 
           <div class="input-group mb-3">
             <span class="input-group-text" name="bundle-quantity">Quantity</span>
-            <input type="number" class="form-control" value="1" aria-label="bundle-quantity" aria-describedby="bundle-label" name="quantity">
+            <input type="number" class="form-control" value="{{ form.initial.quantity }}" aria-label="bundle-quantity" aria-describedby="bundle-label" name="quantity">
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text" name="bundle-quantity">Pick-up Window</span>
-            <input
-            type="time"
-            name="pickup_window_start"
-            required/>
-            <input
-            type="time"
-            name="pickup_window_end"
-            required/>
-            </div>
+                <input
+                type="time"
+                name="pickup_window_start" value="{{ form.initial.pickup_window_start }}"
+                required/>
+
+                <input
+                type="time"
+                name="pickup_window_end" value="{{ form.initial.pickup_window_end }}"
+                required/>
+        </div>
 
         <div class="input-group">
             <span class="input-group-text">Description</span>
-            <textarea class="form-control" aria-label="description" name="contents_description"></textarea>
+            <textarea class="form-control" aria-label="description" name="contents_description">{{ form.initial.contents_description }}</textarea>
         </div>
 
         <div class="d-flex justify-content-end">

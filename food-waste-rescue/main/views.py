@@ -34,12 +34,29 @@ def bundle_new_view(request):
             bundle = form.save(commit=False)
             bundle.seller_id = Seller.objects.get(user = request.user).id
             bundle.save()
-            return redirect("bundle_view_url")
+            return redirect("bundle_view_url", {"id": bundle.id})
     else:
         form = BundleNewForm()
-    return render(request, "main/bundle_new.html", {"form": form})
+    return render(request, "main/bundle_new.html", {"form": form, "edit": False})
 
 """
+Seller: edit bundle
+"""
+def bundle_edit_view(request, id):
+    bundle = get_object_or_404(Bundle_posting, id=id)
+    if request.method == "POST":
+        form = BundleNewForm(request.POST or None, instance=bundle)
+        if form.is_valid():
+            bundle = form.save()
+            return redirect("bundle_view_url", {"id": bundle.id})
+    else:
+        form = BundleNewForm(None, initial=bundle.__dict__)
+        form.initial["pickup_window_start"] = form.initial["pickup_window_start"].__format__("%H:%M")
+        form.initial["pickup_window_end"] = form.initial["pickup_window_end"].__format__("%H:%M")
+
+    return render(request, "main/bundle_new.html", {"form": form, "edit": True})
+
+"""_
 Seller: See analytics, actually create
 """
 def bundle_confirm_view(request):

@@ -8,6 +8,7 @@ urlpatterns = [
     path("test/", views.test_view, name="test_view_url"),
     path("bundles", views.bundles_view, name="bundles_view_url"),
     path("bundle/<int:id>", views.bundle_view, name="bundle_view_url"),
+    path("bundle/<int:id>/edit", views.bundle_edit_view, name="bundle_edit_view_url"),
     path("bundle/new", views.bundle_new_view, name="bundle_new_view_url"),
     path("bundle/confirm", views.bundle_confirm_view, name="bundle_confirm_view_url"),
     path("reservations/", views.reservations_view, name="reservations_view_url"),
