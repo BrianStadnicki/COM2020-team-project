@@ -34,7 +34,7 @@ def bundle_new_view(request):
             bundle = form.save(commit=False)
             bundle.seller_id = Seller.objects.get(user = request.user).id
             bundle.save()
-            return redirect("bundle_view_url", {"id": bundle.id})
+            return redirect("bundle_view_url", id = bundle.id)
     else:
         form = BundleNewForm()
     return render(request, "main/bundle_new.html", {"form": form, "edit": False})
@@ -48,7 +48,7 @@ def bundle_edit_view(request, id):
         form = BundleNewForm(request.POST or None, instance=bundle)
         if form.is_valid():
             bundle = form.save()
-            return redirect("bundle_view_url", {"id": bundle.id})
+            return redirect("bundle_view_url", id = bundle.id)
     else:
         form = BundleNewForm(None, initial=bundle.__dict__)
         form.initial["pickup_window_start"] = form.initial["pickup_window_start"].__format__("%H:%M")
