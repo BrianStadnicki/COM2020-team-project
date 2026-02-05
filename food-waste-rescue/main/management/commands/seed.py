@@ -2,6 +2,7 @@ from main.models import User, Consumer, Seller, Bundle_posting, Reservation, Iss
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from faker import Faker
+from faker.providers import BaseProvider
 from datetime import time
 from decimal import Decimal
 import random, logging
@@ -19,6 +20,158 @@ MODE_REFRESH = 'refresh'
 
 """ Clear all data only """
 MODE_CLEAR = 'clear'
+
+
+class BundleProvider(BaseProvider):
+    NAMES = {
+        "Meals": [
+            "Meat Bag", "Surprise Meat Bag", "Seafood Selection", "Daily Special", "Healthy Meal", "Standard Meal",
+            "Chef's Classic", "Food Leftovers", "Magic Meal Bag"
+        ],
+        "Bread & Pastries": [
+            "Bakery Bag","Bakery Surprise Bag", "Pastry Bag", "Fresh Bakery Bag",
+            "Bakery Leftovers", "Pastry Surprise Bag", "Magic Bakery Bag", "Magic Pastry Bag"
+        ],
+        "Groceries": [
+            "Grocery Bag", "Grocery Surprise Bag", "Grocery Leftovers",
+            "Mixed Grocery Bag", "Fresh Grocery Bag", "Magic Grocery Bag"
+        ],
+        "Flowers & Plants": [
+            "Flower Bag", "Flower Surprise Bag", "Plant Bag", "Plant Surprise Bag"
+            "Bouquet", "Magic Flower Bag", "Magic Plant Bag", "Garden Warfare Bag"
+        ],
+        "Pet Food": [
+            "Pet Food Bag", "Pet Food Surprise Bag", "Magic Pet Food Bag"
+        ],
+        "Vegetarian": [
+            "Vegetarian Bag", "Veggie Surprise Bag", "Magic Vegetarian Bag"
+        ],
+        "Vegan": [
+            "Vegan Surprise Bag", "Plant-Based Rescue Box", "Magic Vegan Bag",
+        ],
+        "Collect Now": [
+            "Last Minute Bag", "Last Minute Surprise Bag", "Magic Last Minute Bag"
+        ],
+        "Collect Today": [
+            "Today’s Surprise Bag", "Today's Special Bag", "Today's Magic Bag"
+        ]
+    }
+
+    CONTENTS = {
+        "Meals": [
+            "Breakfast to go.",
+            "Brunch to go.",
+            "Lunch to go.",
+            "Dinner to go.",
+            "Supper to go.",
+            "Buffet leftovers.",
+            "Italian cuisine.",
+            "Mexican cuisine.",
+            "Indian cuisine.",
+            "American BBQ.",
+            "Korean BBQ.",
+            "Stir fry.",
+            "Roasted food.",
+            "Fried food.",
+            "Grilled food.",
+            "Steamed food.",
+            "Salad.",
+            "Pasta.",
+            "Rice dish.",
+            "Burgers.",
+            "Noodles.",
+            "Soup.",
+            "Curry.",
+            "Fast food.",
+            "Cooked food with fresh ingredients."
+        ],
+
+        "Bread & Pastries": [
+            "Fresh bread.",
+            "Assorted pastries.",
+            "Croissants and rolls.",
+            "Cakes and sweet bakes.",
+            "Mixed baked goods.",
+            "Sweet treats.",
+            "Savoury pastries.",
+            "Bread rolls.",
+            "Artisan bread.",
+            "Sourdough bread.",
+            "Doughnuts.",
+            "Muffins.",
+            "Cookies.",
+            "Baked goods from today."
+        ],
+
+        "Groceries": [
+            "Mixed groceries.",
+            "Fresh produce.",
+            "Fruit and vegetables.",
+            "Chilled groceries.",
+            "Pantry items.",
+            "Everyday essentials.",
+            "Food close to best-before.",
+            "A mix of fresh and packaged food.",
+            "Seasonal groceries.",
+            "Household food items."
+        ],
+
+        "Flowers & Plants": [
+            "Fresh flowers.",
+            "Seasonal blooms.",
+            "Mixed bouquets.",
+            "Potted plants.",
+            "Cut flowers.",
+            "Indoor plants.",
+            "Outdoor plants.",
+            "Assorted floral items."
+        ],
+
+        "Pet Food": [
+            "Dry pet food.",
+            "Wet pet food.",
+            "Pet treats.",
+            "Mixed pet supplies.",
+            "Dog food.",
+            "Cat food.",
+            "Fish food.",
+            "Pet food close to best-before.",
+            "Pet snacks."
+        ],
+
+        "Vegetarian": [
+            "Vegetarian meals.",
+            "Meat-free dishes.",
+            "Vegetarian groceries.",
+            "Plant-based meals.",
+            "Vegetarian cooked food.",
+            "Vegetarian ready-to-eat food.",
+            "Vegetarian selection of items."
+        ],
+
+        "Vegan": [
+            "Vegan meals.",
+            "Plant-based dishes.",
+            "Vegan groceries.",
+            "Vegan selection of items.",
+            "Dairy-free food.",
+            "Plant-based groceries."
+        ],
+
+        "Collect Now": [
+            "Items available for immediate collection.",
+            "Last-minute food rescue.",
+            "Urgent collection items.",
+            "Food hot and ready-to-go."
+        ],
+
+        "Collect Today": [
+            "Items available for collection today.",
+            "Food to be collected today.",
+            "Same-day collection items.",
+            "Today's surplus food."
+        ]
+    }
 
 class Command(BaseCommand):
     help = "Seed database with synthetic data"
@@ -132,6 +285,8 @@ def create_bundle_posting(seller):
     
     categories =["Meals", "Bread & Pastries", "Groceries", "Flowers & Plants", "Pet Food", "Collect Now", "Collect Today", "Vegetarian", "Vegan"]
 
+    selected_category = random.choice(categories)
+
     # Creation time within last 6 weeks
     creation = fake.date_time_between(
         start_date="-6w",
@@ -172,9 +327,9 @@ def create_bundle_posting(seller):
 
     bundle_posting = Bundle_posting.objects.create(
         seller=seller,
-        category=random.choice(categories),
-        name=fake.catch_phrase()[:50],
-        contents_description=fake.text(max_nb_chars=100),
+        category=selected_category,
+        name=random.choice(BundleProvider.NAMES[selected_category])[:50],
+        contents_description=random.choice(BundleProvider.CONTENTS[selected_category])[:100],
         quantity=random.randint(1, 5),
         price=Decimal(fake.pydecimal(left_digits=2, right_digits=2, positive=True)),
         creation_time=creation,
