@@ -13,7 +13,7 @@
     <!-- Title + Description -->
     <h2>{{post.name|default:"Untitled Bundle"}}</h2>
     <p>{{post.contents_description|default:"No description provided."}}
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-9">
             <div class="card">
                 <div class="card-body">
@@ -45,7 +45,10 @@
                     </div>    
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-primary mt-3">Reserve</button>
+            <div class="d-flex">
+                <button type="button" class="btn btn-outline-primary mt-3 me-auto">Reserve</button>
+                <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
+            </div>
         </div>
         <div class="col-3">
             <div class="card">
@@ -57,6 +60,40 @@
                     <p>{{post.seller.telephone_number}}</p>
                     <p>{{post.seller.user.email}}</p>
                     <p><a class="link-opacity-50-hover" href={{post.seller.website_url}}>{{post.seller.website_url}}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-title">
+                    <h2>Reports</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Response</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in reports %}
+                                <tr>
+                                    <th scope="row"><a href="{% url 'report_view_url' report.id %}" class="btn btn-outline-primary">View</a></th>
+                                    <th>{{ report.status }}</th>
+                                    <th>{{ report.type }}</th>
+                                    <th>{{ report.description }}</th>
+                                    <th>{{ report.seller_response }}</th>
+                                </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
