@@ -86,17 +86,18 @@ Seller: create new bundle
 """
 @login_required
 def bundle_new_view(request):
-    if 
-        if request.method == "POST":
-            form = BundleNewForm(request.POST)
-            if form.is_valid():
-                bundle = form.save(commit=False)
-                bundle.seller_id = Seller.objects.get(user = request.user).id
-                bundle.save()
-                return redirect("bundle_view_url", id=bundle.id)
-        else:
-            form = BundleNewForm()
-        return render(request, "main/bundle_new.html", {"form": form, "edit": False})
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    if request.method == "POST":
+        form = BundleNewForm(request.POST)
+        if form.is_valid():
+            bundle = form.save(commit=False)
+            bundle.seller_id = Seller.objects.get(user = request.user).id
+            bundle.save()
+            return redirect("bundle_view_url", id=bundle.id)
+    else:
+        form = BundleNewForm()
+    return render(request, "main/bundle_new.html", {"form": form, "edit": False})
 
 """
 Seller: edit bundle
