@@ -221,7 +221,7 @@ def registerUser(request):
                 if user.user_type == "seller":
                     return redirect("seller-extra", user_id=user.id)
                 else:
-                    #user = User.objects.create_user(form.cleaned_data.get("username"),form.cleaned_data("email"),form.cleaned_data("password1"),form.cleaned_data["user_type"],form.cleaned_data("password2")),
+                    Consumer.objects.create(user = user)
                     messages.success(request, f'Your account has been created! You are now able to log in')
                     return redirect("login")
             else:
