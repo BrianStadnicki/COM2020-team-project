@@ -46,7 +46,12 @@
                 </div>
             </div>
             <div class="d-flex">
-                <button type="button" class="btn btn-outline-primary mt-3 me-auto">Reserve</button>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" value="create" name="status">
+                    <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                </form>
+
                 <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
             </div>
         </div>
@@ -60,6 +65,49 @@
                     <p>{{post.seller.telephone_number}}</p>
                     <p>{{post.seller.user.email}}</p>
                     <p><a class="link-opacity-50-hover" href={{post.seller.website_url}}>{{post.seller.website_url}}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-title">
+                    <h2>Reservations</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Collected?</th>
+                                <th scope="col">Consumer</th>
+                                <th scope="col">Timestamp</th>
+                                <th scope="col">Claim Code</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                                <tr>
+                                    <th scope="row">
+                                        <form method="post" action="">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="collected" name="status">
+                                            <input type="hidden" value="{{ reservation.id }}" name="id">
+                                            {% if reservation.status != "Collected" %}
+                                                <input type="submit" value="Collected?" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                                            {% endif %}
+                                        </form>
+                                    </th>
+                                    <th>{{ reservation.consumer.user.username }}</th>
+                                    <th>{{ reservation.time_stamp }}</th>
+                                    <th>{{ reservation.claim_code }}</th>
+                                    <th>{{ reservation.status }}</th>
+                                </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
