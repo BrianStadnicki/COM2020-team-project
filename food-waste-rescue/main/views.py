@@ -149,6 +149,8 @@ Seller: Show analytics
 """
 @login_required
 def analytics_view(request):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
     return render(request, "main/analytics.html")
 
 """
