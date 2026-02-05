@@ -1,6 +1,8 @@
+from datetime import time
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from main.models import Bundle_posting, Seller
 
 User = get_user_model()
 
@@ -179,13 +181,36 @@ class testSellerAndConsumerPages(TestCase):
             password="consumerpass2",
             user_type="consumer"
         )
-        # Create a mock Seller
+        # Create a mock Seller user
         self.seller = User.objects.create_user(
             username="seller2",
             email="mockseller2@gmail.com",
             password="sellerpass2",
             user_type="seller"
         )
+
+        # Create the Seller profile
+        self.seller = Seller.objects.create(
+            user=self.seller_user,
+            location="Test Location",
+            opening_time="09:00",
+            closing_time="17:00",
+            telephone_number="0123456789",
+            website_url="https://example.com"
+        )
+
+        # Create a mock bundle
+        self.bundle_posting = Bundle_posting.objects.create(
+            seller=self.seller,
+            category="Bakery",
+            name="Test Bundle",
+            contents_description="Bread",
+            quantity=5,
+            price=2.00,
+            pickup_window_start=time(14, 0),
+            pickup_window_end=time(15, 0),
+        )   
+
 
     # -----------------------------------------------------------------------------
     #Tests for bundles_view
@@ -222,7 +247,7 @@ class testSellerAndConsumerPages(TestCase):
     #currently failing: AssertionError: 404 != 302
     def test_bundle_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
-        url = reverse("bundle_view_url", args=[1])
+        url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response.url)
@@ -233,7 +258,7 @@ class testSellerAndConsumerPages(TestCase):
     def test_bundle_view_allows_consumer(self):
         """Consumers should get 200 OK"""
         self.client.login(username="consumer2", password="consumerpass2")
-        url = reverse("bundle_view_url", args=[1])
+        url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
@@ -241,7 +266,7 @@ class testSellerAndConsumerPages(TestCase):
     def test_bundle_view_allows_seller(self):
         """Sellers should get 200 OK"""
         self.client.login(username="seller2", password="sellerpass2")
-        url = reverse("bundle_view_url", args=[1])
+        url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
