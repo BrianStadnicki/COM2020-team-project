@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.db.models import Q
 from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
-
+from django.contrib.auth.decorators import login_required
 
 def test_view(request):
     return render(request, "main/test.html")
@@ -12,6 +12,7 @@ def test_view(request):
 Consumer: Show all bundles, search by location and pick up time, pagination
 Seller: Show own bundles, pagination
 """
+@login_required
 def bundles_view(request):
 
     ALLERGENS = [
@@ -42,6 +43,7 @@ def bundles_view(request):
 Consumer: Show bundle, make new reservation or view own reservation details
 Seller: show/edit/delete bundle, change reservation status?
 """
+@login_required
 def bundle_view(request, id):
     post = get_object_or_404(Bundle_posting, pk=id)
     
@@ -81,6 +83,7 @@ def bundle_view(request, id):
 """
 Seller: create new bundle
 """
+@login_required
 def bundle_new_view(request):
     if request.method == "POST":
         form = BundleNewForm(request.POST)
