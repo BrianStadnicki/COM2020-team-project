@@ -99,6 +99,7 @@ def bundle_new_view(request):
 """
 Seller: edit bundle
 """
+@login_required
 def bundle_edit_view(request, id):
     bundle = get_object_or_404(Bundle_posting, id=id)
     if request.method == "POST":
@@ -116,6 +117,7 @@ def bundle_edit_view(request, id):
 """_
 Seller: See analytics, actually create
 """
+@login_required
 def bundle_confirm_view(request):
     return render(request, "main/bundle_confirm.html")
 
@@ -123,6 +125,7 @@ def bundle_confirm_view(request):
 Consumer: Show own reservations with bundle details
 Seller: Show upcoming reservations with bundle details, edit status, search/verify code
 """
+@login_required
 def reservations_view(request):
     return render(request, "main/reservations.html")
 
@@ -130,12 +133,14 @@ def reservations_view(request):
 Consumer: Show/delete own reservation with bundle details
 Seller: Show/edit own reservation with bundle details
 """
+@login_required
 def reservation_view(request, id):
     return render(request, "main/reservation.html")
 
 """
 Seller: Show analytics
 """
+@login_required
 def analytics_view(request):
     return render(request, "main/analytics.html")
 
@@ -143,6 +148,7 @@ def analytics_view(request):
 Consumer: Show own reports
 Seller: Show own reports
 """
+@login_required
 def reports_view(request):
     selected_status = request.GET.get("status", "")
     selected_type = request.GET.get("type", "")
@@ -169,6 +175,7 @@ def reports_view(request):
 Consumer: Show/add/close own report
 Seller: Show/add/close own report
 """
+@login_required
 def report_view(request, id):
     report = get_object_or_404(IssueReport, id=id)
     if request.method =="POST":
@@ -184,6 +191,7 @@ def report_view(request, id):
 Consumer: Create new report
 Seller: Create new report
 """
+@login_required
 def report_new_view(request, id):
     if request.method == "POST":
         form = IssueReportNewForm(request.POST)
@@ -201,6 +209,7 @@ def report_new_view(request, id):
 Consumer: View impact
 Seller: View impact
 """
+@login_required
 def impact_view(request):
     return render(request, "main/impact.html")
 
@@ -208,6 +217,7 @@ def impact_view(request):
 Consumer: View/Change accessibility settings
 Seller: View/Change accessibility settings
 """
+@login_required
 def accessibility_view(request):
     return render(request, "main/accessibility.html")
 
