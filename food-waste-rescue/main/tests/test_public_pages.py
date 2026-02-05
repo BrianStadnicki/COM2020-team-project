@@ -56,6 +56,7 @@ class TestPublicPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "registration/seller_extra.html")
     
+    #currently failing: AssertionError: 200 != 403
     def test_seller_extra_blocks_consumer(self):
         """Users should only be able to access 'seller-extra' if they selected 'Seller' in
         the registration page."""
@@ -69,5 +70,5 @@ class TestPublicPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
-    
+
 
