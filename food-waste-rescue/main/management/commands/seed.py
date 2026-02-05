@@ -37,7 +37,7 @@ class BundleProvider(BaseProvider):
             "Mixed Grocery Bag", "Fresh Grocery Bag", "Magic Grocery Bag"
         ],
         "Flowers & Plants": [
-            "Flower Bag", "Flower Surprise Bag", "Plant Bag", "Plant Surprise Bag"
+            "Flower Bag", "Flower Surprise Bag", "Plant Bag", "Plant Surprise Bag",
             "Bouquet", "Magic Flower Bag", "Magic Plant Bag", "Garden Warfare Bag"
         ],
         "Pet Food": [
@@ -206,6 +206,8 @@ def create_demo_user():
     """Create a fixed demo user"""
     logger.info("Creating demo user")
     demo_user = User.objects.create_user(username="demo", email="demo@exeter.ac.uk", password="demo")
+    
+    demo_user.user_type = "consumer"
     demo_user.save()
     logger.info("{} demo user created.".format(demo_user))
     
@@ -228,7 +230,8 @@ def create_demo_seller():
         closing_time=time(17,0), 
         telephone_number="441326370400", 
         website_url="https://www.exeter.ac.uk/")
-    demo_seller.save()
+    demo_seller_user.user_type = "seller"
+    demo_seller_user.save()
     logger.info("{} demo seller created.".format(demo_seller))
     
     print(f"Username: {demo_seller_user.username}")
@@ -242,6 +245,8 @@ def create_consumer_profile():
     """Create consumer profile"""
     logger.info("Creating consumer profile")
     user = User.objects.create_user(username=fake.unique.user_name(), email=fake.unique.email(), password=fake.password())
+    user.user_type = "consumer"
+    user.save()
     consumer = Consumer.objects.create(user=user)
     consumer.save()
     logger.info("{} consumer created.".format(consumer))
@@ -252,6 +257,8 @@ def create_seller_profile():
     logger.info("Creating seller profile")
     
     user = User.objects.create_user(username=fake.unique.user_name(), email=fake.unique.email(), password=fake.password())
+    user.user_type = "seller"
+    user.save()
     seller = Seller.objects.create(
         user=user, 
         location=fake.city(), 
