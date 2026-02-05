@@ -21,7 +21,10 @@ def bundles_view(request):
     "Mollusc", "Mustard", "Nut", "Peanut", "Sesame", "Soya", "Sulphite"
     ]
 
-    posts = Bundle_posting.objects.all()
+    if request.user.user_type != "seller":
+        posts = Bundle_posting.objects.all()
+    else:
+        posts = request.user.seller.bundle_posting_set.all()
 
     selected_category = request.GET.get("category", "")
     selected_allergens = request.GET.getlist("excluded-allergens")
