@@ -4,6 +4,7 @@ from django.db.models import Q
 from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 def test_view(request):
     return render(request, "main/test.html")
@@ -249,15 +250,18 @@ def registerUser(request):
 
 def sellerExtra(request, user_id):
     user = User.objects.get(id=user_id)
-    if request.method == "POST":
-        form = SellerExtraForm(request.POST)
-        if form.is_valid():
-            seller = form.save(commit=False)
-            seller.user_id = user_id
-            seller.save()
-            form.save_m2m()
-            messages.success(request, "Seller profile completed!")
-            return redirect("login")
+    if user.user_type == "seller":
+        if request.method == "POST":
+            form = SellerExtraForm(request.POST)
+            if form.is_valid():
+                seller = form.save(commit=False)
+                seller.user_id = user_id
+                seller.save()
+                form.save_m2m()
+                messages.success(request, "Seller profile completed!")
+                return redirect("login")
+        else:
+            form = SellerExtraForm()
+        return render(request, "registration/seller_extra.html", {"form":form})
     else:
-        form = SellerExtraForm()
-    return render(request, "registration/seller_extra.html", {"form":form})
+        raise PermissionDenied
