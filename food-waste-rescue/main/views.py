@@ -104,6 +104,8 @@ Seller: edit bundle
 """
 @login_required
 def bundle_edit_view(request, id):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
     bundle = get_object_or_404(Bundle_posting, id=id)
     if request.method == "POST":
         form = BundleNewForm(request.POST or None, instance=bundle)
