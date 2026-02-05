@@ -124,6 +124,8 @@ Seller: See analytics, actually create
 """
 @login_required
 def bundle_confirm_view(request):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
     return render(request, "main/bundle_confirm.html")
 
 """
