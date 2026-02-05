@@ -132,6 +132,7 @@ class TestSellerOnlyPages(TestCase):
 
     #Tests for analytics_view
 
+    #currently failing: AssertionError: 200 != 302
     def test_analytics_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("analytics_view_url")
@@ -140,6 +141,7 @@ class TestSellerOnlyPages(TestCase):
         self.assertIn("/accounts/login", response.url)
         self.assertTrue(response.url.startswith("/accounts/login"))
 
+    #currently failing: AssertionError: 200 != 403
     def test_analytics_view_forbidden_for_consumer(self):
         """Consumers should get 403 Forbidden for Seller-only pages"""
         self.client.login(username="consumer1", password="consumerpass1")
@@ -147,6 +149,7 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
     
+    #passes
     def test_analytics_view_allows_seller(self):
         """Sellers should get 200 OK for Seller-only pages"""
         self.client.login(username="seller1", password="sellerpass1")
@@ -186,7 +189,8 @@ class testSellerAndConsumerPages(TestCase):
 
     # -----------------------------------------------------------------------------
     #Tests for bundles_view
-
+    
+    #currently failing: AssertionError: 200 != 302
     def test_bundles_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundles_view_url")
@@ -194,32 +198,38 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
+    #passes
     def test_bundles_view_allows_consumer(self):
         """Consumers should get 200 OK"""
         self.client.login(username="consumer2", password="consumerpass2")
         url = reverse("bundles_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "main/bundle.html")
+        self.assertTemplateUsed(response, "main/bundles.html")
 
+    #passes
     def test_bundles_view_allows_seller(self):
         """Sellers should get 200 OK"""
         self.client.login(username="seller2", password="sellerpass2")
         url = reverse("bundles_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "main/bundle.html")
+        self.assertTemplateUsed(response, "main/bundles.html")
     
     # -----------------------------------------------------------------------------
     #Tests for bundle_view
 
+    #currently failing: AssertionError: 404 != 302
     def test_bundle_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundle_view_url", args=[1])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("/accounts/login", response.url)
+        self.assertIn("/accounts/login/", response.url)
+        print("Bundle ID:", self.bundle_posting.id)
+        print("URL:", url)
 
+    #currently failing: AssertionError: 404 != 200
     def test_bundle_view_allows_consumer(self):
         """Consumers should get 200 OK"""
         self.client.login(username="consumer2", password="consumerpass2")
@@ -227,6 +237,7 @@ class testSellerAndConsumerPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    #currently failing: AssertionError: 404 != 200
     def test_bundle_view_allows_seller(self):
         """Sellers should get 200 OK"""
         self.client.login(username="seller2", password="sellerpass2")
