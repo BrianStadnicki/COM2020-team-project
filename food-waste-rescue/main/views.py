@@ -86,16 +86,17 @@ Seller: create new bundle
 """
 @login_required
 def bundle_new_view(request):
-    if request.method == "POST":
-        form = BundleNewForm(request.POST)
-        if form.is_valid():
-            bundle = form.save(commit=False)
-            bundle.seller_id = Seller.objects.get(user = request.user).id
-            bundle.save()
-            return redirect("bundle_view_url", id=bundle.id)
-    else:
-        form = BundleNewForm()
-    return render(request, "main/bundle_new.html", {"form": form, "edit": False})
+    if 
+        if request.method == "POST":
+            form = BundleNewForm(request.POST)
+            if form.is_valid():
+                bundle = form.save(commit=False)
+                bundle.seller_id = Seller.objects.get(user = request.user).id
+                bundle.save()
+                return redirect("bundle_view_url", id=bundle.id)
+        else:
+            form = BundleNewForm()
+        return render(request, "main/bundle_new.html", {"form": form, "edit": False})
 
 """
 Seller: edit bundle
@@ -250,18 +251,18 @@ def registerUser(request):
 
 def sellerExtra(request, user_id):
     user = User.objects.get(id=user_id)
-    if user.user_type == "seller":
-        if request.method == "POST":
-            form = SellerExtraForm(request.POST)
-            if form.is_valid():
-                seller = form.save(commit=False)
-                seller.user_id = user_id
-                seller.save()
-                form.save_m2m()
-                messages.success(request, "Seller profile completed!")
-                return redirect("login")
-        else:
-            form = SellerExtraForm()
-        return render(request, "registration/seller_extra.html", {"form":form})
-    else:
+    if user.user_type != "seller":
         raise PermissionDenied
+    if request.method == "POST":
+        form = SellerExtraForm(request.POST)
+        if form.is_valid():
+            seller = form.save(commit=False)
+            seller.user_id = user_id
+            seller.save()
+            form.save_m2m()
+            messages.success(request, "Seller profile completed!")
+            return redirect("login")
+    else:
+        form = SellerExtraForm()
+    return render(request, "registration/seller_extra.html", {"form":form})
+
