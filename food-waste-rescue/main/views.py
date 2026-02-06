@@ -162,10 +162,14 @@ Seller: Show own reports
 """
 @login_required
 def reports_view(request):
+
+    if request.user.user_type == "seller":
+        reports = IssueReport.objects.filter(posting__seller=request.user.seller)
+    else:
+        reports = request.user.consumer.issuereport_set.all()
+
     selected_status = request.GET.get("status", "")
     selected_type = request.GET.get("type", "")
-
-    reports = IssueReport.objects.all()
 
     if selected_status != "":
         reports = reports.filter(status=selected_status)
