@@ -194,6 +194,13 @@ Seller: Show/add/close own report
 @login_required
 def report_view(request, id):
     report = get_object_or_404(IssueReport, id=id)
+    if request.user.user_type == "seller":
+        if report.posting.seller_id != request.user.seller.id:
+            raise PermissionDenied
+    else:
+        if report.consumer_id != request.user.consumer.id:
+            raise PermissionDenied
+
     if request.method =="POST":
         form = IssueReportViewForm(request.POST or None, instance = report)
         if form.is_valid() :
