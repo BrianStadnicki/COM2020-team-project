@@ -25,7 +25,7 @@ MODE_CLEAR = 'clear'
 class BundleProvider(BaseProvider):
     NAMES = {
         "Meals": [
-            "Meat Bag", "Surprise Meat Bag", "Seafood Selection", "Daily Special", "Healthy Meal", "Standard Meal",
+            "Meat Bag", "Surprise Meat Bag", "Daily Special", "Healthy Meal", "Standard Meal",
             "Chef's Classic", "Food Leftovers", "Magic Meal Bag"
         ],
         "Bread & Pastries": [
