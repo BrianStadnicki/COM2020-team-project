@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
 from .models import Seller
-from .models import Bundle_posting, IssueReport
+from .models import Bundle_posting, IssueReport, Reservation
 
 class GenericSignupForm(UserCreationForm):
     user_type = forms.ChoiceField(choices=User.USER_TYPES)
@@ -32,3 +32,8 @@ class IssueReportViewForm(forms.ModelForm):
     class Meta:
         model = IssueReport
         fields = ['type', 'description', 'seller_response', 'status']
+
+class ReservationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ['id', 'status']

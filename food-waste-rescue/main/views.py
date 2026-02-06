@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .forms import SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
-from .models import User, Bundle_posting, Seller, Consumer, IssueReport
+from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
+from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 
 
 def test_view(request):
@@ -44,6 +44,21 @@ Seller: show/edit/delete bundle, change reservation status?
 """
 def bundle_view(request, id):
     post = get_object_or_404(Bundle_posting, pk=id)
+    
+    if request.method == "POST":
+        form = ReservationForm(request.POST)
+        if form.data["status"] == "create":
+            reservation = Reservation(
+                posting = post,
+                consumer = Consumer.objects.get(user = request.user),
+                claim_code = 1000
+            )
+            reservation.save()
+        elif form.data["status"] == "collected":
+            reservation = Reservation.objects.get(id=int(form.data["id"]))
+            reservation.status = "C"
+            reservation.save()
+
     reports = post.issuereport_set.all() # type: ignore
 
     for report in reports:
@@ -54,7 +69,14 @@ def bundle_view(request, id):
             if (type[0] == report.type):
                 report.type = type[1]
 
-    return render(request, "main/bundle.html", {'post': post, 'reports': reports})
+    reservations = post.reservation_set.all() # type: ignore
+    
+    for reservation in reservations:
+        for status in reservation.STATUSES:
+            if status[0] == reservation.status:
+                reservation.status = status[1]
+
+    return render(request, "main/bundle.html", {'post': post, 'reports': reports, 'reservations': reservations})
 
 """
 Seller: create new bundle
@@ -199,7 +221,7 @@ def registerUser(request):
                 if user.user_type == "seller":
                     return redirect("seller-extra", user_id=user.id)
                 else:
-                    #user = User.objects.create_user(form.cleaned_data.get("username"),form.cleaned_data("email"),form.cleaned_data("password1"),form.cleaned_data["user_type"],form.cleaned_data("password2")),
+                    Consumer.objects.create(user = user)
                     messages.success(request, f'Your account has been created! You are now able to log in')
                     return redirect("login")
             else:
