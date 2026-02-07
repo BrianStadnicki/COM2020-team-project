@@ -224,10 +224,13 @@ def report_view(request, id):
 
 """
 Consumer: Create new report
-Seller: Create new report
 """
 @login_required
 def report_new_view(request, id):
+    # Consumer-only page, so raising 403 Forbidden for Sellers
+    if request.user.user_type == "seller":
+        raise PermissionDenied
+    # For Consumers:
     if request.method == "POST":
         form = IssueReportNewForm(request.POST)
         if form.is_valid():
