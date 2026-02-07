@@ -10,6 +10,9 @@
     <p>Please login to see this page.</p>
     {% endif %}
 {% endif %}
+
+{{ form.non_field_errors }}
+
 <nav class="navbar">
     <div class="container-fluid">
         <h1 class="navbar-brand">Issue Report</h1>
@@ -28,10 +31,12 @@
                 <option value="A">Additional Information</option>
                 <option value="S">Seller</option>
             </select>
-
+            {{ form.type.errors }}
+        </div>
         <div class="input-group">
             <span class="input-group-text">Description</span>
             <textarea class="form-control" aria-label="description" name="description"></textarea>
+            {{ form.description.errors }}
         </div>
 
         <div class="d-flex justify-content-end">
