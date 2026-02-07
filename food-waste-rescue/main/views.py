@@ -6,9 +6,6 @@ from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reserva
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
-def test_view(request):
-    return render(request, "main/test.html")
-
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
 Seller: Show own bundles, pagination
