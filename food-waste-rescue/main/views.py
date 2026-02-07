@@ -50,9 +50,14 @@ Seller: show/edit/delete bundle, change reservation status?
 @login_required
 def bundle_view(request, id):
     post = get_object_or_404(Bundle_posting, pk=id)
+
+    # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
+    is_seller = (request.user.user_type == "seller") and (post.seller == request.user.seller)
     
     if request.method == "POST":
         form = ReservationForm(request.POST)
+
+        # Consumer makes a reservation 
         if form.data["status"] == "create":
             reservation = Reservation(
                 posting = post,
@@ -60,6 +65,8 @@ def bundle_view(request, id):
                 claim_code = 1000
             )
             reservation.save()
+        
+        # Seller marks the reservation as collected
         elif form.data["status"] == "collected":
             reservation = Reservation.objects.get(id=int(form.data["id"]))
             reservation.status = "C"
@@ -82,7 +89,12 @@ def bundle_view(request, id):
             if status[0] == reservation.status:
                 reservation.status = status[1]
 
-    return render(request, "main/bundle.html", {'post': post, 'reports': reports, 'reservations': reservations})
+    return render(request, 
+                  "main/bundle.html", 
+                  {'post': post,
+                   'reports': reports,
+                   'reservations': reservations,
+                   'is_seller': is_seller})
 
 """
 Seller: create new bundle
