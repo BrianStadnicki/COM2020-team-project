@@ -46,11 +46,14 @@
                 </div>
             </div>
             <div class="d-flex">
-                <form method="post" action="">
-                    {% csrf_token %}
-                    <input type="hidden" value="create" name="status">
-                    <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
-                </form>
+                 <!-- Hiding the reserve button from sellers -->
+                {% if not is_seller %}
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" value="create" name="status">
+                        <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                    </form>
+                {% end if%}
 
                 <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
             </div>
