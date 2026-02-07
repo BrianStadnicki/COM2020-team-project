@@ -52,7 +52,7 @@ class Reservation(models.Model):
     posting = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
     consumer = models.ForeignKey(Consumer,on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(default=timezone.now,blank=True)
-    claim_code = models.IntegerField(default=0)
+    claim_code = models.IntegerField(null=True, blank=True, unique=True) #null & blank true for now
     STATUSES = (
         ("C", "Collected"),
         ("N", "No Show" ),
