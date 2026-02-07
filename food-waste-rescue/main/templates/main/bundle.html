@@ -46,14 +46,20 @@
                 </div>
             </div>
             <div class="d-flex">
-                 <!-- Hiding the reserve button from sellers -->
+                 <!-- Reserve button: only visible to Consumers -->
                 {% if not is_seller %}
                     <form method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" value="create" name="status">
                         <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
                     </form>
-                {% end if%}
+                {% endif%}
+                <!-- Edit button: only visible to Sellers -->
+                {% if is_seller %}
+                    <form method="get" action="{% url 'bundle_edit_view_url' id=post.id %}">
+                        <input type="submit" value="Edit" class="btn btn-outline-primary mt-3 me-auto">
+                    </form>
+                {% endif %}
 
                 <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
             </div>
