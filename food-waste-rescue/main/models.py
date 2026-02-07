@@ -20,12 +20,12 @@ class Seller(models.Model):
     location = models.CharField(max_length=100, default="Exeter University")
     opening_time = models.TimeField(default=datetime.time(9,00))
     closing_time = models.TimeField(default=datetime.time(17,00))
-    telephone_number = models.CharField(max_length=100, default="0000000000")
-    website_url = models.URLField(default="https://www.test.com")
+    telephone_number = models.CharField(max_length=100, default="441392661000")
+    website_url = models.URLField(default="https://www.exeter.ac.uk/")
 
 class Bundle_posting(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
-    category = models.CharField(max_length=100,default="Food")
+    category = models.CharField(max_length=100,default="Meals")
     name = models.CharField(max_length=100, default="Meat bag")
     contents_description = models.CharField(max_length=500,default="Chicken breast")
     quantity = models.IntegerField(default=0)
