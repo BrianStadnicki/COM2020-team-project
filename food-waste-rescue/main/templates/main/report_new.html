@@ -2,6 +2,15 @@
 
 {% block content %}
 
+{# Show Django messages (e.g., "Check your details") #}
+{% if messages%}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% if next %}
     {% if user.is_authenticated %}
     <p>Your account doesn't have access to this page. To proceed,
