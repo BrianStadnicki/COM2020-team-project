@@ -46,11 +46,20 @@
                 </div>
             </div>
             <div class="d-flex">
-                <form method="post" action="">
-                    {% csrf_token %}
-                    <input type="hidden" value="create" name="status">
-                    <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
-                </form>
+                 <!-- Reserve button: only visible to Consumers -->
+                {% if not is_seller %}
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" value="create" name="status">
+                        <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                    </form>
+                {% endif%}
+                <!-- Edit button: only visible to Sellers -->
+                {% if is_seller %}
+                    <form method="get" action="{% url 'bundle_edit_view_url' id=post.id %}">
+                        <input type="submit" value="Edit" class="btn btn-outline-primary mt-3 me-auto">
+                    </form>
+                {% endif %}
 
                 <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
             </div>
@@ -91,14 +100,17 @@
                             {% for reservation in reservations %}
                                 <tr>
                                     <th scope="row">
-                                        <form method="post" action="">
-                                            {% csrf_token %}
-                                            <input type="hidden" value="collected" name="status">
-                                            <input type="hidden" value="{{ reservation.id }}" name="id">
-                                            {% if reservation.status != "Collected" %}
-                                                <input type="submit" value="Collected?" class="btn btn-outline-primary mt-3 me-auto" name="submit">
-                                            {% endif %}
-                                        </form>
+                                        <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
+                                        {% if is_seller %}
+                                            <form method="post" action="">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="collected" name="status">
+                                                <input type="hidden" value="{{ reservation.id }}" name="id">
+                                                {% if reservation.status != "Collected" %}
+                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                                                {% endif %}
+                                            </form>
+                                        {% endif %}
                                     </th>
                                     <th>{{ reservation.consumer.user.username }}</th>
                                     <th>{{ reservation.time_stamp }}</th>

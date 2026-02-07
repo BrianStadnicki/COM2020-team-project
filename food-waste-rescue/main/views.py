@@ -3,7 +3,8 @@ from django.contrib import messages
 from django.db.models import Q
 from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
-
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 def test_view(request):
     return render(request, "main/test.html")
@@ -12,6 +13,7 @@ def test_view(request):
 Consumer: Show all bundles, search by location and pick up time, pagination
 Seller: Show own bundles, pagination
 """
+@login_required
 def bundles_view(request):
 
     ALLERGENS = [
@@ -19,7 +21,10 @@ def bundles_view(request):
     "Mollusc", "Mustard", "Nut", "Peanut", "Sesame", "Soya", "Sulphite"
     ]
 
-    posts = Bundle_posting.objects.all()
+    if request.user.user_type != "seller":
+        posts = Bundle_posting.objects.all()
+    else:
+        posts = request.user.seller.bundle_posting_set.all()
 
     selected_category = request.GET.get("category", "")
     selected_allergens = request.GET.getlist("excluded-allergens")
@@ -42,11 +47,17 @@ def bundles_view(request):
 Consumer: Show bundle, make new reservation or view own reservation details
 Seller: show/edit/delete bundle, change reservation status?
 """
+@login_required
 def bundle_view(request, id):
     post = get_object_or_404(Bundle_posting, pk=id)
+
+    # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
+    is_seller = (request.user.user_type == "seller") and (post.seller == request.user.seller)
     
     if request.method == "POST":
         form = ReservationForm(request.POST)
+
+        # Consumer makes a reservation 
         if form.data["status"] == "create":
             reservation = Reservation(
                 posting = post,
@@ -54,6 +65,8 @@ def bundle_view(request, id):
                 claim_code = 1000
             )
             reservation.save()
+        
+        # Seller marks the reservation as collected
         elif form.data["status"] == "collected":
             reservation = Reservation.objects.get(id=int(form.data["id"]))
             reservation.status = "C"
@@ -76,12 +89,20 @@ def bundle_view(request, id):
             if status[0] == reservation.status:
                 reservation.status = status[1]
 
-    return render(request, "main/bundle.html", {'post': post, 'reports': reports, 'reservations': reservations})
+    return render(request, 
+                  "main/bundle.html", 
+                  {'post': post,
+                   'reports': reports,
+                   'reservations': reservations,
+                   'is_seller': is_seller})
 
 """
 Seller: create new bundle
 """
+@login_required
 def bundle_new_view(request):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
     if request.method == "POST":
         form = BundleNewForm(request.POST)
         if form.is_valid():
@@ -96,7 +117,10 @@ def bundle_new_view(request):
 """
 Seller: edit bundle
 """
+@login_required
 def bundle_edit_view(request, id):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
     bundle = get_object_or_404(Bundle_posting, id=id)
     if request.method == "POST":
         form = BundleNewForm(request.POST or None, instance=bundle)
@@ -113,13 +137,17 @@ def bundle_edit_view(request, id):
 """_
 Seller: See analytics, actually create
 """
+@login_required
 def bundle_confirm_view(request):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
     return render(request, "main/bundle_confirm.html")
 
 """
 Consumer: Show own reservations with bundle details
 Seller: Show upcoming reservations with bundle details, edit status, search/verify code
 """
+@login_required
 def reservations_view(request):
     return render(request, "main/reservations.html")
 
@@ -127,24 +155,33 @@ def reservations_view(request):
 Consumer: Show/delete own reservation with bundle details
 Seller: Show/edit own reservation with bundle details
 """
+@login_required
 def reservation_view(request, id):
     return render(request, "main/reservation.html")
 
 """
 Seller: Show analytics
 """
+@login_required
 def analytics_view(request):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
     return render(request, "main/analytics.html")
 
 """
 Consumer: Show own reports
 Seller: Show own reports
 """
+@login_required
 def reports_view(request):
+
+    if request.user.user_type == "seller":
+        reports = IssueReport.objects.filter(posting__seller=request.user.seller)
+    else:
+        reports = request.user.consumer.issuereport_set.all()
+
     selected_status = request.GET.get("status", "")
     selected_type = request.GET.get("type", "")
-
-    reports = IssueReport.objects.all()
 
     if selected_status != "":
         reports = reports.filter(status=selected_status)
@@ -166,8 +203,16 @@ def reports_view(request):
 Consumer: Show/add/close own report
 Seller: Show/add/close own report
 """
+@login_required
 def report_view(request, id):
     report = get_object_or_404(IssueReport, id=id)
+    if request.user.user_type == "seller":
+        if report.posting.seller_id != request.user.seller.id:
+            raise PermissionDenied
+    else:
+        if report.consumer_id != request.user.consumer.id:
+            raise PermissionDenied
+
     if request.method =="POST":
         form = IssueReportViewForm(request.POST or None, instance = report)
         if form.is_valid() :
@@ -179,9 +224,13 @@ def report_view(request, id):
 
 """
 Consumer: Create new report
-Seller: Create new report
 """
+@login_required
 def report_new_view(request, id):
+    # Consumer-only page, so raising 403 Forbidden for Sellers
+    if request.user.user_type == "seller":
+        raise PermissionDenied
+    # For Consumers:
     if request.method == "POST":
         form = IssueReportNewForm(request.POST)
         if form.is_valid():
@@ -198,6 +247,7 @@ def report_new_view(request, id):
 Consumer: View impact
 Seller: View impact
 """
+@login_required
 def impact_view(request):
     return render(request, "main/impact.html")
 
@@ -205,6 +255,7 @@ def impact_view(request):
 Consumer: View/Change accessibility settings
 Seller: View/Change accessibility settings
 """
+@login_required
 def accessibility_view(request):
     return render(request, "main/accessibility.html")
 
@@ -236,6 +287,8 @@ def registerUser(request):
 
 def sellerExtra(request, user_id):
     user = User.objects.get(id=user_id)
+    if user.user_type != "seller":
+        raise PermissionDenied
     if request.method == "POST":
         form = SellerExtraForm(request.POST)
         if form.is_valid():
@@ -248,3 +301,4 @@ def sellerExtra(request, user_id):
     else:
         form = SellerExtraForm()
     return render(request, "registration/seller_extra.html", {"form":form})
+
