@@ -59,9 +59,10 @@ def bundle_view(request, id):
             reservation = Reservation(
                 posting = post,
                 consumer = Consumer.objects.get(user = request.user),
-                claim_code = 1000
+                # claim_code generated in the reservation model method.
             )
             reservation.save()
+            reservation.claim_code_generator()
         
         # Seller marks the reservation as collected
         elif form.data["status"] == "collected":
