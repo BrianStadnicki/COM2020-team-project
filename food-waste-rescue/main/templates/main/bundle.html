@@ -94,14 +94,17 @@
                             {% for reservation in reservations %}
                                 <tr>
                                     <th scope="row">
-                                        <form method="post" action="">
-                                            {% csrf_token %}
-                                            <input type="hidden" value="collected" name="status">
-                                            <input type="hidden" value="{{ reservation.id }}" name="id">
-                                            {% if reservation.status != "Collected" %}
-                                                <input type="submit" value="Collected?" class="btn btn-outline-primary mt-3 me-auto" name="submit">
-                                            {% endif %}
-                                        </form>
+                                        <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
+                                        {% if is_seller %}
+                                            <form method="post" action="">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="collected" name="status">
+                                                <input type="hidden" value="{{ reservation.id }}" name="id">
+                                                {% if reservation.status != "Collected" %}
+                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                                                {% endif %}
+                                            </form>
+                                        {% endif %}
                                     </th>
                                     <th>{{ reservation.consumer.user.username }}</th>
                                     <th>{{ reservation.time_stamp }}</th>
