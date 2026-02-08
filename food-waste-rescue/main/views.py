@@ -302,10 +302,14 @@ def registerUser(request):
             
 
 
-def sellerExtra(request, user_id):
-    user = User.objects.get(id=user_id)
+def sellerExtra(request):
+    # attach the seller profile to request.user
+    user = request.user
+
+    # only sellers can access this page
     if user.user_type != "seller":
         raise PermissionDenied
+    
     if request.method == "POST":
         form = SellerExtraForm(request.POST)
         if form.is_valid():
