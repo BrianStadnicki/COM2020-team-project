@@ -5,7 +5,6 @@ from django.conf import settings
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
-    path("test/", views.test_view, name="test_view_url"),
     path("", views.bundles_view, name="bundles_view_url"),
     path("bundles", views.bundles_view, name="bundles_view_url"),
     path("bundle/<int:id>", views.bundle_view, name="bundle_view_url"),

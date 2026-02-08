@@ -6,9 +6,6 @@ from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reserva
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
-def test_view(request):
-    return render(request, "main/test.html")
-
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
 Seller: Show own bundles, pagination
@@ -67,9 +64,10 @@ def bundle_view(request, id):
             reservation = Reservation(
                 posting = post,
                 consumer = Consumer.objects.get(user = request.user),
-                claim_code = 1000
+                # claim_code generated in the reservation model method.
             )
             reservation.save()
+            reservation.claim_code_generator()
         
         # Seller marks the reservation as collected
         elif form.data["status"] == "collected":
@@ -282,7 +280,6 @@ def registerUser(request):
                     return redirect("login")
             else:
                 messages.info(request, f'Check your details.')
-                form = GenericSignupForm()
                 return render(request, 'registration/signup.html', {'form': form, 'title':'register here'})
         else:
             form = GenericSignupForm()
