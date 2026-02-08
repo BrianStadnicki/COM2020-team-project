@@ -25,7 +25,15 @@ class Seller(models.Model):
 
 class Bundle_posting(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
-    category = models.CharField(max_length=100,default="Meals")
+    CATEGORYS = (
+        ("M","Meals"),
+        ("B&P","Bread & Pastries"),
+        ("G","Groceries"),
+        ("F&P","Flowers & Plants"),
+        ("PF","Pet Food"),
+        ("V","Vegetarian"),
+        ("VE","Vegan"))
+    category = models.CharField(max_length=5,choices=CATEGORYS,default="M")
     name = models.CharField(max_length=100, default="Meat bag")
     contents_description = models.CharField(max_length=500,default="Chicken breast")
     quantity = models.IntegerField(default=0)

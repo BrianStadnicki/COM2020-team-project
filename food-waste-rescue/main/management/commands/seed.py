@@ -290,9 +290,9 @@ def create_bundle_posting(seller):
     ]
         
     
-    categories =["Meals", "Bread & Pastries", "Groceries", "Flowers & Plants", "Pet Food", "Collect Now", "Collect Today", "Vegetarian", "Vegan"]
+    categories = Bundle_posting.CATEGORYS
 
-    selected_category = random.choice(categories)
+    selected_category = random.choice(categories)[0]
 
     # Creation time within last 6 weeks
     creation = fake.date_time_between(
