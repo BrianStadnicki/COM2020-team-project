@@ -319,7 +319,7 @@ def sellerExtra(request):
         form = SellerExtraForm(request.POST)
         if form.is_valid():
             seller = form.save(commit=False)
-            seller.user_id = user_id
+            seller.user = user
             seller.save()
             form.save_m2m()
             messages.success(request, "Seller profile completed!")
