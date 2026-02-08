@@ -280,7 +280,6 @@ def registerUser(request):
                     return redirect("login")
             else:
                 messages.info(request, f'Check your details.')
-                form = GenericSignupForm()
                 return render(request, 'registration/signup.html', {'form': form, 'title':'register here'})
         else:
             form = GenericSignupForm()
