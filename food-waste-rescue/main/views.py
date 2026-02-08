@@ -114,6 +114,9 @@ def bundle_edit_view(request, id):
 Seller: See analytics, actually create
 """
 def bundle_confirm_view(request):
+    # Fetch seller id
+    # # Call functions
+    # dispaly views
     return render(request, "main/bundle_confirm.html")
 
 """
