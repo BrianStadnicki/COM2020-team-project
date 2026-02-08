@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
+from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm, BundleDeleteForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -133,6 +133,21 @@ def bundle_edit_view(request, id):
         form.initial["pickup_window_end"] = form.initial["pickup_window_end"].__format__("%H:%M")
 
     return render(request, "main/bundle_new.html", {"form": form, "edit": True})
+
+"""
+Seller: remove bundle
+"""
+@login_required
+def bundle_delete_view(request, id):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    bundle = get_object_or_404(Bundle_posting, id = id)
+    if request.method == "POST":
+        bundle.delete()
+        return redirect("bundles_view_url")
+    else:
+        form = BundleDeleteForm(None)
+    return render(request, "main/bundle_confirm_delete.html",{"form": form, "post": bundle})
 
 """_
 Seller: See analytics, actually create
