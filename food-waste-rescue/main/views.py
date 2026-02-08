@@ -26,6 +26,11 @@ def bundles_view(request):
     else:
         posts = request.user.seller.bundle_posting_set.all()
 
+    location = request.GET.get("location", "")
+
+    if request.user.user_type != "seller" and location:
+        posts = posts.filter(seller__location__icontains=location)
+
     selected_category = request.GET.get("category", "")
     selected_allergens = request.GET.getlist("excluded-allergens")
 
@@ -41,7 +46,7 @@ def bundles_view(request):
     categories = Bundle_posting.objects.values_list('category', flat=True).distinct()
 
     return render(request, "main/bundles.html", {'posts': posts, 'categories': categories, 'allergens': ALLERGENS,
-                                                  "selected_category": selected_category, "selected_allergens":selected_allergens})
+                                                  "selected_category": selected_category, "selected_allergens":selected_allergens, "selected-location":location})
 
 """
 Consumer: Show bundle, make new reservation or view own reservation details
