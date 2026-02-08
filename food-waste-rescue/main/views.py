@@ -310,6 +310,11 @@ def sellerExtra(request):
     if user.user_type != "seller":
         raise PermissionDenied
     
+    #If seller profile already exists, don't let them create another
+    if hasattr(user, "seller"):
+        messages.info(request, "Seller profile already completed.")
+        return redirect("login")
+
     if request.method == "POST":
         form = SellerExtraForm(request.POST)
         if form.is_valid():
