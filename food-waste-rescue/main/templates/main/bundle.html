@@ -70,6 +70,9 @@
                     <form method="get" action="{% url 'bundle_edit_view_url' id=post.id %}">
                         <input type="submit" value="Edit" class="btn btn-outline-primary mt-3 me-auto">
                     </form>
+                    <form method="get" action="{% url 'bundle_delete_view_url' id=post.id %}">
+                        <input type="submit" value="Remove" class="btn btn-outline-danger mt-3 me-auto ms-1">
+                    </form> 
                 {% endif %}
 
                 <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
