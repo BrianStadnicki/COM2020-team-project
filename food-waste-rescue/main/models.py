@@ -56,9 +56,9 @@ class Bundle_posting(models.Model):
 
     @property
     def status(self):
-        if self.reservation_set.filter(is_collected=True).count() == self.reservation_set.count():
+        if self.reservation_set.filter(is_collected=True).count() == self.quantity:
             return "C"
-        elif self.creation_time.date() == datetime.datetime.today().date() and self.posting.pickup_window_end < datetime.datetime.today().time():
+        elif self.creation_time.date() == datetime.datetime.today().date() and self.pickup_window_end > datetime.datetime.today().time():
             return "R"
         else:
             return "E"
@@ -84,7 +84,7 @@ class Reservation(models.Model):
     def status(self):
         if self.is_collected:
             return "C"
-        if self.posting.creation_time.date() == datetime.datetime.today().date() and self.posting.pickup_window_start < datetime.datetime.today().time():
+        if self.posting.creation_time.date() == datetime.datetime.today().date() and self.posting.pickup_window_end > datetime.datetime.today().time():
             return "R"
         return "N"       
     
