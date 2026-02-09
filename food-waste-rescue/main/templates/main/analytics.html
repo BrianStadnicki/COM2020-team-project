@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="container-fluid">
+    <nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navbar-brand">Analytics</h1>
+        </div>
+    </nav>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-5 me-5">
+
+            <h3 class="text-center mb-4">Sell through rate</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Collected</th>
+                        <th scope="col">No Show</th>
+                        <th scope="col">Expired</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>24</td>
+                        <td>10</td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-11">
+                    <div class="progress" role="progressbar">
+                        <div class="progress-bar" style="width: 62%"></div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <p>62%</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-3 me-5">
+
+            <h3 class="text-center mb-4">Waste proxy</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Waste avoided</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Last 7 days</th>
+                        <td>24.6kg</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">All time</th>
+                        <td>1026.5kg</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-3">
+
+            <h3 class="text-center mb-4">Operational insights</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Best Pickup Windows</th>
+                        <th scope="col">Best Categories</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>09:00-17:00</td>
+                        <td>Meat bag</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>09:00-11:00</td>
+                        <td>Medical bag</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>15:00-17:00</td>
+                        <td>Exotic bag</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
