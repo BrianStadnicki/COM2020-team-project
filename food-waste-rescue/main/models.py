@@ -48,18 +48,44 @@ class Bundle_posting(models.Model):
     allergen_soya = models.BooleanField(default=False)
     allergen_sulphite = models.BooleanField(default=False)
 
+    STATUSES = (
+        ("C", "Collected"),
+        ("E", "Expired" ),
+        ("R", "Reserved")
+    )
+
+    @property
+    def status(self):
+        if self.reservation_set.filter(status="C").count() == self.reservation_set.count():
+            return "C"
+        elif self.reservation_set.filter(status="R").count() > 0:
+            return "R"
+        else:
+            return "E"
+
+
 class Reservation(models.Model):
     posting = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
     consumer = models.ForeignKey(Consumer,on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(default=timezone.now,blank=True)
     claim_code = models.IntegerField(default=0)
+    is_collected = models.BooleanField(default=False)
     STATUSES = (
         ("C", "Collected"),
-        ("N", "No Show" ),
-        ("R", "Reserved"),
-        ("E", "Expired")
+        ("N", "No Show"),
+        ("R", "Reserved")
     )
-    status = models.CharField(max_length=1,choices=STATUSES,default="R")
+
+    @property
+    def status(self):
+        if self.is_collected:
+            return "C"
+        if self.posting.creation_time.date() < datetime.datetime.today().date():
+            return "R"
+        if self.posting.creation_time.date() == datetime.datetime.today().date() and self.posting.pickup_window_end < datetime.datetime.today().time():  
+            return "N"
+        if self.posting.creation_time.date() > datetime.datetime.today().date():  
+            return "N"            
     
     def claim_code_generator(self):
         self.claim_code = self.pk * 2
