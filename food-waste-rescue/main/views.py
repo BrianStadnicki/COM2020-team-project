@@ -1,13 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
-from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
+from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm, BundleDeleteForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-
-def test_view(request):
-    return render(request, "main/test.html")
 
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
@@ -67,9 +64,10 @@ def bundle_view(request, id):
             reservation = Reservation(
                 posting = post,
                 consumer = Consumer.objects.get(user = request.user),
-                claim_code = 1000
+                # claim_code generated in the reservation model method.
             )
             reservation.save()
+            reservation.claim_code_generator()
         
         # Seller marks the reservation as collected
         elif form.data["status"] == "collected":
@@ -138,6 +136,21 @@ def bundle_edit_view(request, id):
         form.initial["pickup_window_end"] = form.initial["pickup_window_end"].__format__("%H:%M")
 
     return render(request, "main/bundle_new.html", {"form": form, "edit": True})
+
+"""
+Seller: remove bundle
+"""
+@login_required
+def bundle_delete_view(request, id):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    bundle = get_object_or_404(Bundle_posting, id = id)
+    if request.method == "POST":
+        bundle.delete()
+        return redirect("bundles_view_url")
+    else:
+        form = BundleDeleteForm(None)
+    return render(request, "main/bundle_confirm_delete.html",{"form": form, "post": bundle})
 
 """_
 Seller: See analytics, actually create
@@ -282,7 +295,6 @@ def registerUser(request):
                     return redirect("login")
             else:
                 messages.info(request, f'Check your details.')
-                form = GenericSignupForm()
                 return render(request, 'registration/signup.html', {'form': form, 'title':'register here'})
         else:
             form = GenericSignupForm()

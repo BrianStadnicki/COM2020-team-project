@@ -1,6 +1,17 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+{# Show Django messages (e.g., "Check your details") #}
+{% if messages%}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{{ form.non_field_errors }}
+
 <div class="container-fluid">
     <nav class="navbar">
         <div class="container-fluid">
@@ -59,6 +70,9 @@
                     <form method="get" action="{% url 'bundle_edit_view_url' id=post.id %}">
                         <input type="submit" value="Edit" class="btn btn-outline-primary mt-3 me-auto">
                     </form>
+                    <form method="get" action="{% url 'bundle_delete_view_url' id=post.id %}">
+                        <input type="submit" value="Remove" class="btn btn-outline-danger mt-3 me-auto ms-1">
+                    </form> 
                 {% endif %}
 
                 <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
