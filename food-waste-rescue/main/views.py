@@ -181,8 +181,11 @@ def analytics_view(request):
     
     sell_through = get_sell_through(request)
     waste_proxy = get_waste_proxy(request)
+    best_pickup = get_best_pickup(request)
+    best_category = get_best_categories(request)
 
-    return render(request, "main/analytics.html", {"sell_through": sell_through, "waste_proxy": waste_proxy})
+    return render(request, "main/analytics.html", {"sell_through": sell_through, "waste_proxy": waste_proxy, 
+                                                   "best_pickup": best_pickup, "best_category": best_category})
 
 """
 Consumer: Show own reports
