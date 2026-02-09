@@ -379,7 +379,7 @@ def create_reservation(status):
         consumer = random.choice(consumers),
         time_stamp = time_stamp,
         claim_code = fake.unique.random_int(min=0, max=99999),
-        status = status
+        is_collected = status == "C"
     )
     
     reservation.save()
