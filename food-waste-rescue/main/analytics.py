@@ -5,17 +5,7 @@ from collections import Counter
 
 BUNDLE_WEIGHT = 0.6 #kg
 
-def get_sell_through(request):
-
-    user = getattr(request, "user", None)
-
-    if not getattr(user, "is_authenticated", False):
-        return None
-    
-    if getattr(user, "user_type", None) != "seller":
-        return None
-
-    seller = user.seller
+def get_sell_through(seller):
 
     collected = 0
     expired = 0
@@ -43,18 +33,7 @@ def get_sell_through(request):
 
 
 
-def get_waste_proxy(request):
-    
-    user = getattr(request, "user", None)
-
-    if not getattr(user, "is_authenticated", False):
-        return None
-    
-    if getattr(user, "user_type", None) != "seller":
-        return None
-    
-    seller = user.seller
-    tz = timezone.get_current_timezone()
+def get_waste_proxy(seller):
 
     reservations = Reservation.objects.filter(posting__seller=seller, is_collected=True).values_list("time_stamp", flat=True)
 
@@ -71,17 +50,7 @@ def get_waste_proxy(request):
 
 
 
-def get_best_pickup(request):
-    
-    user = getattr(request, "user", None)
-
-    if not getattr(user, "is_authenticated", False):
-        return None
-    
-    if getattr(user, "user_type", None) != "seller":
-        return None
-
-    seller = user.seller
+def get_best_pickup(seller):
 
     window_counter = Counter()
 
@@ -106,17 +75,7 @@ def get_best_pickup(request):
     return result
 
 
-def get_best_categories(request):
-    
-    user = getattr(request, "user", None)
-
-    if not getattr(user, "is_authenticated", False):
-        return None
-    
-    if getattr(user, "user_type", None) != "seller":
-        return None
-
-    seller = user.seller
+def get_best_categories(seller):
 
     category_counter = Counter()
 
