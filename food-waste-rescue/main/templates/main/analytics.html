@@ -25,9 +25,9 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>24</td>
-                        <td>10</td>
-                        <td>2</td>
+                        <td>{{sell_through.collected}}</td>
+                        <td>{{sell_through.no_show}}</td>
+                        <td>{{sell_through.expired}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -35,11 +35,11 @@
             <div class="row">
                 <div class="col-11">
                     <div class="progress" role="progressbar">
-                        <div class="progress-bar" style="width: 62%"></div>
+                        <div class="progress-bar" style="width: {{sell_through.sell_through}}"></div>
                     </div>
                 </div>
                 <div class="col-1">
-                    <p>62%</p>
+                    <p>{{sell_through.sell_through}}</p>
                 </div>
             </div>
 
@@ -58,11 +58,11 @@
                 <tbody>
                     <tr>
                         <th scope="row">Last 7 days</th>
-                        <td>24.6kg</td>
+                        <td>{{waste_proxy.week}}kg</td>
                     </tr>
                     <tr>
                         <th scope="row">All time</th>
-                        <td>1026.5kg</td>
+                        <td>{{waste_proxy.total}}kg</td>
                     </tr>
                 </tbody>
             </table>
