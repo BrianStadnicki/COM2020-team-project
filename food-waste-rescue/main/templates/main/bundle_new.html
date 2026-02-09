@@ -132,6 +132,41 @@
             <textarea class="form-control" aria-label="description" name="contents_description">{{ form.initial.contents_description }}</textarea>
         </div>
 
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-title">
+                        <h2>Forecast</h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Expected Reservations</th>
+                                    <th scope="col">Expected No-shows</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                        <th>{{ exp_res }}</th>
+                                        <th>{{ exp_no_show }}</th>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <input type="submit" value="Edit" class="btn btn-primary" name="submit">
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <input type="submit" value="Post" class="btn btn-primary" name="submit">
+        </div>
+
         <div class="d-flex justify-content-end">
             <input type="submit" value="Confirm" class="btn btn-primary" name="submit">
         </div>

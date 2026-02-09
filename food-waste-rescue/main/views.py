@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.db.models import Q
 from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
-
+from .forecast_calc import avePerRes, avePerNoshow
 
 def test_view(request):
     return render(request, "main/test.html")
@@ -117,7 +117,20 @@ def bundle_confirm_view(request):
     # Fetch seller id
     # # Call functions
     # dispaly views
-    return render(request, "main/bundle_confirm.html")
+    bundle = get_object_or_404(Bundle_posting, id=id)
+    if request.method == "POST":
+        form = BundleNewForm(request.POST or None, instance=bundle)
+        if form.is_valid():
+            bundle = form.save()
+            return redirect("bundles_url", id = bundle.id)
+    else:
+        form = BundleNewForm(None, initial=bundle.__dict__)
+        form.initial["pickup_window_start"] = form.initial["pickup_window_start"].__format__("%H:%M")
+        form.initial["pickup_window_end"] = form.initial["pickup_window_end"].__format__("%H:%M")
+
+    exp_res = bundle.quantity*avePerRes(bundle.seller)
+    exp_no_show = exp_res*avePerNoshow(bundle.seller)
+    return render(request, "main/bundle_new.html", {"form": form, "confirm": True}, exp_res, exp_no_show)
 
 """
 Consumer: Show own reservations with bundle details
