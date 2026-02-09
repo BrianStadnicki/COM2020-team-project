@@ -1,6 +1,17 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+{# Show Django messages (e.g., "Check your details") #}
+{% if messages%}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{{ form.non_field_errors }}
+
 <div class="container-fluid">
     <nav class="navbar">
         <div class="container-fluid">
@@ -17,8 +28,8 @@
         <div class="col-9">
             <div class="card">
                 <div class="card-body">
-                    <p>{{post.id}}</p>
                     <div class="row">    
+                        <p>Pickup window: {{post.pickup_window_start}} - {{post.pickup_window_end}}</p>
                         <div class="col">
                             <p>{{post.category}}</p>
                             <p>Allergens: 

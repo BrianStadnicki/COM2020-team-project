@@ -186,9 +186,10 @@ def create_demo_user():
     """Create a fixed demo user"""
     logger.info("Creating demo user")
     demo_user = User.objects.create_user(username="demo", email="demo@exeter.ac.uk", password="demo")
-    
     demo_user.user_type = "consumer"
     demo_user.save()
+    demo_consumer = Consumer.objects.create(user=demo_user)
+    demo_consumer.save()
     logger.info("{} demo user created.".format(demo_user))
     
     print(f"Username: {demo_user.username}")
