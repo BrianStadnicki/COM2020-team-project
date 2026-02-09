@@ -161,8 +161,8 @@
                             {% for report in reports %}
                                 <tr>
                                     <th scope="row"><a href="{% url 'report_view_url' report.id %}" class="btn btn-outline-primary">View</a></th>
-                                    <th>{{ report.status }}</th>
-                                    <th>{{ report.type }}</th>
+                                    <th>{{ report.status_str }}</th>
+                                    <th>{{ report.type_str }}</th>
                                     <th>{{ report.description }}</th>
                                     <th>{{ report.seller_response }}</th>
                                 </tr>

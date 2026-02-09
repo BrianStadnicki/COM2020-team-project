@@ -82,14 +82,6 @@ def bundle_view(request, id):
 
     reports = post.issuereport_set.all() # type: ignore
 
-    for report in reports:
-        for status in report.STATUSES:
-            if status[0] == report.status:
-                report.status = status[1]
-        for type in report.TYPES:
-            if (type[0] == report.type):
-                report.type = type[1]
-
     reservations = post.reservation_set.all() # type: ignore
 
     return render(request, 
@@ -206,14 +198,6 @@ def reports_view(request):
         reports = reports.filter(status=selected_status)
     if selected_type != "":
         reports = reports.filter(type=selected_type)
-    
-    for report in reports:
-        for status in report.STATUSES:
-            if status[0] == report.status:
-                report.status = status[1]
-        for type in report.TYPES:
-            if (type[0] == report.type):
-                report.type = type[1]
     
     return render(request, "main/reports.html", {'reports': reports, "selected_status": selected_status, "selected_type": selected_type})
 

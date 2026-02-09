@@ -126,6 +126,21 @@ class IssueReport(models.Model):
     creation_time = models.DateTimeField(default=timezone.now,blank=True)
     seller_response = models.CharField(max_length=500,default="Hello consumer!")
 
+    @property
+    def type_str(self):
+        type = self.type
+        for possible in self.TYPES:
+            if type == possible[0]:
+                return possible[1]
+            
+    @property
+    def status_str(self):
+        status = self.status
+        for possible in self.STATUSES:
+            if status == possible[0]:
+                return possible[1]
+
+
 class Forecast_output(models.Model):
     posting = models.ForeignKey(Bundle_posting, on_delete=models.CASCADE)
     predicted_reservations = models.IntegerField(default=0)
