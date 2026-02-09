@@ -60,6 +60,12 @@ def bundle_view(request, id):
     # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
     is_seller = (request.user.user_type == "seller") and (post.seller == request.user.seller)
     is_today = post.creation_time.date() == datetime.datetime.today().date()
+    post_status = ""
+    for potential in post.STATUSES:
+        if potential[0] == post.status:
+            post_status = potential[1]
+            break
+
     
     if request.method == "POST":
         form = ReservationForm(request.POST)
@@ -108,7 +114,8 @@ def bundle_view(request, id):
                    'reports': reports,
                    'reservations': reservations,
                    'is_seller': is_seller,
-                   'is_today': is_today})
+                   'is_today': is_today,
+                   'post_status': post_status})
 
 """
 Seller: create new bundle
