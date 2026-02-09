@@ -1,0 +1,82 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+{# Show Django messages (e.g., "Check your details") #}
+{% if messages%}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{{ form.non_field_errors }}
+
+<div class="container-fluid">
+    <nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navbar-brand">Reports</h1>
+        </div>
+    </nav>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body">
+                    <h2>Filters</h2>
+                    <form method="get">
+                        <p>Status</p>
+                        <select class="form-select" name="status">
+                            <option value="">Choose...</option>
+                            <option value="P" {% if selected_status == 'P' %}selected="selected"{% endif %}>Pending</option>
+                            <option value="A" {% if selected_status == 'A' %}selected="selected"{% endif %}>Acknowledged</option>
+                            <option value="R" {% if selected_status == 'R' %}selected="selected"{% endif %}>Resolved</option>
+                        </select>
+
+                        <p>Type</p>
+                        <select class="form-select" name="type">
+                            <option value="">Choose...</option>
+                            <option value="C" {% if selected_type == 'C' %}selected="selected"{% endif %}>Collection</option>
+                            <option value="A" {% if selected_type == 'A' %}selected="selected"{% endif %}>Additional Information</option>
+                            <option value="S" {% if selected_type == 'S' %}selected="selected"{% endif %}>Seller</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-outline-primary mt-3">Apply</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="row">
+                {% for report in reports %}
+                    <div class="col-4">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h2>{{report.posting.name}}</h2>
+                                <div class="row">
+                                    <div class="col">
+                                        <p>{{report.consumer.username}}</p>
+                                        <p>{{report.type}}</p>
+                                        <p>{{report.status}}</p>
+                                    </div>
+                                    <div class="col">
+                                        <p>{{report.description}}</p>
+                                    </div>
+                                    <div class="col">
+                                        <a href="{% url 'report_view_url' report.id %}" class="btn btn-outline-primary">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <h2>No bundles!</h2>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

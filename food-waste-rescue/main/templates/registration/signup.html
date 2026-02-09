@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+
+{% if form.errors %}
+    <p>Error signing up. Please check your details.</p>
+{% endif %}
+
+{# Show Django messages (e.g., "Check your details") #}
+{% if messages%}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{# Show non-field errors (e.g. password mismatch) #}
+{{ form.non_field_errors }}
+
+<nav class="navbar">
+    <div class="container-fluid">
+        <h1 class="navbar-brand">Create an Account</h1>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <form method="post" action="/accounts/register/">
+        {% csrf_token %}
+
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="user_type">{{form.user_type.label}}</label>
+            <select class="form-select" name="user_type">
+                <option selected>Choose...</option>
+                <option value="consumer">Consumer</option>
+                <option value="seller">Seller</option>
+            </select>
+            {{form.user_type.errors}}
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="username">{{form.username.label}}</label>
+            <input type="text" class="form-control" name="username" id="username">
+            {{form.username.errors}}
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="email">{{form.email.label}}</label>
+            <input type="text" class="form-control" name="email" id="email">
+            {{form.email.errors}}
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="password1">{{form.password1.label}}</label>
+            <input type="password" class="form-control" name="password1" id="password1">
+            {{form.password1.errors}}
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="password2">{{form.password2.label}}</label>
+            <input type="password" class="form-control" name="password2" id="password2">
+            {{form.password2.errors}}
+        </div>
+
+        <div class="d-flex">
+            <input type="submit" class="me-auto btn btn-primary" value="Sign up">
+            <a class="ms-auto btn btn-secondary" href="{% url 'login' %}">Login</a>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+
+
+</div>
+
+{% endblock %}
