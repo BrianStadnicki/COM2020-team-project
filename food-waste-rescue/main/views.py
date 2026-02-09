@@ -15,6 +15,7 @@ Seller: Show own bundles, pagination
 """
 @login_required
 def bundles_view(request):
+    #checks to see if the user is seller or consumer
 
     ALLERGENS = [
     "Celery", "Crustacean", "Dairy", "Egg", "Fish", "Gluten", "Lupin",
