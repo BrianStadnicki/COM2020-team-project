@@ -19,7 +19,7 @@ def reservation_streak(request):
     tz = timezone.get_current_timezone()
 
     #Gets all user's reservation time stamps
-    res_ts = Reservation.objects.filter(consumer=consumer).values_list("time_stamp", flat=True)
+    res_ts = Reservation.objects.filter(consumer=consumer, status="C").values_list("time_stamp", flat=True)
     
     #Gets start data of each week with a reservation
     res_weeks = set()
