@@ -80,12 +80,9 @@ class Reservation(models.Model):
     def status(self):
         if self.is_collected:
             return "C"
-        if self.posting.creation_time.date() < datetime.datetime.today().date():
+        if self.posting.creation_time.date() == datetime.datetime.today().date() and self.posting.pickup_window_start < datetime.datetime.today().time():
             return "R"
-        if self.posting.creation_time.date() == datetime.datetime.today().date() and self.posting.pickup_window_end < datetime.datetime.today().time():  
-            return "N"
-        if self.posting.creation_time.date() > datetime.datetime.today().date():  
-            return "N"            
+        return "N"       
     
     def claim_code_generator(self):
         self.claim_code = self.pk * 2

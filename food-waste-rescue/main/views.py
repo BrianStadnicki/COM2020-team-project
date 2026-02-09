@@ -5,6 +5,8 @@ from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNe
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.forms.models import model_to_dict
+import datetime
 
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
@@ -55,12 +57,13 @@ def bundle_view(request, id):
 
     # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
     is_seller = (request.user.user_type == "seller") and (post.seller == request.user.seller)
+    is_today = post.creation_time.date() == datetime.datetime.today().date()
     
     if request.method == "POST":
         form = ReservationForm(request.POST)
 
         # Consumer makes a reservation 
-        if form.data["status"] == "create":
+        if form.data["submit"] == "Reserve":
             reservation = Reservation(
                 posting = post,
                 consumer = Consumer.objects.get(user = request.user),
@@ -70,9 +73,9 @@ def bundle_view(request, id):
             reservation.claim_code_generator()
         
         # Seller marks the reservation as collected
-        elif form.data["status"] == "collected":
+        elif form.data["submit"] == "Collected?":
             reservation = Reservation.objects.get(id=int(form.data["id"]))
-            reservation.status = "C"
+            reservation.is_collected = True
             reservation.save()
 
     reports = post.issuereport_set.all() # type: ignore
@@ -85,19 +88,25 @@ def bundle_view(request, id):
             if (type[0] == report.type):
                 report.type = type[1]
 
-    reservations = post.reservation_set.all() # type: ignore
-    
-    for reservation in reservations:
-        for status in reservation.STATUSES:
-            if status[0] == reservation.status:
-                reservation.status = status[1]
+    reservations_model = post.reservation_set.all() # type: ignore
+    reservations = []
+
+    for reservation_mod in reservations_model:
+        reservation = model_to_dict(reservation_mod)
+        for status in reservation_mod.STATUSES:
+            if status[0] == reservation_mod.status:
+                reservation["status"] = status[1]
+                break
+        reservation["consumer"] = reservation_mod.consumer
+        reservations.append(reservation)
 
     return render(request, 
                   "main/bundle.html", 
                   {'post': post,
                    'reports': reports,
                    'reservations': reservations,
-                   'is_seller': is_seller})
+                   'is_seller': is_seller,
+                   'is_today': is_today})
 
 """
 Seller: create new bundle
