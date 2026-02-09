@@ -36,7 +36,7 @@ class IssueReportViewForm(forms.ModelForm):
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
-        fields = ['id', 'status']
+        fields = ['id', 'is_collected']
 
 class BundleDeleteForm(forms.ModelForm):
     class Meta:
