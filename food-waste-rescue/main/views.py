@@ -41,6 +41,8 @@ def bundles_view(request):
             field = f"allergen_{allergen.lower()}"
             q |= Q(**{field: True})
         posts = posts.exclude(q)
+    
+    posts = posts.order_by('-creation_time')
 
     categories = Bundle_posting.objects.values_list('category', flat=True).distinct()
 
