@@ -64,6 +64,13 @@ class Bundle_posting(models.Model):
             return "E"
     
     @property
+    def status_str(self):
+        status = self.status
+        for possible in self.STATUSES:
+            if status == possible[0]:
+                return possible[1]
+    
+    @property
     def available(self):
         return self.quantity - self.reservation_set.count()
 
@@ -86,7 +93,15 @@ class Reservation(models.Model):
             return "C"
         if self.posting.creation_time.date() == datetime.datetime.today().date() and self.posting.pickup_window_end > datetime.datetime.today().time():
             return "R"
-        return "N"       
+        return "N"
+    
+    @property
+    def status_str(self):
+        status = self.status
+        for possible in self.STATUSES:
+            if status == possible[0]:
+                return possible[1]
+        
     
     def claim_code_generator(self):
         self.claim_code = self.pk * 2

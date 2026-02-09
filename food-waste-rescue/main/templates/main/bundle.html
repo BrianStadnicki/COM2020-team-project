@@ -30,7 +30,7 @@
                 <div class="card-body">
                     <div class="row">    
                         <p>Pickup window: {{post.creation_time.date}} : {{post.pickup_window_start}} - {{post.pickup_window_end}}</p>
-                        <p>Status: {{post_status}}</p>
+                        <p>Status: {{post.status_str}}</p>
                         <div class="col">
                             <p>{{post.category}}</p>
                             <p>Allergens: 
@@ -130,7 +130,7 @@
                                     <th>{{ reservation.consumer.user.username }}</th>
                                     <th>{{ reservation.time_stamp }}</th>
                                     <th>{{ reservation.claim_code }}</th>
-                                    <th>{{ reservation.status }}</th>
+                                    <th>{{ reservation.status_str }}</th>
                                 </tr>
                                 {% endfor %}
                         </tbody>
