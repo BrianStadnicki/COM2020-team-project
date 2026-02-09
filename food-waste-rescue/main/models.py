@@ -69,6 +69,10 @@ class Reservation(models.Model):
     )
     status = models.CharField(max_length=1,choices=STATUSES,default="R")
     
+    def claim_code_generator(self):
+        self.claim_code = self.pk * 2
+        self.save(update_fields=["claim_code"])
+        
 class IssueReport(models.Model):
     posting = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
     consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)

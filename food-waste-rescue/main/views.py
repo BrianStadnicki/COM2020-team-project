@@ -6,9 +6,6 @@ from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reserva
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
-def test_view(request):
-    return render(request, "main/test.html")
-
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
 Seller: Show own bundles, pagination
@@ -27,6 +24,11 @@ def bundles_view(request):
     else:
         posts = request.user.seller.bundle_posting_set.all()
 
+    location = request.GET.get("location", "")
+
+    if request.user.user_type != "seller" and location:
+        posts = posts.filter(seller__location__icontains=location)
+
     selected_category = request.GET.get("category", "")
     selected_allergens = request.GET.getlist("excluded-allergens")
 
@@ -42,7 +44,7 @@ def bundles_view(request):
     categories = Bundle_posting.objects.values_list('category', flat=True).distinct()
 
     return render(request, "main/bundles.html", {'posts': posts, 'categories': categories, 'allergens': ALLERGENS,
-                                                  "selected_category": selected_category, "selected_allergens":selected_allergens})
+                                                  "selected_category": selected_category, "selected_allergens":selected_allergens, "selected-location":location})
 
 """
 Consumer: Show bundle, make new reservation or view own reservation details
@@ -63,9 +65,10 @@ def bundle_view(request, id):
             reservation = Reservation(
                 posting = post,
                 consumer = Consumer.objects.get(user = request.user),
-                claim_code = 1000
+                # claim_code generated in the reservation model method.
             )
             reservation.save()
+            reservation.claim_code_generator()
         
         # Seller marks the reservation as collected
         elif form.data["status"] == "collected":
@@ -293,7 +296,6 @@ def registerUser(request):
                     return redirect("login")
             else:
                 messages.info(request, f'Check your details.')
-                form = GenericSignupForm()
                 return render(request, 'registration/signup.html', {'form': form, 'title':'register here'})
         else:
             form = GenericSignupForm()
