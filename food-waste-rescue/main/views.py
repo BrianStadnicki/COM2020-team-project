@@ -279,6 +279,7 @@ def accessibility_view(request):
 
 ########### register here ##################################### 
 def registerUser(request):
+
     if request.user.is_authenticated:
         return redirect("/") #TODO: Change to home page
     else:    
@@ -288,7 +289,7 @@ def registerUser(request):
                 user = form.save() #returns custom user instance
 
                 if user.user_type == "seller":
-                    return redirect("seller-extra", user_id=user.id)
+                    return redirect("login")
                 else:
                     Consumer.objects.create(user = user)
                     messages.success(request, f'Your account has been created! You are now able to log in')
