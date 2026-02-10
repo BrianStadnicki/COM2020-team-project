@@ -2,7 +2,6 @@ from main.models import User, Consumer, Seller, Bundle_posting, Reservation, Iss
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from faker import Faker
-from faker.providers import BaseProvider
 from datetime import time
 from decimal import Decimal
 import random, logging
@@ -22,7 +21,7 @@ MODE_REFRESH = 'refresh'
 MODE_CLEAR = 'clear'
 
 
-class BundleProvider(BaseProvider):
+class BundleProvider:
     NAMES = {
         "Meals": [
             "Meat Bag", "Surprise Meat Bag", "Daily Special", "Healthy Meal", "Standard Meal",

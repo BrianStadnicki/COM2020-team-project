@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
 import datetime
+from .analytics import get_best_categories, get_best_pickup, get_sell_through, get_waste_proxy
 
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
@@ -180,7 +181,16 @@ Seller: Show analytics
 def analytics_view(request):
     if request.user.user_type != "seller":
         raise PermissionDenied
-    return render(request, "main/analytics.html")
+    
+    seller = getattr(request, "user", None).seller
+    
+    sell_through = get_sell_through(seller)
+    waste_proxy = get_waste_proxy(seller)
+    best_pickup = get_best_pickup(seller)
+    best_category = get_best_categories(seller)
+
+    return render(request, "main/analytics.html", {"sell_through": sell_through, "waste_proxy": waste_proxy, 
+                                                   "best_pickup": best_pickup, "best_category": best_category})
 
 """
 Consumer: Show own reports
@@ -267,6 +277,7 @@ def accessibility_view(request):
 
 ########### register here ##################################### 
 def registerUser(request):
+
     if request.user.is_authenticated:
         return redirect("/") #TODO: Change to home page
     else:    
@@ -276,7 +287,7 @@ def registerUser(request):
                 user = form.save() #returns custom user instance
 
                 if user.user_type == "seller":
-                    return redirect("seller-extra", user_id=user.id)
+                    return redirect("login")
                 else:
                     Consumer.objects.create(user = user)
                     messages.success(request, f'Your account has been created! You are now able to log in')
@@ -290,15 +301,24 @@ def registerUser(request):
             
 
 
-def sellerExtra(request, user_id):
-    user = User.objects.get(id=user_id)
+def sellerExtra(request):
+    # attach the seller profile to request.user
+    user = request.user
+
+    # only sellers can access this page
     if user.user_type != "seller":
         raise PermissionDenied
+    
+    #If seller profile already exists, don't let them create another
+    if hasattr(user, "seller"):
+        messages.info(request, "Seller profile already completed.")
+        return redirect("login")
+
     if request.method == "POST":
         form = SellerExtraForm(request.POST)
         if form.is_valid():
             seller = form.save(commit=False)
-            seller.user_id = user_id
+            seller.user = user
             seller.save()
             form.save_m2m()
             messages.success(request, "Seller profile completed!")
@@ -306,4 +326,3 @@ def sellerExtra(request, user_id):
     else:
         form = SellerExtraForm()
     return render(request, "registration/seller_extra.html", {"form":form})
-
