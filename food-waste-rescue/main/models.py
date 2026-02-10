@@ -56,18 +56,60 @@ class Bundle_posting(models.Model):
     allergen_soya = models.BooleanField(default=False)
     allergen_sulphite = models.BooleanField(default=False)
 
+    STATUSES = (
+        ("C", "Collected"),
+        ("E", "Expired" ),
+        ("R", "Reserved")
+    )
+
+    @property
+    def status(self):
+        if self.reservation_set.filter(is_collected=True).count() == self.quantity:
+            return "C"
+        elif self.creation_time.date() == datetime.datetime.today().date() and self.pickup_window_end > datetime.datetime.today().time():
+            return "R"
+        else:
+            return "E"
+    
+    @property
+    def status_str(self):
+        status = self.status
+        for possible in self.STATUSES:
+            if status == possible[0]:
+                return possible[1]
+    
+    @property
+    def available(self):
+        return self.quantity - self.reservation_set.count()
+
+
 class Reservation(models.Model):
     posting = models.ForeignKey(Bundle_posting,on_delete=models.CASCADE)
     consumer = models.ForeignKey(Consumer,on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(default=timezone.now,blank=True)
     claim_code = models.IntegerField(default=0)
+    is_collected = models.BooleanField(default=False)
     STATUSES = (
         ("C", "Collected"),
-        ("N", "No Show" ),
-        ("R", "Reserved"),
-        ("E", "Expired")
+        ("N", "No Show"),
+        ("R", "Reserved")
     )
-    status = models.CharField(max_length=1,choices=STATUSES,default="R")
+
+    @property
+    def status(self):
+        if self.is_collected:
+            return "C"
+        if self.posting.creation_time.date() == datetime.datetime.today().date() and self.posting.pickup_window_end > datetime.datetime.today().time():
+            return "R"
+        return "N"
+    
+    @property
+    def status_str(self):
+        status = self.status
+        for possible in self.STATUSES:
+            if status == possible[0]:
+                return possible[1]
+        
     
     def claim_code_generator(self):
         self.claim_code = self.pk * 2
@@ -91,6 +133,21 @@ class IssueReport(models.Model):
     status = models.CharField(max_length=1,choices=STATUSES,default="P")
     creation_time = models.DateTimeField(default=timezone.now,blank=True)
     seller_response = models.CharField(max_length=500,default="Hello consumer!")
+
+    @property
+    def type_str(self):
+        type = self.type
+        for possible in self.TYPES:
+            if type == possible[0]:
+                return possible[1]
+            
+    @property
+    def status_str(self):
+        status = self.status
+        for possible in self.STATUSES:
+            if status == possible[0]:
+                return possible[1]
+
 
 class Forecast_output(models.Model):
     posting = models.ForeignKey(Bundle_posting, on_delete=models.CASCADE)

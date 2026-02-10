@@ -2,6 +2,8 @@ from django.urls import include, path
 from debug_toolbar.toolbar import debug_toolbar_urls
 from . import views
 from django.conf import settings
+from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -10,7 +12,6 @@ urlpatterns = [
     path("bundle/<int:id>", views.bundle_view, name="bundle_view_url"),
     path("bundle/<int:id>/edit", views.bundle_edit_view, name="bundle_edit_view_url"),
     path("bundle/new", views.bundle_new_view, name="bundle_new_view_url"),
-    path("bundle/confirm", views.bundle_confirm_view, name="bundle_confirm_view_url"),
     path("bundle/<int:id>/delete", views.bundle_delete_view, name="bundle_delete_view_url"),
     path("reservations/", views.reservations_view, name="reservations_view_url"),
     path("reservations/<int:id>", views.reservation_view, name="reservation_view_url"),
@@ -21,7 +22,7 @@ urlpatterns = [
     path("impact", views.impact_view, name="impact_view_url"),
     path("accessibility", views.accessibility_view, name="accessibility_view_url"),
     path('accounts/register/', views.registerUser, name="register"),
-    path('accounts/registerseller<int:user_id>/', views.sellerExtra, name="seller-extra"),
+    path('accounts/registerseller/', views.sellerExtra, name="seller-extra"),
 ]
 
 if not settings.TESTING:
