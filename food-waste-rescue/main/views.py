@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db.models import Q
 from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm, BundleDeleteForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
+from .forecast_calc import avePerRes, avePerNoshow
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
@@ -103,13 +104,24 @@ def bundle_new_view(request):
     if request.method == "POST":
         form = BundleNewForm(request.POST)
         if form.is_valid():
-            bundle = form.save(commit=False)
-            bundle.seller_id = Seller.objects.get(user = request.user).id
-            bundle.save()
-            return redirect("bundle_view_url", id=bundle.id)
+            if form.data["submit"] == "create":
+                bundle = form.save(commit=False)
+                bundle.seller_id = Seller.objects.get(user = request.user).id
+                bundle.save()
+                return redirect("bundle_view_url", id = bundle.id)
+            else:
+                bundle = form.save(commit=False)
+                bundle.seller_id = Seller.objects.get(user = request.user).id
+                form = BundleNewForm(None, initial=bundle.__dict__)
+                form.initial["pickup_window_start"] = form.initial["pickup_window_start"].__format__("%H:%M")
+                form.initial["pickup_window_end"] = form.initial["pickup_window_end"].__format__("%H:%M")
+                
+                exp_res = bundle.quantity*avePerRes(bundle.seller_id)
+                exp_no_show = exp_res*avePerNoshow(bundle.seller_id)
+                return render(request, "main/bundle_new.html", {"form": form, "edit": False, "confirm" : True, "exp_res" : exp_res, "exp_no_show": exp_no_show })
     else:
         form = BundleNewForm()
-    return render(request, "main/bundle_new.html", {"form": form, "edit": False})
+    return render(request, "main/bundle_new.html", {"form": form, "edit": False, "confirm" : False})
 
 """
 Seller: edit bundle
@@ -145,15 +157,6 @@ def bundle_delete_view(request, id):
     else:
         form = BundleDeleteForm(None)
     return render(request, "main/bundle_confirm_delete.html",{"form": form, "post": bundle})
-
-"""_
-Seller: See analytics, actually create
-"""
-@login_required
-def bundle_confirm_view(request):
-    if request.user.user_type != "seller":
-        raise PermissionDenied
-    return render(request, "main/bundle_confirm.html")
 
 """
 Consumer: Show own reservations with bundle details
