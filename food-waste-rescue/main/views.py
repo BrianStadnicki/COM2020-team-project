@@ -323,10 +323,3 @@ def sellerExtra(request):
     else:
         form = SellerExtraForm()
     return render(request, "registration/seller_extra.html", {"form":form})
-
-# Redirecting users if they're in the Seller group 
-# If the user fills in the first sign-up form but exits the website before filling in the second one, the program needs to detect this when they're logging in.
-
-def redirectToSellerExtra(request):
-        if request.user.groups.filter(name="seller").exists():
-            return redirect()
