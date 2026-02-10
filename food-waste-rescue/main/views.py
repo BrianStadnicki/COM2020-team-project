@@ -144,6 +144,10 @@ def bundle_edit_view(request, id):
     if request.user.user_type != "seller":
         raise PermissionDenied
     bundle = get_object_or_404(Bundle_posting, id=id)
+
+    if request.user.seller != bundle.seller:
+        raise PermissionDenied
+    
     if request.method == "POST":
         form = BundleNewForm(request.POST or None, instance=bundle)
         if form.is_valid():
@@ -163,7 +167,12 @@ Seller: remove bundle
 def bundle_delete_view(request, id):
     if request.user.user_type != "seller":
         raise PermissionDenied
+    
     bundle = get_object_or_404(Bundle_posting, id = id)
+
+    if request.user.seller != bundle.seller:
+        raise PermissionDenied
+
     if request.method == "POST":
         bundle.delete()
         return redirect("bundles_view_url")
