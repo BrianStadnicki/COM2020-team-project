@@ -478,4 +478,7 @@ def run_seed(self, mode, seed):
             status = "R"
             
         create_reservation(status)
-        
+    
+    # 150 issues with random type
+    for _ in range(150):
+        create_issue_report(random.choice(["C","A","S"]))
