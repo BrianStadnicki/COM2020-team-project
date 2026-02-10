@@ -169,7 +169,7 @@
         {{ form.contents_description.errors }}
 
         {% if confirm %}
-        <div class="row">
+        <div class="row mt-3">
             <div class="col-12">
                 <div class="card">
                     <div class="card-title">
@@ -197,15 +197,16 @@
         {% endif %}
 
         <div class="d-flex justify-content-end">
+            {% if confirm %}
+                <button type="submit" value="create" class="btn btn-primary me-auto mt-3" name="submit">Create</button>
+            {% else %}
+                <button type="submit" value="confirm" class="btn btn-primary me-auto mt-3" name="submit">Confirm</button>
+            {% endif %}
             <a href="{% url 'bundle_new_view_url' %}" class="btn btn-outline-secondary mt-3 ms-auto">Discard</a>
         </div>
 
         <div class="d-flex justify-content-end">
-            {% if confirm %}
-                <button type="submit" value="create" class="btn btn-primary" name="submit">Create</button>
-            {% else %}
-                <button type="submit" value="confirm" class="btn btn-primary" name="submit">Confirm</button>
-            {% endif %}
+            
         </div>
     </form>
 
