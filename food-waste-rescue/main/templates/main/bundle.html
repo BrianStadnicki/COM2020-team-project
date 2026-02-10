@@ -13,14 +13,6 @@
 {{ form.non_field_errors }}
 
 <div class="container-fluid">
-    <nav class="navbar">
-        <div class="container-fluid">
-            <h1 class="navbar-brand">Bundle {{post.name}}</h1>
-        </div>
-    </nav>
-</div>
-
-<div class="container-fluid">
     <!-- Title + Description -->
     <h2>{{post.name|default:"Untitled Bundle"}}</h2>
     <p>{{post.contents_description|default:"No description provided."}}
