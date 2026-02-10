@@ -412,8 +412,14 @@ def create_reservation(status, chosen_consumer=None, starting_date=None, ending_
     
     chosen_time = time(chosen_minutes // 60,chosen_minutes % 60)
 
-    time_stamp = datetime.combine(selected_posting.creation_time.date(),chosen_time)
-
+    posting_date = selected_posting.creation_time.date()
+    now = timezone.now()
+    
+    # RuntimeWarning: DateTimeField received a naive datetime solved with:
+    # https://stackoverflow.com/questions/18622007/runtimewarning-datetimefield-received-a-naive-datetime
+    
+    time_stamp = now.replace(posting_date.year,posting_date.month,posting_date.day,chosen_time.hour,chosen_time.minute,0,0)
+    
     reservation = Reservation.objects.create(
         posting = selected_posting,
         consumer = consumer,
