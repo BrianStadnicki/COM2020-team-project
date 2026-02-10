@@ -2,7 +2,7 @@ from main.models import User, Consumer, Seller, Bundle_posting, Reservation, Iss
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from faker import Faker
-from datetime import time, datetime
+from datetime import time, datetime, timedelta
 from decimal import Decimal
 import random, logging
 
@@ -12,7 +12,7 @@ fake = Faker("en_GB")
 """ Logger for debugging """
 logger = logging.getLogger(__name__)
 
-# python manage.py seed --mode=refresh --seed=123
+# python manage.py testing_data --mode=refresh --seed=123
 
 """ Clear all data and creates new data """
 MODE_REFRESH = 'refresh'
@@ -359,25 +359,44 @@ def create_bundle_posting(seller):
     )
     return bundle_posting
             
-def create_reservation(status):
+def create_reservation(status, chosen_consumer=None, starting_date=None, ending_date=None):
     """Create reservation. Ensures the reservation date is on the same date as the bundle posting."""
     logger.info("Creating reservation")
     
     consumers = list(Consumer.objects.all())
     postings = list(Bundle_posting.objects.all())
     
+    if chosen_consumer != None:
+        consumer = chosen_consumer
+    else:
+        consumer = random.choice(consumers)
+    
     available_postings = []
     
     for posting in postings:
+        date = posting.creation_time.date()
+
+        if starting_date != None and date < starting_date:
+            continue
+        if ending_date != None and date > ending_date:
+            continue
         if posting.available > 0:
             available_postings.append(posting)
-        else:
-            pass
         
     if available_postings == []:
         return None
     
-    selected_posting = random.choice(available_postings)
+    recent_postings = []
+    
+    for posting in available_postings:
+        if (timezone.now().date() - posting.creation_time.date()).days <= 7:
+            recent_postings.append(posting)
+            
+    # Bias towards recent postings - within the last 7 days
+    if recent_postings != [] and random.random() < 0.6:
+        selected_posting = random.choice(recent_postings)
+    else:
+        selected_posting = random.choice(available_postings)
     
     pickup_start = selected_posting.pickup_window_start
     pickup_end = selected_posting.pickup_window_end
@@ -385,7 +404,11 @@ def create_reservation(status):
     start_minutes = pickup_start.hour * 60 + pickup_start.minute
     end_minutes = pickup_end.hour * 60 + pickup_end.minute
     
-    chosen_minutes = random.randint(start_minutes, end_minutes)
+    # Bias towards earlier pickups which is a lot more likely in a real-world scenario:
+    if random.random() < 0.6:
+        chosen_minutes = start_minutes + random.randint(0, (end_minutes - start_minutes) // 2)
+    else:
+        chosen_minutes = random.randint(start_minutes, end_minutes)
     
     chosen_time = time(chosen_minutes // 60,chosen_minutes % 60)
 
@@ -393,7 +416,7 @@ def create_reservation(status):
 
     reservation = Reservation.objects.create(
         posting = selected_posting,
-        consumer = random.choice(consumers),
+        consumer = consumer,
         time_stamp = time_stamp,
         claim_code = fake.unique.random_int(min=0, max=99999),
         is_collected = status == "C"
@@ -436,6 +459,7 @@ def run_seed(self, mode, seed):
     if mode == MODE_CLEAR:
         return
     
+    
     # Generate demo user and demo seller (fixed)
     demo_user = create_demo_user()
     print("------------------------------------")
@@ -447,6 +471,9 @@ def run_seed(self, mode, seed):
     for _ in range(100):
         create_consumer_profile()
     
+    consumers = list(Consumer.objects.all())
+    active_consumers = random.sample(consumers, 20)
+    
     # Generate 25 sellers
     for _ in range(25):
         sellers.append(create_seller_profile())
@@ -456,5 +483,24 @@ def run_seed(self, mode, seed):
         for _ in range(25):
             create_bundle_posting(seller)
 
+    date_now = timezone.now().date()
+    week_range = 6
+    monday = date_now - timedelta(days=date_now.weekday())
+
+    # Consumers with streaks
+    for consumer in active_consumers:
+        for i in range(week_range):
+            start_week = monday - timedelta(weeks=i)
+            end_week = start_week + timedelta(days=6)
+            create_reservation("C", chosen_consumer=consumer, starting_date=start_week, ending_date=end_week)
+            
+    # 400 reservations
     for _ in range(400):
-        pass
+        
+        if random.random() < 0.4:
+            status = "C"
+        else:
+            status = "R"
+            
+        create_reservation(status)
+        
