@@ -5,6 +5,7 @@ from faker import Faker
 from datetime import time, datetime, timedelta
 from decimal import Decimal
 import random, logging
+from django.db.models import Count, F
 
 """Fake data generator"""
 fake = Faker("en_GB")
@@ -362,41 +363,28 @@ def create_bundle_posting(seller):
 def create_reservation(status, chosen_consumer=None, starting_date=None, ending_date=None):
     """Create reservation. Ensures the reservation date is on the same date as the bundle posting."""
     logger.info("Creating reservation")
-    
-    consumers = list(Consumer.objects.all())
-    postings = list(Bundle_posting.objects.all())
-    
+            
     if chosen_consumer != None:
         consumer = chosen_consumer
     else:
-        consumer = random.choice(consumers)
+        consumers_pk = Consumer.objects.values_list('pk', flat=True)
+        consumer_pk = random.choice(consumers_pk)
+        consumer = Consumer.objects.get(pk=consumer_pk)
     
-    available_postings = []
+    postings = Bundle_posting.objects.annotate(num_reservations=Count("reservation"))
+    postings = postings.filter(num_reservations__lt=F("quantity"))
+    if starting_date != None:
+        postings = postings.filter(creation_time__gte=starting_date)
+    if ending_date != None:
+        postings = postings.filter(creation_time__lte=ending_date)
     
-    for posting in postings:
-        date = posting.creation_time.date()
-
-        if starting_date != None and date < starting_date:
-            continue
-        if ending_date != None and date > ending_date:
-            continue
-        if posting.available > 0:
-            available_postings.append(posting)
-        
-    if available_postings == []:
-        return None
-    
-    recent_postings = []
-    
-    for posting in available_postings:
-        if (timezone.now().date() - posting.creation_time.date()).days <= 7:
-            recent_postings.append(posting)
+    recent_postings = postings.filter(creation_time__gte=timezone.now() - timedelta(days=7))
             
     # Bias towards recent postings - within the last 7 days
-    if recent_postings != [] and random.random() < 0.6:
-        selected_posting = random.choice(recent_postings)
+    if recent_postings and random.random() < 0.6:
+        selected_posting = random.choice(recent_postings.all())
     else:
-        selected_posting = random.choice(available_postings)
+        selected_posting = random.choice(postings.all())
     
     pickup_start = selected_posting.pickup_window_start
     pickup_end = selected_posting.pickup_window_end
