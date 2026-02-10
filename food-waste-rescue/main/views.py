@@ -274,6 +274,7 @@ def accessibility_view(request):
 
 ########### register here ##################################### 
 def registerUser(request):
+
     if request.user.is_authenticated:
         return redirect("/") #TODO: Change to home page
     else:    
@@ -283,7 +284,7 @@ def registerUser(request):
                 user = form.save() #returns custom user instance
 
                 if user.user_type == "seller":
-                    return redirect("seller-extra", user_id=user.id)
+                    return redirect("login")
                 else:
                     Consumer.objects.create(user = user)
                     messages.success(request, f'Your account has been created! You are now able to log in')
@@ -297,15 +298,24 @@ def registerUser(request):
             
 
 
-def sellerExtra(request, user_id):
-    user = User.objects.get(id=user_id)
+def sellerExtra(request):
+    # attach the seller profile to request.user
+    user = request.user
+
+    # only sellers can access this page
     if user.user_type != "seller":
         raise PermissionDenied
+    
+    #If seller profile already exists, don't let them create another
+    if hasattr(user, "seller"):
+        messages.info(request, "Seller profile already completed.")
+        return redirect("login")
+
     if request.method == "POST":
         form = SellerExtraForm(request.POST)
         if form.is_valid():
             seller = form.save(commit=False)
-            seller.user_id = user_id
+            seller.user = user
             seller.save()
             form.save_m2m()
             messages.success(request, "Seller profile completed!")
@@ -313,4 +323,3 @@ def sellerExtra(request, user_id):
     else:
         form = SellerExtraForm()
     return render(request, "registration/seller_extra.html", {"form":form})
-
