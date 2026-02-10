@@ -50,7 +50,7 @@
             <select class="form-select" name="category" value="{{ form.initial.category }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
                 <option>Select Category</option>
                 {% for char, name in categories %}
-                <option {% if form.initial.char == char %}selected="selected"{% endif %}>{{name}}</option>
+                    <option value="{{ char }}" {% if form.initial.category == char %} selected="selected"{% endif %}>{{name}}</option>
                 {% endfor %}
             </select>
             {{ form.category.errors }}
