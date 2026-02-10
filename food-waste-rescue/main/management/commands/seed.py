@@ -286,34 +286,6 @@ def create_bundle_posting(seller):
     # Select a random pickup window from the list
     window_start, window_end = random.choice(pickup_windows)
 
-    open_minutes = seller.opening_time.hour * 60 + seller.opening_time.minute
-    close_minutes = seller.closing_time.hour * 60 + seller.closing_time.minute
-
-    start_minutes = window_start.hour * 60 + window_start.minute
-    end_minutes = window_end.hour * 60 + window_end.minute
-
-    # Ensure start and end are within seller operating times
-    start_minutes = max(start_minutes, open_minutes)
-    end_minutes = min(end_minutes, close_minutes)
-
-    # If end <= start, use a 60 minute window inside operating times
-    if end_minutes <= start_minutes:
-        duration = 60
-        latest_start = close_minutes - duration
-        
-        # Use start and closing time if out of bounds
-        if latest_start <= open_minutes:
-            start_minutes = open_minutes
-            end_minutes = close_minutes
-
-        # If not out of bounds
-        else:
-            start_minutes = random.randint(open_minutes, latest_start)
-            end_minutes = start_minutes + duration
-
-    pickup_window_start = time(start_minutes // 60, start_minutes % 60)
-    pickup_window_end = time(end_minutes // 60, end_minutes % 60)
-
     bundle_posting = Bundle_posting.objects.create(
         seller=seller,
         category=selected_category,
@@ -322,8 +294,8 @@ def create_bundle_posting(seller):
         quantity=random.randint(1, 5),
         price=Decimal(fake.pydecimal(left_digits=2, right_digits=2, positive=True)),
         creation_time=creation,
-        pickup_window_start=pickup_window_start,
-        pickup_window_end=pickup_window_end,
+        pickup_window_start=window_start,
+        pickup_window_end=window_end,
         allergen_celery=random.choice([True, False]),
         allergen_crustacean=random.choice([True, False]),
         allergen_dairy=random.choice([True, False]),
