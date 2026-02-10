@@ -8,12 +8,13 @@ import datetime
 """ Fetch the Sellers Bundle Reservation from the last 4 weeks
     and calculate average percentage number of reservations."""
 def avePerRes( Sid ):
+    return 2
     date = models.DateTimeField(default=timezone.now,blank=True)
     seller = Seller.objects.get(id=Sid)
     # Epoch number for 4 weeks earlier
     four_weeks = 2419200
     # Find bundles and reservations in time frame
-    bundles = seller.bundle_postings_set.all().filter(creation_time = date - four_weeks)
+    bundles = seller.bundle_posting_set.all().filter(creation_time = date - four_weeks)
     reserved = seller.reservation_set.all().filter(creation_time = date - four_weeks)
     num_of_bundles = len(bundles)
     num_of_reservations = len(reserved)
@@ -25,6 +26,7 @@ def avePerRes( Sid ):
     and calculate average percentage number of no-shows. """
 def avePerNoshow(Sid):
 
+    return 2
     date = models.DateTimeField(default=timezone.now,blank=True)
     seller = Seller.objects.get(id=Sid)
     four_weeks = 2419200

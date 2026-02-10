@@ -19,6 +19,8 @@
     <div class="container-fluid">
         {% if edit %}
             <h1 class="navbar-brand">Edit Bundle</h1>
+        {% elif confirm %}
+            <h1 class="navbar-brand"> Confirm Bundle</h1>
         {% else %}
             <h1 class="navbar-brand">Create Bundle</h1>
         {% endif %}
@@ -31,12 +33,12 @@
 
         <div class="input-group mb-3">
             <span class="input-group-text" for="name">Bundle Name</span>
-            <input type="text" class="form-control" value="{{ form.initial.name }}" aria-label="bundle-name" aria-describedby="bundle-name" name="name">
+            <input type="text" class="form-control" value="{{ form.initial.name }}" aria-label="bundle-name" aria-describedby="bundle-name" name="name" {% if confirm %} disabled {% endif %}>
         </div>
             
         <div class="input-group mb-3">
             <label class="input-group-text" for="category">Categories</label>
-            <select class="form-select" name="category" value="{{ form.initial.category }}">
+            <select class="form-select" name="category" value="{{ form.initial.category }}" {% if confirm %} disabled {% endif %}>
                 <option>Select Category</option>
                 <option {% if form.initial.category == 'Meat Bag' %}selected="selected"{% endif %}>Meat Bag</option>
                 <option {% if form.initial.category == 'Medical Bag' %}selected="selected"{% endif %}>Medical Bag</option>
@@ -47,91 +49,92 @@
         Allergens
         <div class="d-flex flex-wrap">
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_celery" {% if form.initial.allergen_celery == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_celery" {% if form.initial.allergen_celery == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_celery">celery</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_gluten" {% if form.initial.allergen_gluten == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_gluten" {% if form.initial.allergen_gluten == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_gluten">gluten</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_crustacean" {% if form.initial.allergen_crustacean == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_crustacean" {% if form.initial.allergen_crustacean == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_crustacean">crustaceans</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_egg" {% if form.initial.allergen_egg == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_egg" {% if form.initial.allergen_egg == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_egg">eggs</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_fish" {% if form.initial.allergen_fish == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_fish" {% if form.initial.allergen_fish == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_fish">fish</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" name="allergen_lupin" {% if form.initial.allergen_lupin == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox" name="allergen_lupin" {% if form.initial.allergen_lupin == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_lupin">lupin</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_dairy" {% if form.initial.allergen_dairy == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_dairy" {% if form.initial.allergen_dairy == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_dairy">dairy</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_mollusc" {% if form.initial.allergen_mollusc == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_mollusc" {% if form.initial.allergen_mollusc == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_mollusc">molluscs</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_mustard" {% if form.initial.allergen_mustard == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_mustard" {% if form.initial.allergen_mustard == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_mustard">mustard</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_nut" {% if form.initial.allergen_nut == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_nut" {% if form.initial.allergen_nut == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_nut">nuts</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_peanut" {% if form.initial.allergen_peanut == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_peanut" {% if form.initial.allergen_peanut == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_peanut">peanuts</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_sesame" {% if form.initial.allergen_sesame == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_sesame" {% if form.initial.allergen_sesame == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_sesame">sesame seeds</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_soya" {% if form.initial.allergen_soya == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_soya" {% if form.initial.allergen_soya == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_soya">soya</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"name="allergen_sulphite" {% if form.initial.allergen_sulphite == True %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox"name="allergen_sulphite" {% if form.initial.allergen_sulphite == True %}checked{% endif %} {% if confirm %} disabled {% endif %}>
                 <label class="form-check-label" for="allergen_sulphite">sulphur dioxide/sulphites</label>
             </div>
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text">£</span>
-            <input type="number" value="{{ form.initial.price }}" class="form-control" aria-label="Pound amount (with dot and two decimal places)" name="price" step="0.01">
+            <input type="number" value="{{ form.initial.price }}" class="form-control" aria-label="Pound amount (with dot and two decimal places)" name="price" step="0.01" {% if confirm %} disabled {% endif %}>
           </div>
 
           <div class="input-group mb-3">
             <span class="input-group-text" name="bundle-quantity">Quantity</span>
-            <input type="number" class="form-control" value="{{ form.initial.quantity }}" aria-label="bundle-quantity" aria-describedby="bundle-label" name="quantity">
+            <input type="number" class="form-control" value="{{ form.initial.quantity }}" aria-label="bundle-quantity" aria-describedby="bundle-label" name="quantity" {% if confirm %} disabled {% endif %}>
         </div>
 
         <div class="input-group mb-3">
-            <span class="input-group-text" name="bundle-quantity">Pick-up Window</span>
+            <span class="input-group-text" name="pick_up_window">Pick-up Window</span>
                 <input
                 type="time"
                 name="pickup_window_start" value="{{ form.initial.pickup_window_start }}"
-                required/>
+                {% if confirm %} disabled {% endif %} required/>
 
                 <input
                 type="time"
                 name="pickup_window_end" value="{{ form.initial.pickup_window_end }}"
-                required/>
+                {% if confirm %} disabled {% endif %} required/>
         </div>
 
         <div class="input-group">
-            <span class="input-group-text">Description</span>
-            <textarea class="form-control" aria-label="description" name="contents_description">{{ form.initial.contents_description }}</textarea>
+            <span class="input-group-text" >Description</span>
+            <textarea class="form-control" aria-label="description" name="contents_description" {% if confirm %} disabled {% endif %}>{{ form.initial.contents_description }} </textarea>
         </div>
 
+        {% if confirm %}
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -142,7 +145,6 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
                                     <th scope="col">Expected Reservations</th>
                                     <th scope="col">Expected No-shows</th>
                                 </tr>
@@ -158,17 +160,24 @@
                 </div>
             </div>
         </div>
+        {% endif %}
 
+        {% if confirm %}
         <div class="d-flex justify-content-end">
             <input type="submit" value="Edit" class="btn btn-primary" name="submit">
         </div>
+        {% endif %}
 
         <div class="d-flex justify-content-end">
-            <input type="submit" value="Post" class="btn btn-primary" name="submit">
+            <a href="{% url 'bundle_edit_view_url' id=bundle.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Discard</a>
         </div>
 
         <div class="d-flex justify-content-end">
-            <input type="submit" value="Confirm" class="btn btn-primary" name="submit">
+            {% if confirm %}
+            <input type="submit" value="Create" class="btn btn-primary" name="create">
+            {% else %}
+            <input type="submit" value="Confirm" class="btn btn-primary" name="confirm">
+            {% endif %}
         </div>
     </form>
 
