@@ -105,6 +105,11 @@ Seller: create new bundle
 """
 @login_required
 def bundle_new_view(request):
+    #creates to lists on of the names and the other of just the choices
+    cat_char = Bundle_posting.objects.values_list('category', flat=True).distinct()
+    cat_names = [label for _, label in Bundle_posting.CATEGORYS]
+    categories = list(zip(cat_char, cat_names))
+        
     if request.user.user_type != "seller":
         raise PermissionDenied
     if request.method == "POST":
@@ -116,7 +121,7 @@ def bundle_new_view(request):
             return redirect("bundle_view_url", id=bundle.id)
     else:
         form = BundleNewForm()
-    return render(request, "main/bundle_new.html", {"form": form, "edit": False})
+    return render(request, "main/bundle_new.html", {"form": form, "edit": False, 'categories': categories, 'cat_names': categories})
 
 """
 Seller: edit bundle
