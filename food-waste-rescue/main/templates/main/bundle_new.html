@@ -42,8 +42,10 @@
         <div class="input-group mb-3">
             <span class="input-group-text" for="name">Bundle Name</span>
             <input type="text" class="form-control" value="{{ form.initial.name }}" aria-label="bundle-name" aria-describedby="bundle-name" name="name" {% if confirm %} style="pointer-events: none;" {% endif %}>
-            {{ form.name.errors }}
         </div>
+
+        {{ form.name.errors }}
+
             
         <div class="input-group mb-3">
             <label class="input-group-text" for="category">Categories</label>
@@ -53,8 +55,9 @@
                     <option value="{{ char }}" {% if form.initial.category == char %} selected="selected"{% endif %}>{{name}}</option>
                 {% endfor %}
             </select>
-            {{ form.category.errors }}
         </div>
+
+        {{ form.category.errors }}
 
         Allergens
         <div class="d-flex flex-wrap">
@@ -133,14 +136,16 @@
         <div class="input-group mb-3">
             <span class="input-group-text">£</span>
             <input type="number" value="{{ form.initial.price }}" class="form-control" aria-label="Pound amount (with dot and two decimal places)" name="price" step="0.01" {% if confirm %} style="pointer-events: none;" {% endif %}>
-            {{ form.price.errors }}  
         </div>
 
-          <div class="input-group mb-3">
+        {{ form.price.errors }}  
+
+        <div class="input-group mb-3">
             <span class="input-group-text" name="bundle-quantity">Quantity</span>
             <input type="number" class="form-control" value="{{ form.initial.quantity }}" aria-label="bundle-quantity" aria-describedby="bundle-label" name="quantity" {% if confirm %} style="pointer-events: none;" {% endif %}>
-            {{ form.quantity.errors }}
         </div>
+
+        {{ form.quantity.errors }}
 
         <div class="input-group mb-3">
             <span class="input-group-text" name="pick_up_window">Pick-up Window</span>
@@ -153,15 +158,15 @@
                 type="time"
                 name="pickup_window_end" value="{{ form.initial.pickup_window_end }}"
                 {% if confirm %} style="pointer-events: none;" {% endif %} required/>
-            {{ form.pickup_window_start.errors }}
-            {{ form.pickup_window_end.errors }}
         </div>
+        {{ form.pickup_window_start.errors }}
+        {{ form.pickup_window_end.errors }}
 
         <div class="input-group">
             <span class="input-group-text" >Description</span>
             <textarea class="form-control" aria-label="description" name="contents_description" {% if confirm %} style="pointer-events: none;" {% endif %}>{{ form.initial.contents_description }} </textarea>
-            {{ form.contents_description.errors }}
         </div>
+        {{ form.contents_description.errors }}
 
         {% if confirm %}
         <div class="row">
@@ -197,9 +202,9 @@
 
         <div class="d-flex justify-content-end">
             {% if confirm %}
-            <button type="submit" value="create" class="btn btn-primary" name="submit">Create</button>
+                <button type="submit" value="create" class="btn btn-primary" name="submit">Create</button>
             {% else %}
-            <button type="submit" value="confirm" class="btn btn-primary" name="submit">Confirm</button>
+                <button type="submit" value="confirm" class="btn btn-primary" name="submit">Confirm</button>
             {% endif %}
         </div>
     </form>
