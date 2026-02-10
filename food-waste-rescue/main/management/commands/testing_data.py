@@ -24,41 +24,35 @@ MODE_CLEAR = 'clear'
 
 class BundleProvider:
     NAMES = {
-        "Meals": [
+        "M": [
             "Meat Bag", "Surprise Meat Bag", "Daily Special", "Healthy Meal", "Standard Meal",
             "Chef's Classic", "Food Leftovers", "Magic Meal Bag"
         ],
-        "Bread & Pastries": [
+        "B&P": [
             "Bakery Bag","Bakery Surprise Bag", "Pastry Bag", "Fresh Bakery Bag",
             "Bakery Leftovers", "Pastry Surprise Bag", "Magic Bakery Bag", "Magic Pastry Bag"
         ],
-        "Groceries": [
+        "G": [
             "Grocery Bag", "Grocery Surprise Bag", "Grocery Leftovers",
             "Mixed Grocery Bag", "Fresh Grocery Bag", "Magic Grocery Bag"
         ],
-        "Flowers & Plants": [
+        "F&P": [
             "Flower Bag", "Flower Surprise Bag", "Plant Bag", "Plant Surprise Bag",
             "Bouquet", "Magic Flower Bag", "Magic Plant Bag", "Garden Warfare Bag"
         ],
-        "Pet Food": [
+        "PF": [
             "Pet Food Bag", "Pet Food Surprise Bag", "Magic Pet Food Bag"
         ],
-        "Vegetarian": [
+        "V": [
             "Vegetarian Bag", "Veggie Surprise Bag", "Magic Vegetarian Bag"
         ],
-        "Vegan": [
+        "VE": [
             "Vegan Surprise Bag", "Plant-Based Rescue Box", "Magic Vegan Bag",
-        ],
-        "Collect Now": [
-            "Last Minute Bag", "Last Minute Surprise Bag", "Magic Last Minute Bag"
-        ],
-        "Collect Today": [
-            "Today’s Surprise Bag", "Today's Special Bag", "Today's Magic Bag"
         ]
     }
 
     CONTENTS = {
-        "Meals": [
+        "M": [
             "Breakfast to go.",
             "Brunch to go.",
             "Lunch to go.",
@@ -86,7 +80,7 @@ class BundleProvider:
             "Cooked food with fresh ingredients."
         ],
 
-        "Bread & Pastries": [
+        "B&P": [
             "Fresh bread.",
             "Assorted pastries.",
             "Croissants and rolls.",
@@ -103,7 +97,7 @@ class BundleProvider:
             "Baked goods from today."
         ],
 
-        "Groceries": [
+        "G": [
             "Mixed groceries.",
             "Fresh produce.",
             "Fruit and vegetables.",
@@ -116,7 +110,7 @@ class BundleProvider:
             "Household food items."
         ],
 
-        "Flowers & Plants": [
+        "F&P": [
             "Fresh flowers.",
             "Seasonal blooms.",
             "Mixed bouquets.",
@@ -127,7 +121,7 @@ class BundleProvider:
             "Assorted floral items."
         ],
 
-        "Pet Food": [
+        "PF": [
             "Dry pet food.",
             "Wet pet food.",
             "Pet treats.",
@@ -139,7 +133,7 @@ class BundleProvider:
             "Pet snacks."
         ],
 
-        "Vegetarian": [
+        "V": [
             "Vegetarian meals.",
             "Meat-free dishes.",
             "Vegetarian groceries.",
@@ -149,29 +143,16 @@ class BundleProvider:
             "Vegetarian selection of items."
         ],
 
-        "Vegan": [
+        "VE": [
             "Vegan meals.",
             "Plant-based dishes.",
             "Vegan groceries.",
             "Vegan selection of items.",
             "Dairy-free food.",
             "Plant-based groceries."
-        ],
-
-        "Collect Now": [
-            "Items available for immediate collection.",
-            "Last-minute food rescue.",
-            "Urgent collection items.",
-            "Food hot and ready-to-go."
-        ],
-
-        "Collect Today": [
-            "Items available for collection today.",
-            "Food to be collected today.",
-            "Same-day collection items.",
-            "Today's surplus food."
         ]
     }
+
 
 class Command(BaseCommand):
     help = "Seed database with synthetic data"
@@ -291,9 +272,9 @@ def create_bundle_posting(seller):
     ]
         
     
-    categories =["Meals", "Bread & Pastries", "Groceries", "Flowers & Plants", "Pet Food", "Collect Now", "Collect Today", "Vegetarian", "Vegan"]
+    categories = Bundle_posting.CATEGORYS
 
-    selected_category = random.choice(categories)
+    selected_category = random.choice(categories)[0]
 
     # Creation time within last 6 weeks
     creation = fake.date_time_between(
