@@ -49,9 +49,9 @@
             <label class="input-group-text" for="category">Categories</label>
             <select class="form-select" name="category" value="{{ form.initial.category }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
                 <option>Select Category</option>
-                <option {% if form.initial.category == 'Meat Bag' %}selected="selected"{% endif %}>Meat Bag</option>
-                <option {% if form.initial.category == 'Medical Bag' %}selected="selected"{% endif %}>Medical Bag</option>
-                <option {% if form.initial.category == 'Exotic Bag' %}selected="selected"{% endif %}>Exotic Bag</option>
+                {% for char, name in categories %}
+                <option {% if form.initial.char == char %}selected="selected"{% endif %}>{{name}}</option>
+                {% endfor %}
             </select>
             {{ form.category.errors }}
         </div>
