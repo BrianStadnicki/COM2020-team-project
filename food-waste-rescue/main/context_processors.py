@@ -8,7 +8,7 @@ def seller_profile_handler(request):
         if request.user.user_type == "seller":
 
             # If seller profile does NOT exist → redirect
-            if not hasattr(request.user, "seller"):
+            if request.user.seller == None:
                 return redirect("seller_extra")
 
     # Context processors must return a dict
