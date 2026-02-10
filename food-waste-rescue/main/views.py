@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
 import datetime
+from .analytics import get_best_categories, get_best_pickup, get_sell_through, get_waste_proxy
 
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
@@ -177,7 +178,16 @@ Seller: Show analytics
 def analytics_view(request):
     if request.user.user_type != "seller":
         raise PermissionDenied
-    return render(request, "main/analytics.html")
+    
+    seller = getattr(request, "user", None).seller
+    
+    sell_through = get_sell_through(seller)
+    waste_proxy = get_waste_proxy(seller)
+    best_pickup = get_best_pickup(seller)
+    best_category = get_best_categories(seller)
+
+    return render(request, "main/analytics.html", {"sell_through": sell_through, "waste_proxy": waste_proxy, 
+                                                   "best_pickup": best_pickup, "best_category": best_category})
 
 """
 Consumer: Show own reports
