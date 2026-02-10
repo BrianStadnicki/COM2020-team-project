@@ -2,6 +2,8 @@ from django.urls import include, path
 from debug_toolbar.toolbar import debug_toolbar_urls
 from . import views
 from django.conf import settings
+from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
