@@ -9,35 +9,59 @@ from sklearn.metrics import mean_squared_error
 
 """ Fetch the Sellers Bundle Reservation from between 3 and 6 weeks ago
     and calculate average percentage number of reservations."""
+
+
 def avePerRes(seller_id):
     recent_postings = Bundle_posting.objects.filter(seller_id=seller_id)
-    recent_postings = recent_postings.filter(creation_time__lte=timezone.now() - timedelta(weeks=3))
-    recent_postings = recent_postings.filter(creation_time__gte=timezone.now() - timedelta(weeks=6))
-    recent_postings_quantity_count = recent_postings.aggregate(Sum("quantity"))["quantity__sum"]
-    recent_reservations_count = Reservation.objects.filter(posting__seller_id=seller_id).count()
-    
+    recent_postings = recent_postings.filter(
+        creation_time__lte=timezone.now() - timedelta(weeks=3)
+    )
+    recent_postings = recent_postings.filter(
+        creation_time__gte=timezone.now() - timedelta(weeks=6)
+    )
+    recent_postings_quantity_count = recent_postings.aggregate(Sum("quantity"))[
+        "quantity__sum"
+    ]
+    recent_reservations_count = Reservation.objects.filter(
+        posting__seller_id=seller_id
+    ).count()
+
     # return percentage calculation
-    return (recent_reservations_count/recent_postings_quantity_count)    
+    return recent_reservations_count / recent_postings_quantity_count
+
 
 """ Fetch the Sellers Bundle Reservations from between 3 and 6 weeks ago
     and calculate average percentage number of no-shows. """
+
+
 def avePerNoshow(seller_id):
     recent_reservations = Reservation.objects.filter(posting__seller_id=seller_id)
-    recent_reservations = recent_reservations.filter(time_stamp__lte=timezone.now() - timedelta(weeks=3))
-    recent_reservations = recent_reservations.filter(time_stamp__gte=timezone.now() - timedelta(weeks=6))
+    recent_reservations = recent_reservations.filter(
+        time_stamp__lte=timezone.now() - timedelta(weeks=3)
+    )
+    recent_reservations = recent_reservations.filter(
+        time_stamp__gte=timezone.now() - timedelta(weeks=6)
+    )
     recent_reservations_count = recent_reservations.count()
 
-    no_shows = 0;
+    no_shows = 0
     for reservation in recent_reservations.all():
         if reservation.status == "N":
             no_shows += 1
 
-    return (no_shows/recent_reservations_count)
+    return no_shows / recent_reservations_count
+
 
 def errorMSEReservations(seller_id):
     recent_postings = Bundle_posting.objects.filter(seller_id=seller_id)
-    recent_postings = recent_postings.filter(creation_time__lte=timezone.now() - timedelta(days=1))
-    recent_postings = list(recent_postings.filter(creation_time__gte=timezone.now() - timedelta(weeks=3)).all())
+    recent_postings = recent_postings.filter(
+        creation_time__lte=timezone.now() - timedelta(days=1)
+    )
+    recent_postings = list(
+        recent_postings.filter(
+            creation_time__gte=timezone.now() - timedelta(weeks=3)
+        ).all()
+    )
 
     average = avePerRes(seller_id)
     Y_true = [posting.quantity - posting.available for posting in recent_postings]
@@ -45,16 +69,29 @@ def errorMSEReservations(seller_id):
 
     return mean_squared_error(Y_true, Y_pred)
 
+
 def errorMSENoShow(seller_id):
     recent_postings = Bundle_posting.objects.filter(seller_id=seller_id)
-    recent_postings = recent_postings.filter(creation_time__lte=timezone.now() - timedelta(days=1))
-    recent_postings = list(recent_postings.filter(creation_time__gte=timezone.now() - timedelta(weeks=3)).all())
-
+    recent_postings = recent_postings.filter(
+        creation_time__lte=timezone.now() - timedelta(days=1)
+    )
+    recent_postings = list(
+        recent_postings.filter(
+            creation_time__gte=timezone.now() - timedelta(weeks=3)
+        ).all()
+    )
 
     average_n_reservations = avePerRes(seller_id)
     average_no_show = avePerNoshow(seller_id)
 
-    Y_true = [posting.reservation_set.count() - posting.reservation_set.filter(is_collected=True).count() for posting in recent_postings]
-    Y_pred = [posting.quantity * average_n_reservations * average_no_show for posting in recent_postings]
-    
+    Y_true = [
+        posting.reservation_set.count()
+        - posting.reservation_set.filter(is_collected=True).count()
+        for posting in recent_postings
+    ]
+    Y_pred = [
+        posting.quantity * average_n_reservations * average_no_show
+        for posting in recent_postings
+    ]
+
     return mean_squared_error(Y_true, Y_pred)
