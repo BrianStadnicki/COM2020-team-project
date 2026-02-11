@@ -54,9 +54,8 @@ def bundles_view(request):
                     post.category = name
                     break
 
-    categories = [label for _, label in Bundle_posting.CATEGORYS]
-
-    return render(request, "main/bundles.html", {'posts': posts, 'categories': categories, 'allergens': ALLERGENS,
+            
+    return render(request, "main/bundles.html", {'posts': posts, 'categories': Bundle_posting.CATEGORYS, 'allergens': ALLERGENS,
                                                   "selected_category": selected_category, "selected_allergens":selected_allergens, "selected-location":location})
 
 """

@@ -32,10 +32,10 @@
                     <form method="get">
                         <p>Category</p>
                         <select class="form-select" name="category">
-                            <option selected>Select category</option>
-                            {% for category in categories %}
-                                <option value="{{category}}" {% if category == selected_category %}selected{% endif %}>
-                                    {{category}}
+                            <option selected value="">Select category</option>
+                            {% for cat_short, cat in categories %}
+                                <option value="{{cat_short}}" {% if cat_short == selected_category %}selected{% endif %}>
+                                    {{cat}}
                                 </option>
                             {% empty %}
                                 <option>No categories</option>
