@@ -97,7 +97,9 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">Collected?</th>
+                                {% if is_seller %}
+                                    <th scope="col">Collected?</th>
+                                {% endif %}
                                 <th scope="col">Consumer</th>
                                 <th scope="col">Timestamp</th>
                                 <th scope="col">Claim Code</th>
@@ -107,9 +109,9 @@
                         <tbody>
                             {% for reservation in reservations %}
                                 <tr>
-                                    <th scope="row">
-                                        <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
-                                        {% if is_seller %}
+                                    {% if is_seller %}
+                                        <th scope="row">
+                                            <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
                                             <form method="post" action="">
                                                 {% csrf_token %}
                                                 <input type="hidden" value="True" name="is_collected">
@@ -118,8 +120,8 @@
                                                     <input type="submit" value="Collected?" class="btn btn-outline-primary" name="submit">
                                                 {% endif %}
                                             </form>
-                                        {% endif %}
-                                    </th>
+                                        </th>
+                                    {% endif %}
                                     <th>{{ reservation.consumer.user.username }}</th>
                                     <th>{{ reservation.time_stamp }}</th>
                                     <th>{{ reservation.claim_code }}</th>

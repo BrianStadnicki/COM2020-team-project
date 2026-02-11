@@ -4,15 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0007_alter_reservation_status'),
+        ("main", "0007_alter_reservation_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='issuereport',
-            name='type',
-            field=models.CharField(choices=[('C', 'Collection'), ('A', 'Additional information'), ('S', 'Seller')], default='C', max_length=1),
+            model_name="issuereport",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("C", "Collection"),
+                    ("A", "Additional information"),
+                    ("S", "Seller"),
+                ],
+                default="C",
+                max_length=1,
+            ),
         ),
     ]

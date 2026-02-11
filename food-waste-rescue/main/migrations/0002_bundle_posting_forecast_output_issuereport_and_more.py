@@ -4,69 +4,100 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0001_initial'),
+        ("main", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Bundle_posting',
+            name="Bundle_posting",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Forecast_output',
+            name="Forecast_output",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='IssueReport',
+            name="IssueReport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Reservation',
+            name="Reservation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='consumer',
-            name='diplay_name',
-            field=models.CharField(default='consumer', max_length=100),
+            model_name="consumer",
+            name="diplay_name",
+            field=models.CharField(default="consumer", max_length=100),
         ),
         migrations.AddField(
-            model_name='seller',
-            name='closing_time',
-            field=models.TimeField(default='17:00'),
+            model_name="seller",
+            name="closing_time",
+            field=models.TimeField(default="17:00"),
         ),
         migrations.AddField(
-            model_name='seller',
-            name='location',
-            field=models.CharField(default='Exeter University', max_length=100),
+            model_name="seller",
+            name="location",
+            field=models.CharField(default="Exeter University", max_length=100),
         ),
         migrations.AddField(
-            model_name='seller',
-            name='opening_time',
-            field=models.TimeField(default='09:00'),
+            model_name="seller",
+            name="opening_time",
+            field=models.TimeField(default="09:00"),
         ),
         migrations.AddField(
-            model_name='seller',
-            name='telephone_number',
-            field=models.CharField(default='0000000000', max_length=100),
+            model_name="seller",
+            name="telephone_number",
+            field=models.CharField(default="0000000000", max_length=100),
         ),
         migrations.AddField(
-            model_name='seller',
-            name='website_url',
-            field=models.URLField(default='https://www.test.com'),
+            model_name="seller",
+            name="website_url",
+            field=models.URLField(default="https://www.test.com"),
         ),
         migrations.AlterField(
-            model_name='seller',
-            name='display_name',
-            field=models.CharField(default='seller', max_length=100),
+            model_name="seller",
+            name="display_name",
+            field=models.CharField(default="seller", max_length=100),
         ),
     ]

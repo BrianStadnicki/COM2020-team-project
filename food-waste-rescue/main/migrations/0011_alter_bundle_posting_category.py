@@ -4,15 +4,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0010_remove_reservation_status_reservation_is_collected'),
+        ("main", "0010_remove_reservation_status_reservation_is_collected"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bundle_posting',
-            name='category',
-            field=models.CharField(choices=[('M', 'Meals'), ('B&P', 'Bread & Pastries'), ('G', 'Groceries'), ('F&P', 'Flowers & Plants'), ('PF', 'Pet Food'), ('V', 'Vegetarian'), ('VE', 'Vegan')], default='M', max_length=5),
+            model_name="bundle_posting",
+            name="category",
+            field=models.CharField(
+                choices=[
+                    ("M", "Meals"),
+                    ("B&P", "Bread & Pastries"),
+                    ("G", "Groceries"),
+                    ("F&P", "Flowers & Plants"),
+                    ("PF", "Pet Food"),
+                    ("V", "Vegetarian"),
+                    ("VE", "Vegan"),
+                ],
+                default="M",
+                max_length=5,
+            ),
         ),
     ]

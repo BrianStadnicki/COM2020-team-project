@@ -4,15 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0006_remove_consumer_diplay_name'),
+        ("main", "0006_remove_consumer_diplay_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reservation',
-            name='status',
-            field=models.CharField(choices=[('C', 'Collected'), ('N', 'No Show'), ('R', 'Reserved'), ('E', 'Expired')], default='R', max_length=1),
+            model_name="reservation",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("C", "Collected"),
+                    ("N", "No Show"),
+                    ("R", "Reserved"),
+                    ("E", "Expired"),
+                ],
+                default="R",
+                max_length=1,
+            ),
         ),
     ]

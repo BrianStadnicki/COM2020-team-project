@@ -4,25 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0008_alter_issuereport_type'),
+        ("main", "0008_alter_issuereport_type"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bundle_posting',
-            name='category',
-            field=models.CharField(default='Meals', max_length=100),
+            model_name="bundle_posting",
+            name="category",
+            field=models.CharField(default="Meals", max_length=100),
         ),
         migrations.AlterField(
-            model_name='seller',
-            name='telephone_number',
-            field=models.CharField(default='441392661000', max_length=100),
+            model_name="seller",
+            name="telephone_number",
+            field=models.CharField(default="441392661000", max_length=100),
         ),
         migrations.AlterField(
-            model_name='seller',
-            name='website_url',
-            field=models.URLField(default='https://www.exeter.ac.uk/'),
+            model_name="seller",
+            name="website_url",
+            field=models.URLField(default="https://www.exeter.ac.uk/"),
         ),
     ]

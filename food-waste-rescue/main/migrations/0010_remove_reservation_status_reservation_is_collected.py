@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0009_alter_bundle_posting_category_and_more'),
+        ("main", "0009_alter_bundle_posting_category_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='reservation',
-            name='status',
+            model_name="reservation",
+            name="status",
         ),
         migrations.AddField(
-            model_name='reservation',
-            name='is_collected',
+            model_name="reservation",
+            name="is_collected",
             field=models.BooleanField(default=False),
         ),
     ]
