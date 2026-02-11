@@ -13,14 +13,6 @@
 {{ form.non_field_errors }}
 
 <div class="container-fluid">
-    <nav class="navbar">
-        <div class="container-fluid">
-            <h1 class="navbar-brand">Bundle {{post.name}}</h1>
-        </div>
-    </nav>
-</div>
-
-<div class="container-fluid">
     <!-- Title + Description -->
     <h2>{{post.name|default:"Untitled Bundle"}}</h2>
     <p>{{post.contents_description|default:"No description provided."}}
@@ -75,8 +67,9 @@
                         <input type="submit" value="Remove" class="btn btn-outline-danger mt-3 me-auto ms-1">
                     </form> 
                 {% endif %}
-
-                <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
+                {% if not is_seller %}
+                    <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
+                {% endif %}
             </div>
         </div>
         <div class="col-3">
@@ -94,9 +87,9 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card p-3">
                 <div class="card-title">
                     <h2>Reservations</h2>
                 </div>
@@ -121,8 +114,8 @@
                                                 {% csrf_token %}
                                                 <input type="hidden" value="True" name="is_collected">
                                                 <input type="hidden" value="{{ reservation.id }}" name="id">
-                                                {% if reservation.status != "Collected" %}
-                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                                                {% if not reservation.is_collected %}
+                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary" name="submit">
                                                 {% endif %}
                                             </form>
                                         {% endif %}
@@ -140,9 +133,9 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card p-3">
                 <div class="card-title">
                     <h2>Reports</h2>
                 </div>

@@ -40,13 +40,16 @@
                 <option value="A">Additional Information</option>
                 <option value="S">Seller</option>
             </select>
-            {{ form.type.errors }}
         </div>
+        
+        {{ form.type.errors }}
+
         <div class="input-group">
             <span class="input-group-text">Description</span>
             <textarea class="form-control" aria-label="description" name="description"></textarea>
-            {{ form.description.errors }}
         </div>
+
+        {{ form.description.errors }}
 
         <div class="d-flex justify-content-end">
             <input type="submit" value="Confirm" class="btn btn-primary" name="submit">

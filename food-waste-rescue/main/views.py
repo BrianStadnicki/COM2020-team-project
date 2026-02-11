@@ -16,6 +16,7 @@ Seller: Show own bundles, pagination
 """
 @login_required
 def bundles_view(request):
+    #checks to see if the user is seller or consumer
 
     ALLERGENS = [
     "Celery", "Crustacean", "Dairy", "Egg", "Fish", "Gluten", "Lupin",
@@ -23,9 +24,9 @@ def bundles_view(request):
     ]
 
     if request.user.user_type != "seller":
-        posts = Bundle_posting.objects.all()
+        posts = Bundle_posting.objects
     else:
-        posts = request.user.seller.bundle_posting_set.all()
+        posts = request.user.seller.bundle_posting_set
 
     location = request.GET.get("location", "")
 
@@ -45,8 +46,15 @@ def bundles_view(request):
         posts = posts.exclude(q)
     
     posts = posts.order_by('-creation_time')
+    posts = posts.all()
 
-    categories = Bundle_posting.objects.values_list('category', flat=True).distinct()
+    for post in posts:
+        for index, name in post.CATEGORYS:
+                if index == post.category:
+                    post.category = name
+                    break
+
+    categories = [label for _, label in Bundle_posting.CATEGORYS]
 
     return render(request, "main/bundles.html", {'posts': posts, 'categories': categories, 'allergens': ALLERGENS,
                                                   "selected_category": selected_category, "selected_allergens":selected_allergens, "selected-location":location})
@@ -86,6 +94,11 @@ def bundle_view(request, id):
 
     reservations = post.reservation_set.all() # type: ignore
 
+    for index, name in post.CATEGORYS:
+        if index == post.category:
+            post.category = name
+            break
+
     return render(request, 
                   "main/bundle.html", 
                   {'post': post,
@@ -118,10 +131,10 @@ def bundle_new_view(request):
                 
                 exp_res = bundle.quantity*avePerRes(bundle.seller_id)
                 exp_no_show = exp_res*avePerNoshow(bundle.seller_id)
-                return render(request, "main/bundle_new.html", {"form": form, "edit": False, "confirm" : True, "exp_res" : exp_res, "exp_no_show": exp_no_show })
+                return render(request, "main/bundle_new.html", {"form": form, "edit": False, "confirm" : True, 'categories': Bundle_posting.CATEGORYS, "exp_res" : exp_res, "exp_no_show": exp_no_show })
     else:
         form = BundleNewForm()
-    return render(request, "main/bundle_new.html", {"form": form, "edit": False, "confirm" : False})
+    return render(request, "main/bundle_new.html", {"form": form, "edit": False, 'categories': Bundle_posting.CATEGORYS, "confirm" : False})
 
 """
 Seller: edit bundle
@@ -131,6 +144,10 @@ def bundle_edit_view(request, id):
     if request.user.user_type != "seller":
         raise PermissionDenied
     bundle = get_object_or_404(Bundle_posting, id=id)
+
+    if request.user.seller != bundle.seller:
+        raise PermissionDenied
+    
     if request.method == "POST":
         form = BundleNewForm(request.POST or None, instance=bundle)
         if form.is_valid():
@@ -141,7 +158,7 @@ def bundle_edit_view(request, id):
         form.initial["pickup_window_start"] = form.initial["pickup_window_start"].__format__("%H:%M")
         form.initial["pickup_window_end"] = form.initial["pickup_window_end"].__format__("%H:%M")
 
-    return render(request, "main/bundle_new.html", {"form": form, "edit": True})
+    return render(request, "main/bundle_new.html", {"form": form, 'categories': Bundle_posting.CATEGORYS, "edit": True})
 
 """
 Seller: remove bundle
@@ -150,7 +167,12 @@ Seller: remove bundle
 def bundle_delete_view(request, id):
     if request.user.user_type != "seller":
         raise PermissionDenied
+    
     bundle = get_object_or_404(Bundle_posting, id = id)
+
+    if request.user.seller != bundle.seller:
+        raise PermissionDenied
+
     if request.method == "POST":
         bundle.delete()
         return redirect("bundles_view_url")

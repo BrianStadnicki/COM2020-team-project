@@ -31,8 +31,6 @@ def get_sell_through(seller):
 
     return {"collected": collected, "expired": expired, "no_show": no_show, "sell_through": sell_through}
 
-
-
 def get_waste_proxy(seller):
 
     reservations = Reservation.objects.filter(posting__seller=seller, is_collected=True).values_list("time_stamp", flat=True)
@@ -46,9 +44,7 @@ def get_waste_proxy(seller):
         if reservation >= cutoff:
             week += 1
 
-    return {"total": total*BUNDLE_WEIGHT, "week": week*BUNDLE_WEIGHT}
-
-
+    return {"total": "{0:.2f}".format(total*BUNDLE_WEIGHT), "week": "{0:.2f}".format(week*BUNDLE_WEIGHT)}
 
 def get_best_pickup(seller):
 
@@ -74,7 +70,6 @@ def get_best_pickup(seller):
 
     return result
 
-
 def get_best_categories(seller):
 
     category_counter = Counter()
@@ -92,6 +87,10 @@ def get_best_categories(seller):
     for i in range(3):
         if i < len(top_3):
             category = top_3[i][0]
+            for index, name in Bundle_posting.CATEGORYS:
+                if index == category:
+                    category = name
+                    break
             result[str(i)] = f"{category}"
         else:
             result[str(i)] = f"-"

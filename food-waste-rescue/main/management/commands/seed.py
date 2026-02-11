@@ -2,9 +2,10 @@ from main.models import User, Consumer, Seller, Bundle_posting, Reservation, Iss
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from faker import Faker
-from datetime import time
+from datetime import time, datetime, timedelta
 from decimal import Decimal
 import random, logging
+from django.db.models import Count, F
 
 """Fake data generator"""
 fake = Faker("en_GB")
@@ -23,41 +24,35 @@ MODE_CLEAR = 'clear'
 
 class BundleProvider:
     NAMES = {
-        "Meals": [
+        "M": [
             "Meat Bag", "Surprise Meat Bag", "Daily Special", "Healthy Meal", "Standard Meal",
             "Chef's Classic", "Food Leftovers", "Magic Meal Bag"
         ],
-        "Bread & Pastries": [
+        "B&P": [
             "Bakery Bag","Bakery Surprise Bag", "Pastry Bag", "Fresh Bakery Bag",
             "Bakery Leftovers", "Pastry Surprise Bag", "Magic Bakery Bag", "Magic Pastry Bag"
         ],
-        "Groceries": [
+        "G": [
             "Grocery Bag", "Grocery Surprise Bag", "Grocery Leftovers",
             "Mixed Grocery Bag", "Fresh Grocery Bag", "Magic Grocery Bag"
         ],
-        "Flowers & Plants": [
+        "F&P": [
             "Flower Bag", "Flower Surprise Bag", "Plant Bag", "Plant Surprise Bag",
             "Bouquet", "Magic Flower Bag", "Magic Plant Bag", "Garden Warfare Bag"
         ],
-        "Pet Food": [
+        "PF": [
             "Pet Food Bag", "Pet Food Surprise Bag", "Magic Pet Food Bag"
         ],
-        "Vegetarian": [
+        "V": [
             "Vegetarian Bag", "Veggie Surprise Bag", "Magic Vegetarian Bag"
         ],
-        "Vegan": [
+        "VE": [
             "Vegan Surprise Bag", "Plant-Based Rescue Box", "Magic Vegan Bag",
-        ],
-        "Collect Now": [
-            "Last Minute Bag", "Last Minute Surprise Bag", "Magic Last Minute Bag"
-        ],
-        "Collect Today": [
-            "Today’s Surprise Bag", "Today's Special Bag", "Today's Magic Bag"
         ]
     }
 
     CONTENTS = {
-        "Meals": [
+        "M": [
             "Breakfast to go.",
             "Brunch to go.",
             "Lunch to go.",
@@ -85,7 +80,7 @@ class BundleProvider:
             "Cooked food with fresh ingredients."
         ],
 
-        "Bread & Pastries": [
+        "B&P": [
             "Fresh bread.",
             "Assorted pastries.",
             "Croissants and rolls.",
@@ -102,7 +97,7 @@ class BundleProvider:
             "Baked goods from today."
         ],
 
-        "Groceries": [
+        "G": [
             "Mixed groceries.",
             "Fresh produce.",
             "Fruit and vegetables.",
@@ -115,7 +110,7 @@ class BundleProvider:
             "Household food items."
         ],
 
-        "Flowers & Plants": [
+        "F&P": [
             "Fresh flowers.",
             "Seasonal blooms.",
             "Mixed bouquets.",
@@ -126,7 +121,7 @@ class BundleProvider:
             "Assorted floral items."
         ],
 
-        "Pet Food": [
+        "PF": [
             "Dry pet food.",
             "Wet pet food.",
             "Pet treats.",
@@ -138,7 +133,7 @@ class BundleProvider:
             "Pet snacks."
         ],
 
-        "Vegetarian": [
+        "V": [
             "Vegetarian meals.",
             "Meat-free dishes.",
             "Vegetarian groceries.",
@@ -148,29 +143,16 @@ class BundleProvider:
             "Vegetarian selection of items."
         ],
 
-        "Vegan": [
+        "VE": [
             "Vegan meals.",
             "Plant-based dishes.",
             "Vegan groceries.",
             "Vegan selection of items.",
             "Dairy-free food.",
             "Plant-based groceries."
-        ],
-
-        "Collect Now": [
-            "Items available for immediate collection.",
-            "Last-minute food rescue.",
-            "Urgent collection items.",
-            "Food hot and ready-to-go."
-        ],
-
-        "Collect Today": [
-            "Items available for collection today.",
-            "Food to be collected today.",
-            "Same-day collection items.",
-            "Today's surplus food."
         ]
     }
+
 
 class Command(BaseCommand):
     help = "Seed database with synthetic data"
@@ -290,9 +272,9 @@ def create_bundle_posting(seller):
     ]
         
     
-    categories =["Meals", "Bread & Pastries", "Groceries", "Flowers & Plants", "Pet Food", "Collect Now", "Collect Today", "Vegetarian", "Vegan"]
+    categories = Bundle_posting.CATEGORYS
 
-    selected_category = random.choice(categories)
+    selected_category = random.choice(categories)[0]
 
     # Creation time within last 6 weeks
     creation = fake.date_time_between(
@@ -304,34 +286,6 @@ def create_bundle_posting(seller):
     # Select a random pickup window from the list
     window_start, window_end = random.choice(pickup_windows)
 
-    open_minutes = seller.opening_time.hour * 60 + seller.opening_time.minute
-    close_minutes = seller.closing_time.hour * 60 + seller.closing_time.minute
-
-    start_minutes = window_start.hour * 60 + window_start.minute
-    end_minutes = window_end.hour * 60 + window_end.minute
-
-    # Ensure start and end are within seller operating times
-    start_minutes = max(start_minutes, open_minutes)
-    end_minutes = min(end_minutes, close_minutes)
-
-    # If end <= start, use a 60 minute window inside operating times
-    if end_minutes <= start_minutes:
-        duration = 60
-        latest_start = close_minutes - duration
-        
-        # Use start and closing time if out of bounds
-        if latest_start <= open_minutes:
-            start_minutes = open_minutes
-            end_minutes = close_minutes
-
-        # If not out of bounds
-        else:
-            start_minutes = random.randint(open_minutes, latest_start)
-            end_minutes = start_minutes + duration
-
-    pickup_window_start = time(start_minutes // 60, start_minutes % 60)
-    pickup_window_end = time(end_minutes // 60, end_minutes % 60)
-
     bundle_posting = Bundle_posting.objects.create(
         seller=seller,
         category=selected_category,
@@ -340,8 +294,8 @@ def create_bundle_posting(seller):
         quantity=random.randint(1, 5),
         price=Decimal(fake.pydecimal(left_digits=2, right_digits=2, positive=True)),
         creation_time=creation,
-        pickup_window_start=pickup_window_start,
-        pickup_window_end=pickup_window_end,
+        pickup_window_start=window_start,
+        pickup_window_end=window_end,
         allergen_celery=random.choice([True, False]),
         allergen_crustacean=random.choice([True, False]),
         allergen_dairy=random.choice([True, False]),
@@ -359,23 +313,57 @@ def create_bundle_posting(seller):
     )
     return bundle_posting
             
-def create_reservation(status):
-    """Create reservation"""
+def create_reservation(status, chosen_consumer=None, starting_date=None, ending_date=None):
+    """Create reservation. Ensures the reservation date is on the same date as the bundle posting."""
     logger.info("Creating reservation")
+            
+    if chosen_consumer != None:
+        consumer = chosen_consumer
+    else:
+        consumers_pk = Consumer.objects.values_list('pk', flat=True)
+        consumer_pk = random.choice(consumers_pk)
+        consumer = Consumer.objects.get(pk=consumer_pk)
     
-    consumers = list(Consumer.objects.all())
-    postings = list(Bundle_posting.objects.all())
+    postings = Bundle_posting.objects.annotate(num_reservations=Count("reservation"))
+    postings = postings.filter(num_reservations__lt=F("quantity"))
+    if starting_date != None:
+        postings = postings.filter(creation_time__gte=starting_date)
+    if ending_date != None:
+        postings = postings.filter(creation_time__lte=ending_date)
     
-    # Ensure data is within the last 6 weeks
-    time_stamp=fake.date_time_between(
-        start_date="-6w",
-        end_date="now",
-        tzinfo=timezone.now().tzinfo
-    )
+    recent_postings = postings.filter(creation_time__gte=timezone.now() - timedelta(days=7))
+            
+    # Bias towards recent postings - within the last 7 days
+    if recent_postings and random.random() < 0.6:
+        selected_posting = random.choice(recent_postings.all())
+    else:
+        selected_posting = random.choice(postings.all())
+    
+    pickup_start = selected_posting.pickup_window_start
+    pickup_end = selected_posting.pickup_window_end
+    
+    start_minutes = pickup_start.hour * 60 + pickup_start.minute
+    end_minutes = pickup_end.hour * 60 + pickup_end.minute
+    
+    # Bias towards earlier pickups which is a lot more likely in a real-world scenario:
+    if random.random() < 0.6:
+        chosen_minutes = start_minutes + random.randint(0, (end_minutes - start_minutes) // 2)
+    else:
+        chosen_minutes = random.randint(start_minutes, end_minutes)
+    
+    chosen_time = time(chosen_minutes // 60,chosen_minutes % 60)
+
+    posting_date = selected_posting.creation_time.date()
+    now = timezone.now()
+    
+    # RuntimeWarning: DateTimeField received a naive datetime solved with:
+    # https://stackoverflow.com/questions/18622007/runtimewarning-datetimefield-received-a-naive-datetime
+    
+    time_stamp = now.replace(posting_date.year,posting_date.month,posting_date.day,chosen_time.hour,chosen_time.minute,0,0)
     
     reservation = Reservation.objects.create(
-        posting = random.choice(postings),
-        consumer = random.choice(consumers),
+        posting = selected_posting,
+        consumer = consumer,
         time_stamp = time_stamp,
         claim_code = fake.unique.random_int(min=0, max=99999),
         is_collected = status == "C"
@@ -418,6 +406,7 @@ def run_seed(self, mode, seed):
     if mode == MODE_CLEAR:
         return
     
+    
     # Generate demo user and demo seller (fixed)
     demo_user = create_demo_user()
     print("------------------------------------")
@@ -429,6 +418,9 @@ def run_seed(self, mode, seed):
     for _ in range(100):
         create_consumer_profile()
     
+    consumers = list(Consumer.objects.all())
+    active_consumers = random.sample(consumers, 20)
+    
     # Generate 25 sellers
     for _ in range(25):
         sellers.append(create_seller_profile())
@@ -438,18 +430,27 @@ def run_seed(self, mode, seed):
         for _ in range(25):
             create_bundle_posting(seller)
 
-    # 80 no-shows
-    for _ in range(80):
-        create_reservation("N")
-        
-    # 50 expires
-    for _ in range(50):
-        create_reservation("E")
-        
-    # 270 reservations with random status
-    for _ in range(270):
-        create_reservation(random.choice(["C", "R", "N", "E"]))        
+    date_now = timezone.now().date()
+    week_range = 6
+    monday = date_now - timedelta(days=date_now.weekday())
 
+    # Consumers with streaks
+    for consumer in active_consumers:
+        for i in range(week_range):
+            start_week = monday - timedelta(weeks=i)
+            end_week = start_week + timedelta(days=6)
+            create_reservation("C", chosen_consumer=consumer, starting_date=start_week, ending_date=end_week)
+            
+    # 400 reservations
+    for _ in range(400):
+        
+        if random.random() < 0.4:
+            status = "C"
+        else:
+            status = "R"
+            
+        create_reservation(status)
+    
     # 150 issues with random type
     for _ in range(150):
         create_issue_report(random.choice(["C","A","S"]))
