@@ -2,7 +2,7 @@ from main.models import User, Consumer, Seller, Bundle_posting, Reservation, Iss
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from faker import Faker
-from datetime import time, datetime, timedelta
+from datetime import time, timedelta
 from decimal import Decimal
 import random, logging
 from django.db.models import Count, F
@@ -226,7 +226,7 @@ def create_demo_seller():
 def create_consumer_profile():
     """Create consumer profile"""
     logger.info("Creating consumer profile")
-    user = User.objects.create_user(username=fake.unique.user_name(), email=fake.unique.email(), password=fake.password())
+    user = User.objects.create_user(username=fake.unique.user_name(), email=fake.unique.email())
     user.user_type = "consumer"
     user.save()
     consumer = Consumer.objects.create(user=user)
@@ -238,7 +238,7 @@ def create_seller_profile():
     """Create seller profile"""
     logger.info("Creating seller profile")
     
-    user = User.objects.create_user(username=fake.unique.user_name(), email=fake.unique.email(), password=fake.password())
+    user = User.objects.create_user(username=fake.unique.user_name(), email=fake.unique.email())
     user.user_type = "seller"
     user.save()
     seller = Seller.objects.create(
@@ -275,12 +275,11 @@ def create_bundle_posting(seller, creation=None, window_start=None, window_end=N
     categories = Bundle_posting.CATEGORYS
 
     selected_category = random.choice(categories)[0]
-
+    
     if creation == None:
         # Creation time within last 6 weeks
         creation = fake.date_time_between(
             start_date="-6w",
-            end_date="now",
             tzinfo=timezone.now().tzinfo
         )
 
@@ -333,7 +332,10 @@ def create_reservation(status, chosen_consumer=None, selected_posting=None, star
             postings = postings.filter(creation_time__gte=starting_date)
         if ending_date != None:
             postings = postings.filter(creation_time__lte=ending_date)
-                    
+        
+        if postings.count() == 0:
+            return
+
         selected_posting = random.choice(postings.all())
         
     pickup_start = selected_posting.pickup_window_start
@@ -429,7 +431,7 @@ def run_seed(self, mode, seed):
         for _ in range(25):
             create_bundle_posting(seller)
 
-    date_now = timezone.now().date()
+    date_now = timezone.now()
     week_range = 6
     monday = date_now - timedelta(days=date_now.weekday())
 
@@ -456,9 +458,9 @@ def run_seed(self, mode, seed):
     
     create_issue_report(random.choice(["C","A","S"]), demo_user)
     # At least a few active bundle postings
-    create_bundle_posting(demo_seller, creation=date_now, window_start=time(10,00), window_end=time(23,00))
-    create_bundle_posting(random.choice(sellers), creation=date_now, window_start=time(10,30), window_end=time(23,30))
-    create_bundle_posting(random.choice(sellers), creation=date_now, window_start=time(10,30), window_end=time(23,30))
+    create_bundle_posting(demo_seller, creation=timezone.now(), window_start=time(10,00), window_end=time(23,00))
+    create_bundle_posting(random.choice(sellers), creation=timezone.now(), window_start=time(10,30), window_end=time(23,30))
+    create_bundle_posting(random.choice(sellers), creation=timezone.now(), window_start=time(10,30), window_end=time(23,30))
 
     demo_seller_postings = list(Bundle_posting.objects.filter(seller=demo_seller).all())
     for posting in random.sample(demo_seller_postings, 10):
