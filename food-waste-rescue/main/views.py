@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.db.models import Q
 from .forms import ReservationForm, SellerExtraForm, GenericSignupForm, BundleNewForm, IssueReportNewForm, IssueReportViewForm, BundleDeleteForm
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
-from .forecast_calc import avePerRes, avePerNoshow
+from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
@@ -210,9 +210,12 @@ def analytics_view(request):
     waste_proxy = get_waste_proxy(seller)
     best_pickup = get_best_pickup(seller)
     best_category = get_best_categories(seller)
+    reservations_error = round(errorMSEReservations(seller), 2)
+    reservations_no_show_error = round(errorMSENoShow(seller), 2)
 
     return render(request, "main/analytics.html", {"sell_through": sell_through, "waste_proxy": waste_proxy, 
-                                                   "best_pickup": best_pickup, "best_category": best_category})
+                                                   "best_pickup": best_pickup, "best_category": best_category,
+                                                   "reservations_error": reservations_error, "reservations_no_show_error": reservations_no_show_error})
 
 """
 Consumer: Show own reports
