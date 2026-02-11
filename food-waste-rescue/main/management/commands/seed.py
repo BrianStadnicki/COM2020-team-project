@@ -198,7 +198,7 @@ def create_demo_user():
     print("Password: demo")
     # demo_user.password will not work for good reason.
     
-    return demo_user
+    return demo_consumer
 
 def create_demo_seller():
     """Create a fixed demo seller"""
@@ -372,12 +372,15 @@ def create_reservation(status, chosen_consumer=None, starting_date=None, ending_
     reservation.save()
     return reservation
 
-def create_issue_report(type):
+def create_issue_report(type, consumer=None):
     """Create issue report"""
     logger.info("Creating issue report")
     
     consumers = list(Consumer.objects.all())
     postings = list(Bundle_posting.objects.all())
+
+    if consumer == None:
+        consumer = random.choice(consumers)
     
     # Ensure issue report creation time is within the last 6 weeks
     creation_time=fake.date_time_between(
@@ -387,16 +390,16 @@ def create_issue_report(type):
     
     report = IssueReport.objects.create(
         posting=random.choice(postings),
-        consumer=random.choice(consumers),
+        consumer=consumer,
         type=type,
-        description=fake.text(max_nb_chars=500),
+        description=fake.sentence(),
         status=random.choice(["P", "A", "R"]),
         creation_time=creation_time,
         seller_response=fake.sentence(),
     )
     report.save()
     return report
-        
+
 def run_seed(self, mode, seed):
     """
     Seed database based on mode and seed
@@ -419,7 +422,7 @@ def run_seed(self, mode, seed):
         create_consumer_profile()
     
     consumers = list(Consumer.objects.all())
-    active_consumers = random.sample(consumers, 20)
+    active_consumers = random.sample(consumers, 19) + [demo_user]
     
     # Generate 25 sellers
     for _ in range(25):
@@ -454,3 +457,5 @@ def run_seed(self, mode, seed):
     # 150 issues with random type
     for _ in range(150):
         create_issue_report(random.choice(["C","A","S"]))
+    
+    create_issue_report(random.choice(["C","A","S"]), demo_user)
