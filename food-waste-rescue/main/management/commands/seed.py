@@ -315,7 +315,7 @@ def create_bundle_posting(seller, creation=None, window_start=None, window_end=N
     )
     return bundle_posting
             
-def create_reservation(status, chosen_consumer=None, starting_date=None, ending_date=None):
+def create_reservation(status, chosen_consumer=None, selected_posting=None, starting_date=None, ending_date=None):
     """Create reservation. Ensures the reservation date is on the same date as the bundle posting."""
     logger.info("Creating reservation")
             
@@ -325,22 +325,17 @@ def create_reservation(status, chosen_consumer=None, starting_date=None, ending_
         consumers_pk = Consumer.objects.values_list('pk', flat=True)
         consumer_pk = random.choice(consumers_pk)
         consumer = Consumer.objects.get(pk=consumer_pk)
-    
-    postings = Bundle_posting.objects.annotate(num_reservations=Count("reservation"))
-    postings = postings.filter(num_reservations__lt=F("quantity"))
-    if starting_date != None:
-        postings = postings.filter(creation_time__gte=starting_date)
-    if ending_date != None:
-        postings = postings.filter(creation_time__lte=ending_date)
-    
-    recent_postings = postings.filter(creation_time__gte=timezone.now() - timedelta(days=7))
-            
-    # Bias towards recent postings - within the last 7 days
-    if recent_postings and random.random() < 0.6:
-        selected_posting = random.choice(recent_postings.all())
-    else:
+
+    if selected_posting == None:
+        postings = Bundle_posting.objects.annotate(num_reservations=Count("reservation"))
+        postings = postings.filter(num_reservations__lt=F("quantity"))
+        if starting_date != None:
+            postings = postings.filter(creation_time__gte=starting_date)
+        if ending_date != None:
+            postings = postings.filter(creation_time__lte=ending_date)
+                    
         selected_posting = random.choice(postings.all())
-    
+        
     pickup_start = selected_posting.pickup_window_start
     pickup_end = selected_posting.pickup_window_end
     
@@ -461,5 +456,12 @@ def run_seed(self, mode, seed):
         create_issue_report(random.choice(["C","A","S"]))
     
     create_issue_report(random.choice(["C","A","S"]), demo_user)
+    # At least a few active bundle postings
     create_bundle_posting(demo_seller, creation=date_now, window_start=time(10,00), window_end=time(23,00))
     create_bundle_posting(random.choice(sellers), creation=date_now, window_start=time(10,30), window_end=time(23,30))
+    create_bundle_posting(random.choice(sellers), creation=date_now, window_start=time(10,30), window_end=time(23,30))
+
+    demo_seller_postings = list(Bundle_posting.objects.filter(seller=demo_seller).all())
+    for posting in random.sample(demo_seller_postings, 10):
+        while posting.available > 0:
+            create_reservation(status="C", selected_posting=posting)
