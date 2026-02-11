@@ -128,8 +128,9 @@ def bundle_new_view(request):
                 form.initial["pickup_window_start"] = form.initial["pickup_window_start"].__format__("%H:%M")
                 form.initial["pickup_window_end"] = form.initial["pickup_window_end"].__format__("%H:%M")
                 
-                exp_res = bundle.quantity*avePerRes(bundle.seller_id)
-                exp_no_show = exp_res*avePerNoshow(bundle.seller_id)
+                exp_res = round(bundle.quantity*avePerRes(bundle.seller_id))
+                exp_no_show = round(exp_res*avePerNoshow(bundle.seller_id))
+
                 return render(request, "main/bundle_new.html", {"form": form, "edit": False, "confirm" : True, 'categories': Bundle_posting.CATEGORYS, "exp_res" : exp_res, "exp_no_show": exp_no_show })
     else:
         form = BundleNewForm()
