@@ -252,7 +252,7 @@ def create_seller_profile():
     logger.info("{} seller created.".format(seller))
     return seller
 
-def create_bundle_posting(seller):
+def create_bundle_posting(seller, creation=None, window_start=None, window_end=None):
     """Create bundle posting"""
     logger.info("Creating bundle posting")
     
@@ -276,15 +276,17 @@ def create_bundle_posting(seller):
 
     selected_category = random.choice(categories)[0]
 
-    # Creation time within last 6 weeks
-    creation = fake.date_time_between(
-        start_date="-6w",
-        end_date="now",
-        tzinfo=timezone.now().tzinfo
-    )
+    if creation == None:
+        # Creation time within last 6 weeks
+        creation = fake.date_time_between(
+            start_date="-6w",
+            end_date="now",
+            tzinfo=timezone.now().tzinfo
+        )
 
     # Select a random pickup window from the list
-    window_start, window_end = random.choice(pickup_windows)
+    if window_start == None:
+        window_start, window_end = random.choice(pickup_windows)
 
     bundle_posting = Bundle_posting.objects.create(
         seller=seller,
@@ -459,3 +461,5 @@ def run_seed(self, mode, seed):
         create_issue_report(random.choice(["C","A","S"]))
     
     create_issue_report(random.choice(["C","A","S"]), demo_user)
+    create_bundle_posting(demo_seller, creation=date_now, window_start=time(10,00), window_end=time(23,00))
+    create_bundle_posting(random.choice(sellers), creation=date_now, window_start=time(10,30), window_end=time(23,30))
