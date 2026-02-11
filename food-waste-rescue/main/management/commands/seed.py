@@ -414,12 +414,11 @@ def run_seed(self, mode, seed):
 
     sellers = [demo_seller]
     
-    # Generate 100 consumers
-    for _ in range(100):
+    # Generate 19 consumers
+    for _ in range(19):
         create_consumer_profile()
     
     consumers = list(Consumer.objects.all())
-    active_consumers = random.sample(consumers, 19) + [demo_user]
     
     # Generate 25 sellers
     for _ in range(25):
@@ -435,7 +434,7 @@ def run_seed(self, mode, seed):
     monday = date_now - timedelta(days=date_now.weekday())
 
     # Consumers with streaks
-    for consumer in active_consumers:
+    for consumer in consumers:
         for i in range(week_range):
             start_week = monday - timedelta(weeks=i)
             end_week = start_week + timedelta(days=6)
