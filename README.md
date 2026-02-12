@@ -129,11 +129,6 @@ Available modes:
 - refresh
 
 - clear
-
-### Add testing data
-
-```sh
-python manage.py testing_data
 ```
 
 ### Running Unit Tests
