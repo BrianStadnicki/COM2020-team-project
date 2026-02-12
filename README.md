@@ -92,6 +92,12 @@ python manage.py migrate
 python manage.py seed --mode=refresh --seed=123
 ```
 
+### Add happy path test data
+
+```sh
+python manage.py init_happy_path_test --mode=refresh --seed=123
+```
+
 ### Demo run config
 
 Also disables debug mode
