@@ -3,6 +3,9 @@ from . import views
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 
+if settings.DEBUG:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -30,7 +33,7 @@ urlpatterns = [
     path("accounts/registerseller/", views.sellerExtra, name="seller-extra"),
 ]
 
-if not settings.TESTING:
+if settings.DEBUG:
     from debug_toolbar.toolbar import debug_toolbar_urls
 
     urlpatterns = [

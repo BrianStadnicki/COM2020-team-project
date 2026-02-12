@@ -130,9 +130,12 @@ def bundle_view(request, id):
             reservation.is_collected = True
             reservation.save()
 
-    reports = post.issuereport_set.all()  # type: ignore
-
-    reservations = post.reservation_set.all()  # type: ignore
+    if request.user.user_type == "consumer":
+        reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
+        reservations = post.reservation_set.filter(consumer=request.user.consumer).all()  # type: ignore
+    else:
+        reports = post.issuereport_set.all()  # type: ignore
+        reservations = post.reservation_set.all()  # type: ignore
 
     for index, name in post.CATEGORYS:
         if index == post.category:
