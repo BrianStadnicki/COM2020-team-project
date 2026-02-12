@@ -24,7 +24,13 @@ def avePerRes(seller_id):
     ]
     recent_reservations_count = Reservation.objects.filter(
         posting__seller_id=seller_id
-    ).count()
+    )
+    recent_reservations_count = recent_reservations_count.filter(
+        creation_time__lte=timezone.now() - timedelta(weeks=3)
+    )
+    recent_reservations_count = recent_reservations_count.filter(
+        creation_time__gte=timezone.now() - timedelta(weeks=6)
+    )
 
     if recent_postings_quantity_count == None:
         return 0;
