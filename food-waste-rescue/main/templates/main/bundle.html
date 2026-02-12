@@ -1,24 +1,28 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="container-fluid">
-    <nav class="navbar">
-        <div class="container-fluid">
-            <h1 class="navbar-brand">Bundle {{post.name}}</h1>
-        </div>
-    </nav>
-</div>
+{# Show Django messages (e.g., "Check your details") #}
+{% if messages%}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{{ form.non_field_errors }}
 
 <div class="container-fluid">
     <!-- Title + Description -->
     <h2>{{post.name|default:"Untitled Bundle"}}</h2>
     <p>{{post.contents_description|default:"No description provided."}}
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-9">
             <div class="card">
                 <div class="card-body">
-                    <p>{{post.id}}</p>
                     <div class="row">    
+                        <p>Pickup window: {{post.creation_time.date}} : {{post.pickup_window_start}} - {{post.pickup_window_end}}</p>
+                        <p>Status: {{post.status_str}}</p>
                         <div class="col">
                             <p>{{post.category}}</p>
                             <p>Allergens: 
@@ -40,12 +44,33 @@
                         </div>
                         <div class="col">
                             <p>Price: £{{post.price}}</p>
-                            <p>Available: {{post.quantity}}</p>
+                            <p>Available: {{post.available}}</p>
                         </div>
                     </div>    
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-primary mt-3">Reserve</button>
+            <div class="d-flex">
+                 <!-- Reserve button: only visible to Consumers -->
+                {% if not is_seller and is_today and post.available > 0 %}
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" value="create" name="status">
+                        <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                    </form>
+                {% endif%}
+                <!-- Edit button: only visible to Sellers -->
+                {% if is_seller %}
+                    <form method="get" action="{% url 'bundle_edit_view_url' id=post.id %}">
+                        <input type="submit" value="Edit" class="btn btn-outline-primary mt-3 me-auto">
+                    </form>
+                    <form method="get" action="{% url 'bundle_delete_view_url' id=post.id %}">
+                        <input type="submit" value="Remove" class="btn btn-outline-danger mt-3 me-auto ms-1">
+                    </form> 
+                {% endif %}
+                {% if not is_seller %}
+                    <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
+                {% endif %}
+            </div>
         </div>
         <div class="col-3">
             <div class="card">
@@ -57,6 +82,88 @@
                     <p>{{post.seller.telephone_number}}</p>
                     <p>{{post.seller.user.email}}</p>
                     <p><a class="link-opacity-50-hover" href={{post.seller.website_url}}>{{post.seller.website_url}}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card p-3">
+                <div class="card-title">
+                    <h2>Reservations</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                {% if is_seller %}
+                                    <th scope="col">Collected?</th>
+                                {% endif %}
+                                <th scope="col">Consumer</th>
+                                <th scope="col">Timestamp</th>
+                                <th scope="col">Claim Code</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reservation in reservations %}
+                                <tr>
+                                    {% if is_seller %}
+                                        <th scope="row">
+                                            <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
+                                            <form method="post" action="">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="True" name="is_collected">
+                                                <input type="hidden" value="{{ reservation.id }}" name="id">
+                                                {% if not reservation.is_collected %}
+                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary" name="submit">
+                                                {% endif %}
+                                            </form>
+                                        </th>
+                                    {% endif %}
+                                    <th>{{ reservation.consumer.user.username }}</th>
+                                    <th>{{ reservation.time_stamp }}</th>
+                                    <th>{{ reservation.claim_code }}</th>
+                                    <th>{{ reservation.status_str }}</th>
+                                </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card p-3">
+                <div class="card-title">
+                    <h2>Reports</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Response</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in reports %}
+                                <tr>
+                                    <th scope="row"><a href="{% url 'report_view_url' report.id %}" class="btn btn-outline-primary">View</a></th>
+                                    <th>{{ report.status_str }}</th>
+                                    <th>{{ report.type_str }}</th>
+                                    <th>{{ report.description }}</th>
+                                    <th>{{ report.seller_response }}</th>
+                                </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

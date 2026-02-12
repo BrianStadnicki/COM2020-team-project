@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_bootstrap5",
-    "main"
+    "main",
 ]
 
 MIDDLEWARE = [
@@ -51,6 +51,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "main.seller_profile_middleware.SellerProfileMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -65,6 +66,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "main.streak_processor.reservation_streak",
             ],
         },
     },
@@ -122,11 +124,11 @@ STATIC_URL = "static/"
 
 LOGIN_REDIRECT_URL = "/"
 
+LOGOUT_REDIRECT_URL = "login"
+
 AUTH_USER_MODEL = "main.User"
 
-INTERNAL_IPS = [
-    "127.0.0.1"
-]
+INTERNAL_IPS = ["127.0.0.1"]
 
 TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
 
