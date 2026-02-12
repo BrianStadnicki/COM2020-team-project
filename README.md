@@ -86,34 +86,16 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Troubleshooting for command failure
-
-```sh
-python manage.py makemigrations
-```
-
-Delete COM2020-team-project/food-waste-rescue/main/migrations/0002*.py
-
-```sh
-python manage.py migrate
-```
-
-Delete db.sqlite3
-
-### Add testing data
-
-```sh
-python manage.py testing_data
-```
-
 ### Add demo data
 
 ```sh
 python manage.py seed --mode=refresh --seed=123
 ```
 
-Available modes:
+### Demo run config
 
-- refresh
+Also disables debug mode
 
-- clear
+```sh
+SECRET_KEY="CHANGE_ME" python manage.py runserver
+```
