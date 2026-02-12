@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-&#_$$!b!%q@9fp@h6(ktopgira@p#4+=$=qklh3mj10+x!)2on
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1"]
 
 
 # Application definition
@@ -130,9 +130,7 @@ AUTH_USER_MODEL = "main.User"
 
 INTERNAL_IPS = ["127.0.0.1"]
 
-TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
-
-if not TESTING:
+if DEBUG:
     INSTALLED_APPS = [
         *INSTALLED_APPS,
         "debug_toolbar",
