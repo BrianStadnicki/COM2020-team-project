@@ -115,6 +115,11 @@ class Reservation(models.Model):
     def claim_code_generator(self):
         self.claim_code = self.pk * 2
         self.save(update_fields=["claim_code"])
+    
+    def save(self, *args, **kwargs):
+        if self._state.adding and self.posting.quantity - self.posting.reservation_set.count() <= 0:
+            raise Exception(f'Too many reservations for posting')
+        super().save(*args, **kwargs)
 
 
 class IssueReport(models.Model):
