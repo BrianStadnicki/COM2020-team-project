@@ -20,7 +20,7 @@ urlpatterns = [
         name="bundle_delete_view_url",
     ),
     path("reservations/", views.reservations_view, name="reservations_view_url"),
-    path("reservations/<int:id>/", views.reservation_view, name="reservation_view_url"),
+    path("reservations/<int:id>", views.reservation_view, name="reservation_view_url"),
     path("analytics/", views.analytics_view, name="analytics_view_url"),
     path("reports/", views.reports_view, name="reports_view_url"),
     path("report/<int:id>", views.report_view, name="report_view_url"),
