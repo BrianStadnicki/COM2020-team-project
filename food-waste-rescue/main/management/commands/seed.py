@@ -417,7 +417,11 @@ def create_reservation(
         is_collected=status == "C",
     )
 
-    reservation.save()
+    try:
+        reservation.save()
+    except:
+        return
+    
     return reservation
 
 
