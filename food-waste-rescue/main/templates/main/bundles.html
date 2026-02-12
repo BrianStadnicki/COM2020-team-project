@@ -16,6 +16,9 @@
     <nav class="navbar">
         <div class="container-fluid">
             <h1 class="navbar-brand">Food Waste Rescue</h1>
+            {% if user.user_type == "seller"%}
+            <a class="btn btn-primary" href="{% url 'bundle_new_view_url'%}"  role="button">Create Bundle </a>
+            {% endif %}
         </div>
     </nav>
 </div>
@@ -29,10 +32,10 @@
                     <form method="get">
                         <p>Category</p>
                         <select class="form-select" name="category">
-                            <option selected>Select category</option>
-                            {% for category in categories %}
-                                <option value="{{category}}" {% if category == selected_category %}selected{% endif %}>
-                                    {{category}}
+                            <option selected value="">Select category</option>
+                            {% for cat_short, cat in categories %}
+                                <option value="{{cat_short}}" {% if cat_short == selected_category %}selected{% endif %}>
+                                    {{cat}}
                                 </option>
                             {% empty %}
                                 <option>No categories</option>
@@ -73,6 +76,8 @@
                                         <p>{{post.seller.user.username}}</p>
                                         <p>{{post.category}}</p>
                                         <p>£{{post.price}}</p>
+                                        <p>{{post.creation_time.date}}</p>
+                                        <p>{{post.status_str}}</p>
                                     </div>
                                     <div class="col">
                                         <p>{{post.seller.location}}</p>

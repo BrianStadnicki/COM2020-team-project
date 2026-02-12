@@ -5,34 +5,33 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0004_bundle_posting_allergen_celery_and_more'),
+        ("main", "0004_bundle_posting_allergen_celery_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='seller',
-            name='display_name',
+            model_name="seller",
+            name="display_name",
         ),
         migrations.AddField(
-            model_name='bundle_posting',
-            name='contents_description',
-            field=models.CharField(default='Chicken breast', max_length=500),
+            model_name="bundle_posting",
+            name="contents_description",
+            field=models.CharField(default="Chicken breast", max_length=500),
         ),
         migrations.AddField(
-            model_name='bundle_posting',
-            name='name',
-            field=models.CharField(default='Meat bag', max_length=100),
+            model_name="bundle_posting",
+            name="name",
+            field=models.CharField(default="Meat bag", max_length=100),
         ),
         migrations.AddField(
-            model_name='issuereport',
-            name='creation_time',
+            model_name="issuereport",
+            name="creation_time",
             field=models.DateTimeField(blank=True, default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name='issuereport',
-            name='seller_response',
-            field=models.CharField(default='Hello consumer!', max_length=500),
+            model_name="issuereport",
+            name="seller_response",
+            field=models.CharField(default="Hello consumer!", max_length=500),
         ),
     ]

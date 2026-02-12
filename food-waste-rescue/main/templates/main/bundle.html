@@ -13,14 +13,6 @@
 {{ form.non_field_errors }}
 
 <div class="container-fluid">
-    <nav class="navbar">
-        <div class="container-fluid">
-            <h1 class="navbar-brand">Bundle {{post.name}}</h1>
-        </div>
-    </nav>
-</div>
-
-<div class="container-fluid">
     <!-- Title + Description -->
     <h2>{{post.name|default:"Untitled Bundle"}}</h2>
     <p>{{post.contents_description|default:"No description provided."}}
@@ -29,7 +21,8 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">    
-                        <p>Pickup window: {{post.pickup_window_start}} - {{post.pickup_window_end}}</p>
+                        <p>Pickup window: {{post.creation_time.date}} : {{post.pickup_window_start}} - {{post.pickup_window_end}}</p>
+                        <p>Status: {{post.status_str}}</p>
                         <div class="col">
                             <p>{{post.category}}</p>
                             <p>Allergens: 
@@ -51,14 +44,14 @@
                         </div>
                         <div class="col">
                             <p>Price: £{{post.price}}</p>
-                            <p>Available: {{post.quantity}}</p>
+                            <p>Available: {{post.available}}</p>
                         </div>
                     </div>    
                 </div>
             </div>
             <div class="d-flex">
                  <!-- Reserve button: only visible to Consumers -->
-                {% if not is_seller %}
+                {% if not is_seller and is_today and post.available > 0 %}
                     <form method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" value="create" name="status">
@@ -74,8 +67,9 @@
                         <input type="submit" value="Remove" class="btn btn-outline-danger mt-3 me-auto ms-1">
                     </form> 
                 {% endif %}
-
-                <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
+                {% if not is_seller %}
+                    <a href="{% url 'report_new_view_url' id=post.id %}" class="btn btn-outline-secondary mt-3 ms-auto">Report</a>
+                {% endif %}
             </div>
         </div>
         <div class="col-3">
@@ -93,9 +87,9 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card p-3">
                 <div class="card-title">
                     <h2>Reservations</h2>
                 </div>
@@ -103,7 +97,9 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">Collected?</th>
+                                {% if is_seller %}
+                                    <th scope="col">Collected?</th>
+                                {% endif %}
                                 <th scope="col">Consumer</th>
                                 <th scope="col">Timestamp</th>
                                 <th scope="col">Claim Code</th>
@@ -113,23 +109,23 @@
                         <tbody>
                             {% for reservation in reservations %}
                                 <tr>
-                                    <th scope="row">
-                                        <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
-                                        {% if is_seller %}
+                                    {% if is_seller %}
+                                        <th scope="row">
+                                            <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
                                             <form method="post" action="">
                                                 {% csrf_token %}
-                                                <input type="hidden" value="collected" name="status">
+                                                <input type="hidden" value="True" name="is_collected">
                                                 <input type="hidden" value="{{ reservation.id }}" name="id">
-                                                {% if reservation.status != "Collected" %}
-                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                                                {% if not reservation.is_collected %}
+                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary" name="submit">
                                                 {% endif %}
                                             </form>
-                                        {% endif %}
-                                    </th>
+                                        </th>
+                                    {% endif %}
                                     <th>{{ reservation.consumer.user.username }}</th>
                                     <th>{{ reservation.time_stamp }}</th>
                                     <th>{{ reservation.claim_code }}</th>
-                                    <th>{{ reservation.status }}</th>
+                                    <th>{{ reservation.status_str }}</th>
                                 </tr>
                                 {% endfor %}
                         </tbody>
@@ -139,9 +135,9 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-12">
-            <div class="card">
+            <div class="card p-3">
                 <div class="card-title">
                     <h2>Reports</h2>
                 </div>
@@ -160,8 +156,8 @@
                             {% for report in reports %}
                                 <tr>
                                     <th scope="row"><a href="{% url 'report_view_url' report.id %}" class="btn btn-outline-primary">View</a></th>
-                                    <th>{{ report.status }}</th>
-                                    <th>{{ report.type }}</th>
+                                    <th>{{ report.status_str }}</th>
+                                    <th>{{ report.type_str }}</th>
                                     <th>{{ report.description }}</th>
                                     <th>{{ report.seller_response }}</th>
                                 </tr>
