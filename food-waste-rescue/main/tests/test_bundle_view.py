@@ -105,9 +105,8 @@ class TestBundleView(TestCase):
         self.assertContains(response, "https://example.com")
 
         # Content checks for pickup window
-        #currently failing as the template doesn't show these - should it? 
-        #self.assertContains(response, "5 p.m.")
-        #self.assertContains(response, "6 p.m.")
+        self.assertContains(response, "5 p.m.")
+        self.assertContains(response, "6 p.m.")
 
 
         

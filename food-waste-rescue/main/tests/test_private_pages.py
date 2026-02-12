@@ -70,11 +70,43 @@ class TestSellerOnlyPages(TestCase):
             password="sellerpass1",
             user_type="seller"
         )
+    
+    #TODO: EDIT THIS
+
+    #currently failing
+    def test_seller_extra_page_is_public_with_mock_seller(self):
+        """
+        Testing the seller-extra page with a mock "Seller"
+        """
+        seller = User.objects.create_user(
+            username = "seller1",
+            email = "mockuser@gmail.com",
+            password = "password123",
+            user_type = "seller",
+        )
+        url = reverse("seller-extra")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "registration/seller_extra.html")
+    
+    #currently failing: AssertionError: 200 != 403
+    def test_seller_extra_blocks_consumer(self):
+        """Users should only be able to access 'seller-extra' if they selected 'Seller' in
+        the registration page."""
+        consumer = User.objects.create_user(
+            username="consumer1",
+            email="mockuser2@gmail.com",
+            password="password456",
+            user_type = "consumer"
+        )
+        url = reverse("seller-extra",args=[consumer.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
 
     # -----------------------------------------------------------------------------
     #Tests for bundle_new_view 
 
-    #currently failing: AssertionError: 200 != 302
+    #passes
     def test_bundle_new_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundle_new_view_url")
@@ -83,7 +115,7 @@ class TestSellerOnlyPages(TestCase):
         self.assertIn("/accounts/login", response.url)
         self.assertTrue(response.url.startswith("/accounts/login"))
     
-    #currently failing: AssertionError: 200 != 403
+    #passes
     def test_bundle_new_forbidden_for_consumer(self):
         """Consumers should get 403 Forbidden for Seller-only pages"""
         self.client.login(username="consumer1", password="consumerpass1")
@@ -91,20 +123,22 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
-    #passes
+    #fails: AssertionError: False is not true
     def test_bundle_new_allows_seller(self):
         """Sellers should get 200 OK for Seller-only pages"""
         self.client.login(username="seller1", password="sellerpass1")
         url = reverse("bundle_new_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        #failing
+        #need to redirect seller to sign up properly through seller-extra
         self.assertTemplateUsed(response, "main/bundle_new.html")
     
     # ----------------------------------------------------------------------------
 
     #Tests for bundle_confirm_view
 
-    #currently failing: AssertionError: 200 != 302
+    #NoReverseMatch
     def test_bundle_confirm_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundle_confirm_view_url")

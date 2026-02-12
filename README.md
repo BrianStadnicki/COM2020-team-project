@@ -141,7 +141,7 @@ All tests are located inside the main/tests/ directory.
 .env\Scripts\activate
 ```
 
-2. Navigate to the priject root (where manage.py lives)
+2. Navigate to the project root (where manage.py lives)
 ```sh
 cd food-waste-rescue
 ```
