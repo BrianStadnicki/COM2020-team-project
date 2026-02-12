@@ -34,7 +34,7 @@
 
         <div class="input-group mb-3">
             <label class="input-group-text" for="type">Type</label>
-            <select class="form-select" name="type" {% if user.user_type != "seller" %} style="pointer-events: none;" {% endif %}>
+            <select class="form-select" name="type" style="pointer-events: none;">
                 <option>Choose...</option>
                 <option value="C" {% if form.initial.type == 'C' %}selected="selected"{% endif %}>Collection</option>
                 <option value="A" {% if form.initial.type == 'A' %}selected="selected"{% endif %}>Additional Information</option>
@@ -56,7 +56,7 @@
         </div>
 
         <div class="input-group mb-3">
-            <label class="input-group-text" for="status" {% if user.user_type == "seller" %} style="pointer-events: none;" {% endif %}>Status</label>
+            <label class="input-group-text" for="status">Status</label>
             <select class="form-select" name="status" {% if user.user_type != "seller" %} style="pointer-events: none;" {% endif %}>
                 <option selected>Choose...</option>
                 <option value="P" {% if form.initial.status == 'P' %}selected="selected"{% endif %}>Pending</option>
