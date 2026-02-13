@@ -323,7 +323,7 @@ def create_bundle_posting(seller, creation=None, window_start=None, window_end=N
             :100
         ],
         quantity=random.randint(1, 5),
-        price=Decimal(fake.pydecimal(left_digits=2, right_digits=2, positive=True)),
+        price=Decimal(fake.pydecimal(left_digits=2, right_digits=2, positive=True, max_value=10)),
         creation_time=creation,
         pickup_window_start=window_start,
         pickup_window_end=window_end,
@@ -417,7 +417,11 @@ def create_reservation(
         is_collected=status == "C",
     )
 
-    reservation.save()
+    try:
+        reservation.save()
+    except:
+        return
+    
     return reservation
 
 

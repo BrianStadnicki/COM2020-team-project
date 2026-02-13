@@ -24,7 +24,16 @@ def avePerRes(seller_id):
     ]
     recent_reservations_count = Reservation.objects.filter(
         posting__seller_id=seller_id
+    )
+    recent_reservations_count = recent_reservations_count.filter(
+        time_stamp__lte=timezone.now() - timedelta(weeks=3)
+    )
+    recent_reservations_count = recent_reservations_count.filter(
+        time_stamp__gte=timezone.now() - timedelta(weeks=6)
     ).count()
+
+    if recent_postings_quantity_count == None:
+        return 0;
 
     # return percentage calculation
     return recent_reservations_count / recent_postings_quantity_count
@@ -49,6 +58,9 @@ def avePerNoshow(seller_id):
         if reservation.status == "N":
             no_shows += 1
 
+    if recent_reservations_count == 0:
+        return 0;
+
     return no_shows / recent_reservations_count
 
 
@@ -62,6 +74,9 @@ def errorMSEReservations(seller_id):
             creation_time__gte=timezone.now() - timedelta(weeks=3)
         ).all()
     )
+
+    if len(recent_postings) == 0:
+        return 0
 
     average = avePerRes(seller_id)
     Y_true = [posting.quantity - posting.available for posting in recent_postings]
@@ -83,6 +98,9 @@ def errorMSENoShow(seller_id):
 
     average_n_reservations = avePerRes(seller_id)
     average_no_show = avePerNoshow(seller_id)
+
+    if len(recent_postings) == 0:
+        return 0
 
     Y_true = [
         posting.reservation_set.count()
