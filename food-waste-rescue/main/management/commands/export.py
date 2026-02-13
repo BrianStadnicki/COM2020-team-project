@@ -35,14 +35,14 @@ class Command(BaseCommand):
             ws = wb.create_sheet(model.__name__)
         
             fields = list(model._meta.fields)
-            rows = []
+            columns = []
             for field in fields:
                 if field.is_relation:
-                    rows.append(f"{field.name}_id")
+                    columns.append(f"{field.name}_id")
                 else:
-                    rows.append(field.name)
+                    columns.append(field.name)
             
-            ws.append(rows)
+            ws.append(columns)
             
             for object in model.objects.all():
                 attributes = []
