@@ -22,9 +22,7 @@ def avePerRes(seller_id):
     recent_postings_quantity_count = recent_postings.aggregate(Sum("quantity"))[
         "quantity__sum"
     ]
-    recent_reservations_count = Reservation.objects.filter(
-        posting__seller_id=seller_id
-    )
+    recent_reservations_count = Reservation.objects.filter(posting__seller_id=seller_id)
     recent_reservations_count = recent_reservations_count.filter(
         time_stamp__lte=timezone.now() - timedelta(weeks=3)
     )
@@ -33,7 +31,7 @@ def avePerRes(seller_id):
     ).count()
 
     if recent_postings_quantity_count == None:
-        return 0;
+        return 0
 
     # return percentage calculation
     return recent_reservations_count / recent_postings_quantity_count
@@ -59,7 +57,7 @@ def avePerNoshow(seller_id):
             no_shows += 1
 
     if recent_reservations_count == 0:
-        return 0;
+        return 0
 
     return no_shows / recent_reservations_count
 

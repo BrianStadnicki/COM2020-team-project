@@ -98,6 +98,12 @@ python manage.py seed --mode=refresh --seed=123
 python manage.py init_happy_path_test --mode=refresh --seed=123
 ```
 
+### Export data
+
+```sh
+python manage.py export
+```
+
 ### Demo run config
 
 Also disables debug mode

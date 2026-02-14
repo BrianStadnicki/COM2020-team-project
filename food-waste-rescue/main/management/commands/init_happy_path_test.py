@@ -89,6 +89,7 @@ def create_demo_seller():
 
     return demo_seller
 
+
 def run_seed(self, mode, seed):
     """
     Seed database based on mode and seed
