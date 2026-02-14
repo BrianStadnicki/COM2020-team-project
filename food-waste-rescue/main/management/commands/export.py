@@ -4,7 +4,6 @@ from openpyxl import Workbook
 import logging
 from django.utils import timezone
 import datetime
-#python manage.py export
 
 logger = logging.getLogger(__name__)
 
