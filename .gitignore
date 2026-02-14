@@ -3,3 +3,4 @@
 *.pyc
 *.pot
 db.sqlite3
+food_waste_rescue.xlsx
