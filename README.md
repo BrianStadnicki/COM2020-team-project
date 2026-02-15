@@ -1,6 +1,20 @@
+# Overview
+
+This is a project with a focus on developing a web application which allows for sellers to post food bundles and consumers to reserve them, with the intent to reduce food waste. The core functionality involves:
+
+- User creation and authentication.
+- Marketplace with bundle postings, reservations and an issue report feature.
+- Overselling prevention.
+- Seller analytics.
+- Forecast on reservation demands and no-shows.
+- Security .
+- Accessibility.
+
+For frontend development, Bootstrap is used to build simple design templates for the web application. For backend development, Django is used to handle everything else, such as database models, administration, commands, views, urls and much more. The only programming language used in this project is Python.
+
 ## Initial setup
 
-linux:
+Linux:
 
 ```sh
 cd food-waste-rescue
@@ -11,7 +25,7 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-windows:
+Windows:
 
 ```sh
 cd food-waste-rescue
@@ -26,7 +40,7 @@ python manage.py createsuperuser
 
 ## Running server
 
-windows:
+Windows:
 ```sh
 cd food-waste-rescue
 windows: Set-ExecutionPolicy Unrestricted -Scope Process
@@ -35,7 +49,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-linux:
+Linux:
 
 ```sh
 source .env/bin/activate
