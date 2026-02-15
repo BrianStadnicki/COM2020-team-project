@@ -1,30 +1,44 @@
 # Before
 
- - seeded  database already comitted
- - activate venv
- - run server in prod mode before demo to verify works
- - open incognito window
+ - Start server
+
+```sh
+source .env/bin/activate
+SECRET_KEY="SDART4TRGERT6454ETFEWRTETR" python manage.py runserver
+```
+
+ - open firefox seller container and load login page
+ - open firefox consumer container and load login page
 
 # After
 
- - Launch firefox seller profile
+ - Open firefox seller container
  - Login as seller demo_seller:demo_seller
 
- - Launch firefox consumer profile
+ - Open firefox consumer container
  - Login as consumer demo:demo
 
 
  - Switch to seller window
- - Click new bundle
- - Fill out details ###
- - Submit 
+ - Click create bundle
+ - Fill out details
+ -
+ -  Name: Dog ice cream
+ -  Category: Pet Food
+ -  Allergens: Peanut
+ -  Price: £2.00
+ -  Quantity: 3
+ -  Pickup window: 17:00 - 18:00
+ -  Description: Going out of date today! Only for dogs!
+ -   
+ - Confirm 
  - Show forecast
- - Confirm
+ - Create
  - Show bundle posting
 
  - Switch to consumer window
  - Reload bundle postings page
- - Show created bundle posting
+ - View created bundle posting
  - Reserve bundle
  - Show claim code
  - Show streak not updated
@@ -36,7 +50,7 @@
  - Show status change
 
  - Switch to consumer window
- - Reload page
+ - Reload page by pressing enter to avoid resending data
  - Show reservation status change
  - Show streak changed
 
