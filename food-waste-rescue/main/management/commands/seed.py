@@ -20,9 +20,7 @@ MODE_REFRESH = "refresh"
 
 """ Clear all data only """
 MODE_CLEAR = "clear"
-
-
-class Bundles:
+class BundleProvider:
     NAMES = {
         "M": [
             "Meat Bag",
@@ -68,9 +66,104 @@ class Bundles:
             "Vegan Surprise Bag",
             "Plant-Based Rescue Box",
             "Magic Vegan Bag",
-        ]
+        ],
     }
 
+    CONTENTS = {
+        "M": [
+            "Breakfast to go.",
+            "Brunch to go.",
+            "Lunch to go.",
+            "Dinner to go.",
+            "Supper to go.",
+            "Buffet leftovers.",
+            "Italian cuisine.",
+            "Mexican cuisine.",
+            "Indian cuisine.",
+            "American BBQ.",
+            "Korean BBQ.",
+            "Stir fry.",
+            "Roasted food.",
+            "Fried food.",
+            "Grilled food.",
+            "Steamed food.",
+            "Salad.",
+            "Pasta.",
+            "Rice dish.",
+            "Burgers.",
+            "Noodles.",
+            "Soup.",
+            "Curry.",
+            "Fast food.",
+            "Cooked food with fresh ingredients.",
+        ],
+        "B&P": [
+            "Fresh bread.",
+            "Assorted pastries.",
+            "Croissants and rolls.",
+            "Cakes and sweet bakes.",
+            "Mixed baked goods.",
+            "Sweet treats.",
+            "Savoury pastries.",
+            "Bread rolls.",
+            "Artisan bread.",
+            "Sourdough bread.",
+            "Doughnuts.",
+            "Muffins.",
+            "Cookies.",
+            "Baked goods from today.",
+        ],
+        "G": [
+            "Mixed groceries.",
+            "Fresh produce.",
+            "Fruit and vegetables.",
+            "Chilled groceries.",
+            "Pantry items.",
+            "Everyday essentials.",
+            "Food close to best-before.",
+            "A mix of fresh and packaged food.",
+            "Seasonal groceries.",
+            "Household food items.",
+        ],
+        "F&P": [
+            "Fresh flowers.",
+            "Seasonal blooms.",
+            "Mixed bouquets.",
+            "Potted plants.",
+            "Cut flowers.",
+            "Indoor plants.",
+            "Outdoor plants.",
+            "Assorted floral items.",
+        ],
+        "PF": [
+            "Dry pet food.",
+            "Wet pet food.",
+            "Pet treats.",
+            "Mixed pet supplies.",
+            "Dog food.",
+            "Cat food.",
+            "Fish food.",
+            "Pet food close to best-before.",
+            "Pet snacks.",
+        ],
+        "V": [
+            "Vegetarian meals.",
+            "Meat-free dishes.",
+            "Vegetarian groceries.",
+            "Plant-based meals.",
+            "Vegetarian cooked food.",
+            "Vegetarian ready-to-eat food.",
+            "Vegetarian selection of items.",
+        ],
+        "VE": [
+            "Vegan meals.",
+            "Plant-based dishes.",
+            "Vegan groceries.",
+            "Vegan selection of items.",
+            "Dairy-free food.",
+            "Plant-based groceries.",
+        ],
+    }
 
 class Command(BaseCommand):
     help = "Seed database with synthetic data"
@@ -222,8 +315,8 @@ def create_bundle_posting(seller, creation=None, window_start=None, window_end=N
     bundle_posting = Bundle_posting.objects.create(
         seller=seller,
         category=selected_category,
-        name=random.choice(Bundles.NAMES[selected_category])[:50],
-        contents_description=fake.paragraph(),
+        name=random.choice(BundleProvider.NAMES[selected_category])[:50],
+        contents_description=random.choice(BundleProvider.CONTENTS[selected_category]),
         quantity=random.randint(1, 5),
         price=Decimal(
             fake.pydecimal(left_digits=2, right_digits=2, positive=True, max_value=10)
