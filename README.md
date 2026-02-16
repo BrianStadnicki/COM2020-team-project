@@ -7,10 +7,10 @@ This is a project with a focus on developing a web application which allows for 
 - Overselling prevention.
 - Seller analytics.
 - Forecast on reservation demands and no-shows.
-- Security .
+- Security.
 - Accessibility.
 
-For frontend development, Bootstrap is used to build simple design templates for the web application. For backend development, Django is used to handle everything else, such as database models, administration, commands, views, urls and much more. The only programming language used in this project is Python.
+For frontend development, Bootstrap is used to build simple design templates for the web application. For backend development, Django is also used to implement the front-end and the back-end, such as database models, administration, commands, views, urls and much more. The only programming language used in this project is Python.
 
 ## Initial setup
 
