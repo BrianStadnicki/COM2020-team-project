@@ -4,10 +4,9 @@
 
 ### Week 1 - 12/01/2026
 
-
 >#### **Roles assigned**
->- Ben - Project Lead
->- Brian - Technical Lead
+>- Ben - Project Lead / Project Owner
+>- Brian - Technical Lead / Scrum Master
 >- Ed - Data Lead
 >- Hazel - Software Developer
 >- Laura - Documentation
@@ -17,7 +16,7 @@
 
 >#### **Goals**
 >- Design product architecture and set up framework
->- Determine seeded dataset requirments
+>- Determine seeded dataset requirements
 >- Determine ethical and legal considerations
 >- Design main UX work-flow
 >- Design initial analytic features
@@ -39,9 +38,9 @@
 >
 >>Rose: Determine required pages. Begin designing the main work-flow UX.
 >
->> Tang: Degin designing the seeded dataset generation.
+>> Tang: Begin designing the seeded dataset generation.
 
-### Week 2 - 19/02/2026
+### Week 2 - 19/01/2026
 
 >#### **Review**
 >- A large portion of the documentation complete.
@@ -77,7 +76,7 @@
 >
 >>Tang: Finish designing seeded dataset generation.
 
-### Week 3 - 26/02/2026
+### Week 3 - 26/01/2026
 
 >#### **Review**
 >- Completed database UML.
@@ -117,3 +116,73 @@
 >>Rose: Finish wireframes and start creating views.
 >
 >>Tang: Set up page urls. Start creating seeded dataset.
+
+### Week 4 - 02/02/2026
+
+>#### **Review**
+>- Completed database models.
+>- Login system functional.
+>- Completed page wireframes and URLS.
+
+>#### **Discussion Points**
+>- All team members shown how to create Django views and HTML templates.
+>- Wireframes reviewed.
+
+>#### **Goals**
+>- Create most required views from wireframes and data models.
+>- Begin creating Unit tests.
+
+>#### **Actions**
+>>Ben: Create consumer bundle and bundles views.
+>
+>>Brian: Create edit and delete bundle and issues view.
+>
+>>Ed:
+>
+>>Hazel:
+>
+>>Laura:
+>
+>>Livi: Begin creating Unit tests.
+>
+>>Rose: Create create bundle and bundle confirmation view
+>
+>>Tang:
+
+### Week 5 - 09/02/2026
+
+>#### **Review**
+>- Completed most views and they are fully functional.
+>- Completed several Unit tests.
+>- Analytics and forecasting views still to be created. 
+
+>#### **Discussion Points**
+>- Discussed required documentation and delegated responsibility.
+>- Discussed several bugs in the application.
+>- Planned the presentation and key slides.
+>- Discussed roles to carry out the presentation.
+
+>#### **Goals**
+>- Finish Sprint 1 required programming.
+>   - Create analytics and forecasting view.
+>   - General bug fixing.
+>- Finish Sprint 1 required Unit and manual tests. 
+>- Finalise and collate documentation.
+>- Create presentation.
+
+>#### **Actions**
+>>Ben: Create analytics page, collate minutes, scrum board and licensing documents.
+>
+>>Brian: Create forecasting view, collate architecture documentation.
+>
+>>Ed: General bug fixing and collate database design documentation.
+>
+>>Hazel: 
+>
+>>Laura: General document collation, risk document collation and evaluation. Work on presentation.
+>
+>>Livi: Finish testing and testing document collation.
+>
+>>Rose: Wireframe collation, assist with risk and evaluation documentation. Work on presentation.
+>
+>>Tang: General bug fixing and scope and overview documentation collation.
