@@ -133,21 +133,21 @@
 >- Begin creating Unit tests.
 
 >#### **Actions**
->>Ben: Create consumer bundle and bundles views.
+>>Ben: Create: consumer bundle and bundles views.
 >
->>Brian: Create edit and delete bundle and issues view.
+>>Brian: Create: edit, delete and issues views.
 >
->>Ed:
+>>Ed: Finish signup and login views.
 >
->>Hazel:
+>>Hazel: Produce forecasting logic.
 >
->>Laura:
+>>Laura: Documentation building.
 >
 >>Livi: Begin creating Unit tests.
 >
->>Rose: Create create bundle and bundle confirmation view
+>>Rose: Create: create bundle, bundle confirmation and report views. Produce forecasting logic.
 >
->>Tang:
+>>Tang: Finish seeded dataset and implementation.
 
 ### Week 5 - 09/02/2026
 
@@ -177,7 +177,7 @@
 >
 >>Ed: General bug fixing and collate database design documentation.
 >
->>Hazel: 
+>>Hazel: Guide forecast view creation.
 >
 >>Laura: General document collation, risk document collation and evaluation. Work on presentation.
 >
