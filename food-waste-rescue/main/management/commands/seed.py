@@ -316,7 +316,9 @@ def create_bundle_posting(seller, creation=None, window_start=None, window_end=N
         seller=seller,
         category=selected_category,
         name=random.choice(BundleProvider.NAMES[selected_category])[:50],
-        contents_description=random.choice(BundleProvider.CONTENTS[selected_category]),
+        contents_description=random.choice(BundleProvider.CONTENTS[selected_category])[
+            :100
+        ],
         quantity=random.randint(1, 5),
         price=Decimal(
             fake.pydecimal(left_digits=2, right_digits=2, positive=True, max_value=10)
