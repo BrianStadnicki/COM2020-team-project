@@ -117,14 +117,16 @@ SECRET_KEY="CHANGE_ME" python manage.py runserver
 This project uses Django's built-in test runner.
 All tests are located inside the main/tests/ directory.
 
-1. Activate the virtual environment:
-```sh
-.env\Scripts\activate
-```
-
-2. Navigate to the project root (where manage.py lives)
+1. Navigate to the project root (where manage.py lives)
 ```sh
 cd food-waste-rescue
+```
+
+2. Activate the virtual environment:
+
+```sh
+python -m venv .env
+windows: Set-ExecutionPolicy Unrestricted -Scope Process
 ```
 
 3. Run a test suite, e.g.:
