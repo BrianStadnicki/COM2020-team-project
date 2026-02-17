@@ -85,11 +85,12 @@
 >- Several wireframes designed.
 
 >#### **Discussion Points**
-> - All team members shown the scrum board setup, issue management and tracking, and proper development and review processes.
+>- All team members shown the scrum board setup, issue management and tracking, and proper development and review processes.
 >- Ensured that local web app setup correctly for all team members.
 >- Django RBAC authentication, and use.
 >- Specified analytics metrics to use.
 >- Bootstrap styling methods.
+>- Risk - Product Inconsistencies: ensured that everyone is familiar with Git branch management.
 
 >#### **Goals**
 >- Begin programming.
@@ -127,6 +128,9 @@
 >#### **Discussion Points**
 >- All team members shown how to create Django views and HTML templates.
 >- Wireframes reviewed.
+>- Risk - Not completing all tasks: ensured that most views were designated to ensure Sprint 1 goals were met.
+>- Risk - Scope creep: discussed email notifications but this was beyond the scope.
+>- Risk - Identity risk: ensured that only usernames are displayed for users so that no personal data is leaked.
 
 >#### **Goals**
 >- Create most required views from wireframes and data models.
@@ -161,6 +165,8 @@
 >- Discussed several bugs in the application.
 >- Planned the presentation and key slides.
 >- Discussed roles to carry out the presentation.
+>- Risk - Missed deadline: ensured all requirements were met or designated.
+>- Risk - Over selling: removed issue where availabilty does not change to prevent over selling.
 
 >#### **Goals**
 >- Finish Sprint 1 required programming.
