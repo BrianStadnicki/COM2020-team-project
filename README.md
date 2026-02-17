@@ -127,6 +127,7 @@ cd food-waste-rescue
 ```sh
 python -m venv .env
 windows: Set-ExecutionPolicy Unrestricted -Scope Process
+.env\Scripts\activate
 ```
 
 3. Run a test suite, e.g.:
