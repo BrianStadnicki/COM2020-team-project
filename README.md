@@ -125,3 +125,32 @@ Also disables debug mode
 ```sh
 SECRET_KEY="CHANGE_ME" python manage.py runserver
 ```
+
+### Running Unit Tests
+
+This project uses Django's built-in test runner.
+All tests are located inside the main/tests/ directory.
+
+1. Navigate to the project root (where manage.py lives)
+```sh
+cd food-waste-rescue
+```
+
+2. Activate the virtual environment:
+
+```sh
+python -m venv .env
+windows: Set-ExecutionPolicy Unrestricted -Scope Process
+.env\Scripts\activate
+```
+
+3. Run a test suite, e.g.:
+```sh
+python manage.py test main.tests.test_public_pages
+```
+
+4. You should see something like:
+```sh
+Ran 3 tests in ...
+OK
+```
