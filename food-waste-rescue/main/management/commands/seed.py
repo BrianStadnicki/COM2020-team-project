@@ -177,7 +177,7 @@ class Command(BaseCommand):
         parser.add_argument("--seed", type=int, help="Choose a seed")
 
     def handle(self, *args, **options):
-        """Handles CLI"""
+        """Handle"""
         mode = options["mode"]
         seed = options["seed"]
         random.seed(seed)
@@ -397,9 +397,6 @@ def create_reservation(
 
     posting_date = selected_posting.creation_time.date()
     now = timezone.now()
-
-    # RuntimeWarning: DateTimeField received a naive datetime solved with:
-    # https://stackoverflow.com/questions/18622007/runtimewarning-datetimefield-received-a-naive-datetime
 
     time_stamp = now.replace(
         posting_date.year,
