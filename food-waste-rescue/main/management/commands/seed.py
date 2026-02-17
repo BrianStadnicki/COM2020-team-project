@@ -20,6 +20,8 @@ MODE_REFRESH = "refresh"
 
 """ Clear all data only """
 MODE_CLEAR = "clear"
+
+
 class BundleProvider:
     NAMES = {
         "M": [
@@ -164,6 +166,7 @@ class BundleProvider:
             "Plant-based groceries.",
         ],
     }
+
 
 class Command(BaseCommand):
     help = "Seed database with synthetic data"
