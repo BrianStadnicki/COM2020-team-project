@@ -475,7 +475,10 @@ def sellerExtra(request):
     user = request.user
 
     # only sellers can access this page
-    if user.user_type != "seller":
+    if not user.is_authenticated:
+        return redirect("login") #redirecting anonymous users
+
+    if user.user_type != "seller": ## for consumers
         raise PermissionDenied
 
     # If seller profile already exists, don't let them create another

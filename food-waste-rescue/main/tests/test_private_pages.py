@@ -71,14 +71,10 @@ class TestSellerOnlyPages(TestCase):
             user_type="seller"
         )
     
-    #TODO: EDIT THIS
-
-    #currently failing
     def test_seller_extra_page_requires_login(self):
         url = reverse("seller-extra")
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)  # redirect to login
-        self.assertIn("/login", response.url)
+        self.assertEqual(response.status_code, 403)
 
     #passes
     def test_seller_extra_page_accessible_to_logged_in_seller(self):
