@@ -201,11 +201,6 @@ class testSellerAndConsumerPages(TestCase):
             user_type="consumer"
         )
 
-        #Create the Consumer profile
-        self.consumer_profile = Consumer.objects.create(
-            user = self.consumer,
-        )
-
         # Create a mock Seller user
         self.seller = User.objects.create_user(
             username="test_seller2",
@@ -248,7 +243,7 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
-    #failing
+    #passes
     def test_bundles_view_allows_consumer(self):
         """Consumers should get 200 OK"""
         self.client.login(username="test_consumer2", password="consumerpass2")
