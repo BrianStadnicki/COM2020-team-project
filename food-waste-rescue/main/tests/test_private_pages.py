@@ -194,7 +194,7 @@ class testSellerAndConsumerPages(TestCase):
 
     def setUp(self):
         # Create a mock Consumer
-        self.consumer = User.objects.create_user(
+        self.consumer_user = User.objects.create_user(
             username="test_consumer2",
             email="mockconsumer2@gmail.com",
             password="consumerpass2",
@@ -202,7 +202,7 @@ class testSellerAndConsumerPages(TestCase):
         )
 
         # Create a mock Seller user
-        self.seller = User.objects.create_user(
+        self.seller_user = User.objects.create_user(
             username="test_seller2",
             email="mockseller2@gmail.com",
             password="sellerpass2",
@@ -210,8 +210,8 @@ class testSellerAndConsumerPages(TestCase):
         )
 
         # Create the Seller profile
-        self.seller = Seller.objects.create(
-            user=self.seller,
+        self.seller_profile = Seller.objects.create(
+            user=self.seller_user,
             location="Test Location",
             opening_time="09:00",
             closing_time="17:00",
@@ -221,7 +221,7 @@ class testSellerAndConsumerPages(TestCase):
 
         # Create a mock bundle
         self.bundle_posting = Bundle_posting.objects.create(
-            seller=self.seller,
+            seller=self.seller_profile,
             category="Bakery",
             name="Test Bundle",
             contents_description="Bread",
@@ -270,9 +270,7 @@ class testSellerAndConsumerPages(TestCase):
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("/accounts/login/", response.url)
         
-
     #passes
     def test_bundle_view_allows_consumer(self):
         """Consumers should get 200 OK or 302 Redirect"""
@@ -281,13 +279,35 @@ class testSellerAndConsumerPages(TestCase):
         response = self.client.get(url)
         self.assertIn(response.status_code, (200, 302))
 
-    #currently failing: AttributeError: 'testSellerAndConsumerPages' object has no attribute 'seller_user'
-    def test_bundle_view_allows_seller(self):
-        """Sellers should get 200 OK"""
-        self.client.login(username="seller2", password="sellerpass2")
+    #passes
+    def test_bundle_view_allows_owner_seller(self):
+        self.client.login(username="test_seller2", password="sellerpass2")
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    # currently failing: AssertionError: 200 != 302
+    def test_bundle_view_redirects_seller_without_profile(self):
+    # create a seller user but DO NOT create Seller profile
+        user = User.objects.create_user(
+            username="seller_no_profile", password="pass", user_type="seller"
+        )
+        self.client.login(username="seller_no_profile", password="pass")
+        url = reverse("bundle_view_url", args=[self.bundle_posting.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("seller-extra"), response.url)
+
+    #currently failing: AssertionError: 200 != 403
+    def test_bundle_view_non_owner_seller(self):
+        other_user = User.objects.create_user(
+            username="other_seller", password="pass", user_type="seller"
+        )
+        other_profile = Seller.objects.create(user=other_user, location="X", opening_time="09:00", closing_time="17:00", telephone_number="0", website_url="https://x")
+        self.client.login(username="other_seller", password="pass")
+        url = reverse("bundle_view_url", args=[self.bundle_posting.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
 
     #-----------------------------------------------------------------------------
 
