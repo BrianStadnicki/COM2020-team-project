@@ -252,7 +252,7 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/bundles.html")
 
-    #failing
+    #passes
     def test_bundles_view_allows_seller(self):
         """Sellers should get 200 OK"""
         self.client.login(username="test_seller2", password="sellerpass2")
