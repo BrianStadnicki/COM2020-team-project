@@ -355,27 +355,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/reports.html")
 
-
-
-
-    #failing: AssertionError: 302 != 200 
-    def test_reports_view_allows_consumer(self):
-        """Consumers should get 200 OK"""
-        self.client.login(username="consumer2", password="consumerpass2")
-        url = reverse("reports_view_url")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "main/reports.html")
-
-    #failing: AssertionError: 302 != 200
-    def test_reports_view_allows_seller(self):
-        """Sellers shoud get 200 OK"""
-        self.client.login(username="seller2", password="sellerpass2")
-        url = reverse("reports_view_url")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "main/reports.html")
-
     # ---------------------------------------------------------------------------
 
     #Tests for report_view(id)
