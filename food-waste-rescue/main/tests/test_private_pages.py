@@ -321,7 +321,7 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
 
-    #failing
+    #failing: AssertionError: 302 != 200 
     def test_reports_view_allows_consumer(self):
         """Consumers should get 200 OK"""
         self.client.login(username="consumer2", password="consumerpass2")
