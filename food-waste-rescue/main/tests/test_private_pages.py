@@ -2,7 +2,7 @@ from datetime import time
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from main.models import Bundle_posting, Seller
+from main.models import Bundle_posting, Consumer, IssueReport, Seller
 
 User = get_user_model()
 
@@ -201,6 +201,10 @@ class testSellerAndConsumerPages(TestCase):
             user_type="consumer"
         )
 
+        self.consumer_profile = Consumer.objects.create(
+            user=self.consumer_user,
+        )
+
         # Create a mock Seller user
         self.seller_user = User.objects.create_user(
             username="test_seller2",
@@ -229,6 +233,16 @@ class testSellerAndConsumerPages(TestCase):
             price=2.00,
             pickup_window_start=time(14, 0),
             pickup_window_end=time(15, 0),
+        )
+
+    # creating a mock IssueReport
+    def create_report(self, creator_consumer=None, posting=None, **kwargs):
+        return IssueReport.objects.create(
+            posting=posting or self.bundle_posting,
+            consumer=creator_consumer or self.consumer_profile,
+            description=kwargs.get("description", "Test report"),
+            type=kwargs.get("type", "C"),
+            status=kwargs.get("status", "P"),
         )   
 
 
@@ -321,6 +335,20 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
 
+    #passes
+    def test_reports_view_allows_consumer_creator(self):
+        # Create a report owned by the Consumer
+        report = self.create_report(creator_consumer=self.consumer_profile)
+        # Check the consumer can access this report
+        self.client.login(username="test_consumer2", password="consumerpass2")
+        url = reverse("reports_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/reports.html")
+
+
+
+
     #failing: AssertionError: 302 != 200 
     def test_reports_view_allows_consumer(self):
         """Consumers should get 200 OK"""
@@ -330,6 +358,7 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/reports.html")
 
+    #failing: AssertionError: 302 != 200
     def test_reports_view_allows_seller(self):
         """Sellers shoud get 200 OK"""
         self.client.login(username="seller2", password="sellerpass2")
