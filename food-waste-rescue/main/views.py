@@ -100,10 +100,13 @@ Consumer: Show bundle, make new reservation or view own reservation details
 Seller: show/edit/delete bundle, change reservation status?
 """
 
-
 @login_required
 def bundle_view(request, id):
     post = get_object_or_404(Bundle_posting, pk=id)
+
+    # Sellers without a Seller profile cannot view bundles
+    if request.user.user_type == "seller" and not hasattr(request.user, "seller"):
+        return redirect("seller-extra")
 
     # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
     is_seller = (request.user.user_type == "seller") and (
