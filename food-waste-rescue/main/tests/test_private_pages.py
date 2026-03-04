@@ -210,7 +210,7 @@ class testSellerAndConsumerPages(TestCase):
 
         # Create the Seller profile
         self.seller = Seller.objects.create(
-            user=self.seller_user,
+            user=self.seller,
             location="Test Location",
             opening_time="09:00",
             closing_time="17:00",
@@ -234,7 +234,7 @@ class testSellerAndConsumerPages(TestCase):
     # -----------------------------------------------------------------------------
     #Tests for bundles_view
     
-    #currently failing: AssertionError: 200 != 302
+    #passes
     def test_bundles_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundles_view_url")
