@@ -313,7 +313,7 @@ class testSellerAndConsumerPages(TestCase):
 
     #Tests for reports_view
 
-    #failing
+    #passes
     def test_reports_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("reports_view_url")
