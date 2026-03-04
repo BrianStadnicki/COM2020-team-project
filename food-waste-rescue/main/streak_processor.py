@@ -13,15 +13,14 @@ def reservation_streak(request):
     if not getattr(user, "is_authenticated", False):
         return {"reservation_streak": 0}
 
+    # only consumers get streaks
+
     if getattr(user, "user_type", None) != "consumer":
         return {"reservation_streak": 0}
 
-    consumer = user.consumer
-    tz = timezone.get_current_timezone()
-
     # Gets all user's reservation time stamps
     res_ts = Reservation.objects.filter(
-        consumer=consumer, is_collected=True
+        user=user, is_collected=True
     ).values_list("time_stamp", flat=True)
 
     # Gets start data of each week with a reservation

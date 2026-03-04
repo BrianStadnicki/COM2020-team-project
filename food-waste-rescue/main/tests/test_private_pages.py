@@ -200,6 +200,12 @@ class testSellerAndConsumerPages(TestCase):
             password="consumerpass2",
             user_type="consumer"
         )
+
+        #Create the Consumer profile
+        self.consumer_profile = Consumer.objects.create(
+            user = self.consumer,
+        )
+
         # Create a mock Seller user
         self.seller = User.objects.create_user(
             username="test_seller2",
