@@ -264,15 +264,14 @@ class testSellerAndConsumerPages(TestCase):
     # -----------------------------------------------------------------------------
     #Tests for bundle_view
 
-    #currently failing: AttributeError: 'testSellerAndConsumerPages' object has no attribute 'seller_user'
+    #passes
     def test_bundle_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response.url)
-        print("Bundle ID:", self.bundle_posting.id)
-        print("URL:", url)
+        
 
     #currently failing: AttributeError: 'testSellerAndConsumerPages' object has no attribute 'seller_user'
     def test_bundle_view_allows_consumer(self):
