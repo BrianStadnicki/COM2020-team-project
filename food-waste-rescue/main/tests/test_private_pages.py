@@ -309,8 +309,10 @@ class testSellerAndConsumerPages(TestCase):
         self.client.login(username="seller_no_profile", password="pass")
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
+        print(hasattr(user, "seller"))
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("seller-extra"), response.url)
+        
 
     #currently failing: AssertionError: 200 != 403
     def test_bundle_view_non_owner_seller(self):

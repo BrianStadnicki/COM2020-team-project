@@ -102,6 +102,8 @@ Seller: show/edit/delete bundle, change reservation status?
 
 @login_required
 def bundle_view(request, id):
+    request.user.refresh_from_db()
+
     post = get_object_or_404(Bundle_posting, pk=id)
 
     # Sellers without a Seller profile cannot view bundles
