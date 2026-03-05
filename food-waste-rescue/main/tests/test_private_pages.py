@@ -386,6 +386,30 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/report_view.html")
     
+    def test_report_view_forbids_other_consumer(self):
+        '''Consumers can't view reports created by other consumers'''
+
+        # creating a different consumer
+        other_user = User.objects.create_user(
+            username="other_consumer", password="pass", user_type="consumer"
+        )
+        other_profile = Consumer.objects.create(user=other_user)
+
+        # creating a new IssueReport belonging to our mock consumer
+        report = IssueReport.objects.create(
+            posting=self.bundle_posting,
+            consumer=self.consumer_profile,
+            description="Test"
+        )
+
+        # logging in as the new consumer, who didn't write the IssueReport
+        self.client.login(username="other_consumer", password="pass")
+        url = reverse("report_view_url", args=[report.id])
+        response = self.client.get(url)
+
+        # the new consumer shouldn't be able to access the mock consumer's report
+        self.assertEqual(response.status_code, 403)
+    
     #passes
     def test_report_view_allows_seller_owner(self):
         '''Seller can view reports for their bundles'''
