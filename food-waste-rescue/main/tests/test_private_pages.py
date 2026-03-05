@@ -429,7 +429,38 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/report_view.html")
 
+    # passes
+    def test_report_view_forbids_non_owner_seller(self):
+        '''Testing that non-owner sellers cannot access reports for bundles created by other sellers'''
 
+        # creating another seller who isn't the owner of the bundle for which the report was made
+        other_user = User.objects.create_user(
+            username="other_seller", password="pass", user_type="seller"
+        )
+        other_profile = Seller.objects.create(
+            user=other_user,
+            location="X",
+            opening_time="09:00",
+            closing_time="17:00",
+            telephone_number="0",
+            website_url="https://x"
+        )
+
+        # creating a report for the mock bundle
+        report = IssueReport.objects.create(
+            posting=self.bundle_posting,
+            consumer=self.consumer_profile,
+            description="Test"
+        )
+
+        # logging in as the non-owner seller
+        self.client.login(username="other_seller", password="pass")
+        url = reverse("report_view_url", args=[report.id])
+        response = self.client.get(url)
+
+        # the non-owner Seller should be forbidden from accessing the report
+        self.assertEqual(response.status_code, 403)
+    
 
 
     # ---------------------------------------------------------------------------
