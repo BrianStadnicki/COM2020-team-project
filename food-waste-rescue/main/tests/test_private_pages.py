@@ -461,7 +461,32 @@ class testSellerAndConsumerPages(TestCase):
         # the non-owner Seller should be forbidden from accessing the report
         self.assertEqual(response.status_code, 403)
     
+    #passes
+    def test_report_view_seller_can_update_report(self):
+        '''The Seller that created the bundle that a report is associated with, should be able to post updates to that report'''
+        # creating a new IssueReport
+        report = IssueReport.objects.create(
+            posting=self.bundle_posting,
+            consumer=self.consumer_profile,
+            description="Old description"
+        )
 
+        # logging in as the mock seller
+        self.client.login(username="test_seller2", password="sellerpass2")
+        url = reverse("report_view_url", args=[report.id])
+
+        # updating the description
+        response = self.client.post(url, {
+            "description": "Updated description",
+            "type": report.type,
+            "status": report.status,
+            "seller_response" : "Updated response",
+        })
+
+        self.assertEqual(response.status_code, 302)  # redirect after save
+        report.refresh_from_db()
+        self.assertEqual(report.description, "Updated description")
+        self.assertEqual(report.seller_response, "Updated response")
 
     # ---------------------------------------------------------------------------
 
