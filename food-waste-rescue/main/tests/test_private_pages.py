@@ -377,14 +377,34 @@ class testSellerAndConsumerPages(TestCase):
         consumer=self.consumer_profile,
         description="Test"
     )
-        # log in as the owner of the report
+        # logging in as the owner of the report
         self.client.login(username="test_consumer2", password="consumerpass2")
         url = reverse("report_view_url", args=[report.id])
         response = self.client.get(url)
 
-        # check response code and template
+        # checking response code and template
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/report_view.html")
+    
+    #passes
+    def test_report_view_allows_seller_owner(self):
+        '''Seller can view reports for their bundles'''
+        # creating a new IssueReport for the mock bundle 
+        report = IssueReport.objects.create(
+            posting=self.bundle_posting,
+            consumer=self.consumer_profile,
+            description="Test"
+        )
+
+        # logging in as the seller who owns that bundle
+        self.client.login(username="test_seller2", password="sellerpass2")
+        url = reverse("report_view_url", args=[report.id])
+        response = self.client.get(url)
+
+        # checking response code and template
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/report_view.html")
+
 
 
 
