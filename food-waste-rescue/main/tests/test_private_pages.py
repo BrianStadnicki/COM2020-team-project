@@ -360,6 +360,7 @@ class testSellerAndConsumerPages(TestCase):
     # ---------------------------------------------------------------------------
 
     #Tests for report_view(id)
+    #passes
     def test_report_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("report_view_url", args=[1])
@@ -367,19 +368,25 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
-    def test_report_view_allows_consumer(self):
-        """Consumers should get 200 OK"""
-        self.client.login(username="consumer2", password="consumerpass2")
-        url = reverse("report_view_url", args=[1])
+    #passes
+    def test_report_view_allows_consumer_creator(self):
+        '''Consumers should be able to view their own reports'''
+        # Create a new IssueReport
+        report = IssueReport.objects.create(
+        posting=self.bundle_posting,
+        consumer=self.consumer_profile,
+        description="Test"
+    )
+        # log in as the owner of the report
+        self.client.login(username="test_consumer2", password="consumerpass2")
+        url = reverse("report_view_url", args=[report.id])
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
 
-    def test_report_view_allows_seller(self):
-        """Sellers shoud get 200 OK"""
-        self.client.login(username="seller2", password="sellerpass2")
-        url = reverse("report_view_url", args=[1])
-        response = self.client.get(url)
+        # check response code and template
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "main/report_view.html")
+
+
 
     # ---------------------------------------------------------------------------
 
