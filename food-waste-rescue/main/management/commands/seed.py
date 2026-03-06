@@ -177,7 +177,7 @@ class Command(BaseCommand):
         parser.add_argument("--seed", type=int, help="Choose a seed")
 
     def handle(self, *args, **options):
-        """Handles CLI"""
+        """Handle"""
         mode = options["mode"]
         seed = options["seed"]
         random.seed(seed)
@@ -323,7 +323,9 @@ def create_bundle_posting(seller, creation=None, window_start=None, window_end=N
             :100
         ],
         quantity=random.randint(1, 5),
-        price=Decimal(fake.pydecimal(left_digits=2, right_digits=2, positive=True)),
+        price=Decimal(
+            fake.pydecimal(left_digits=2, right_digits=2, positive=True, max_value=10)
+        ),
         creation_time=creation,
         pickup_window_start=window_start,
         pickup_window_end=window_end,
@@ -396,9 +398,6 @@ def create_reservation(
     posting_date = selected_posting.creation_time.date()
     now = timezone.now()
 
-    # RuntimeWarning: DateTimeField received a naive datetime solved with:
-    # https://stackoverflow.com/questions/18622007/runtimewarning-datetimefield-received-a-naive-datetime
-
     time_stamp = now.replace(
         posting_date.year,
         posting_date.month,
@@ -417,7 +416,11 @@ def create_reservation(
         is_collected=status == "C",
     )
 
-    reservation.save()
+    try:
+        reservation.save()
+    except:
+        return
+
     return reservation
 
 

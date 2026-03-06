@@ -1,6 +1,20 @@
+# Overview
+
+This is a project with a focus on developing a web application which allows for sellers to post food bundles and consumers to reserve them, with the intent to reduce food waste. The core functionality involves:
+
+- User creation and authentication.
+- Marketplace with bundle postings, reservations and an issue report feature.
+- Overselling prevention.
+- Seller analytics.
+- Forecast on reservation demands and no-shows.
+- Security.
+- Accessibility.
+
+For frontend development, Bootstrap is used to build simple design templates for the web application. For backend development, Django is also used to implement the front-end and the back-end, such as database models, administration, commands, views, urls and much more. The only programming language used in this project is Python.
+
 ## Initial setup
 
-linux:
+Linux:
 
 ```sh
 cd food-waste-rescue
@@ -11,7 +25,7 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-windows:
+Windows:
 
 ```sh
 cd food-waste-rescue
@@ -26,7 +40,7 @@ python manage.py createsuperuser
 
 ## Running server
 
-windows:
+Windows:
 ```sh
 cd food-waste-rescue
 windows: Set-ExecutionPolicy Unrestricted -Scope Process
@@ -35,7 +49,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-linux:
+Linux:
 
 ```sh
 source .env/bin/activate
@@ -86,34 +100,57 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Troubleshooting for command failure
-
-```sh
-python manage.py makemigrations
-```
-
-Delete COM2020-team-project/food-waste-rescue/main/migrations/0002*.py
-
-```sh
-python manage.py migrate
-```
-
-Delete db.sqlite3
-
-### Add testing data
-
-```sh
-python manage.py testing_data
-```
-
 ### Add demo data
 
 ```sh
 python manage.py seed --mode=refresh --seed=123
 ```
 
-Available modes:
+### Add happy path test data
 
-- refresh
+```sh
+python manage.py init_happy_path_test --mode=refresh --seed=123
+```
 
-- clear
+### Export data
+
+```sh
+python manage.py export
+```
+
+### Demo run config
+
+Also disables debug mode
+
+```sh
+SECRET_KEY="CHANGE_ME" python manage.py runserver
+```
+
+### Running Unit Tests
+
+This project uses Django's built-in test runner.
+All tests are located inside the main/tests/ directory.
+
+1. Navigate to the project root (where manage.py lives)
+```sh
+cd food-waste-rescue
+```
+
+2. Activate the virtual environment:
+
+```sh
+python -m venv .env
+windows: Set-ExecutionPolicy Unrestricted -Scope Process
+.env\Scripts\activate
+```
+
+3. Run a test suite, e.g.:
+```sh
+python manage.py test main.tests.test_public_pages
+```
+
+4. You should see something like:
+```sh
+Ran 3 tests in ...
+OK
+```

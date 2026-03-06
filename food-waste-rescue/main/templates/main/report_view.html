@@ -34,7 +34,7 @@
 
         <div class="input-group mb-3">
             <label class="input-group-text" for="type">Type</label>
-            <select class="form-select" name="type">
+            <select class="form-select" name="type" style="pointer-events: none;">
                 <option>Choose...</option>
                 <option value="C" {% if form.initial.type == 'C' %}selected="selected"{% endif %}>Collection</option>
                 <option value="A" {% if form.initial.type == 'A' %}selected="selected"{% endif %}>Additional Information</option>
@@ -45,19 +45,19 @@
 
         <div class="input-group mb-3">
             <span class="input-group-text">Report</span>
-            <textarea class="form-control" aria-label="Consumer Response" name="description" >{{form.initial.description}}</textarea>
+            <textarea class="form-control" aria-label="Consumer Response" name="description" {% if user.user_type == "seller" %} style="pointer-events: none;" {% endif %}>{{form.initial.description}}</textarea>
             {{ form.description.errors }}
         </div>
 
         <div class="input-group mb-3">
             <span class="input-group-text">Response</span>
-            <textarea class="form-control" aria-label="Seller Response" name="seller_response" >{{form.initial.seller_response}}</textarea>
+            <textarea class="form-control" aria-label="Seller Response" name="seller_response" {% if user.user_type != "seller" %} style="pointer-events: none;" {% endif %}>{{form.initial.seller_response}}</textarea>
             {{ form.seller_response.errors }}
         </div>
 
         <div class="input-group mb-3">
             <label class="input-group-text" for="status">Status</label>
-            <select class="form-select" name="status">
+            <select class="form-select" name="status" {% if user.user_type != "seller" %} style="pointer-events: none;" {% endif %}>
                 <option selected>Choose...</option>
                 <option value="P" {% if form.initial.status == 'P' %}selected="selected"{% endif %}>Pending</option>
                 <option value="A" {% if form.initial.status == 'A' %}selected="selected"{% endif %}>Acknowledged</option>
