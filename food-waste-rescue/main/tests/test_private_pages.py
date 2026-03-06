@@ -528,6 +528,8 @@ class testSellerAndConsumerPages(TestCase):
 
     #Tests for accessibility_view
 
+    # We need to implement accessibility_view
+
     def test_accessibility_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("accessibility_view_url")
@@ -553,6 +555,8 @@ class testSellerAndConsumerPages(TestCase):
 
     #Tests for reservations_view
 
+    # Need to implement the logic for this
+
     def test_reservations_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("reservations_view_url")
@@ -577,6 +581,8 @@ class testSellerAndConsumerPages(TestCase):
     # -----------------------------------------------------------------------------
 
     #Tests for reservation_view(id)
+
+    # Need to implement the logic for this
 
     def test_reservation_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
