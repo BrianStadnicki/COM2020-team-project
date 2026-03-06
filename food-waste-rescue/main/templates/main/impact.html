@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
+{% load static %}
 
 <div class="container-fluid">
     <nav class="navbar">
@@ -7,6 +8,25 @@
             <h1 class="navbar-brand">Impact</h1>
         </div>
     </nav>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        {% for badge in badges %}
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-4">
+                        <img src="{% static badge.url %}" class="img-fluid">
+                    </div>
+                    <div class="col-8">
+                        <p><strong>{{badge.name}}</strong></p>
+                        <p>{{badge.des}}</p>
+                        <p>{{badge.x}}/{{badge.y}}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

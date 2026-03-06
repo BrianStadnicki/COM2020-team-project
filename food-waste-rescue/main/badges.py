@@ -1,20 +1,20 @@
-from .models import Consumer, Reservation, Bundle_posting
+from .models import Consumer, Reservation
 import datetime as dt
 from django.utils import timezone
 
 TARGET_BUNDLE_QUANTITY = 3
 
-badges = [["New Account", None, "Create a new account", 1, 1],
-          ["1 Week Streak", None, "Hold a streak for a week", 0, 1],
-          ["1 Month Streak", None, "Hold a streak for 4 weeks", 0, 4],
-          ["6 Month Streak", None, "Hold a streak for 26 weeks", 0, 26],
-          ["1 Year Streak", None, "Hold a streak for a 52 weeks", 0, 52],
-          ["1 Bundle", None, "Collect 1 bundle", 0, 1],
-          ["5 Bundles", None, "Collect 5 bundles", 0, 5],
-          ["10 Bundles", None, "Collect 10 bundles", 0, 10],
-          ["20 Bundles", None, "Collect 20 bundles", 0, 20],
-          ["Animal Lover", None, f"Collect {TARGET_BUNDLE_QUANTITY} pet food bundles", 0, TARGET_BUNDLE_QUANTITY],
-          ["Very Veggie", None, f"Collect {TARGET_BUNDLE_QUANTITY} vegetarian or vegan bundles", 0, TARGET_BUNDLE_QUANTITY]]
+badges = [{"name":"New Account", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Create a new account", "x":1, "y":1},
+          {"name":"1 Week Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for a week", "x":0, "y":1},
+          {"name":"1 Month Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for 4 weeks", "x":0, "y":4},
+          {"name":"6 Month Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for 26 weeks", "x":0, "y":26},
+          {"name":"1 Year Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for a 52 weeks", "x":0, "y":52},
+          {"name":"1 Bundle", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Collect 1 bundle", "x":0, "y":1},
+          {"name":"5 Bundles", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Collect 5 bundles", "x":0, "y":5},
+          {"name":"10 Bundles", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Collect 10 bundles", "x":0, "y":10},
+          {"name":"20 Bundles", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Collect 20 bundles", "x":0, "y":20},
+          {"name":"Animal Lover", "url":"images/badge-award-medal-svgrepo-com.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} pet food bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY},
+          {"name":"Very Veggie", "url":"images/badge-award-medal-svgrepo-com.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} vegetarian or vegan bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY}]
 
 def week_start(day):
     return day - dt.timedelta(days=day.weekday())
@@ -64,57 +64,57 @@ def get_very_veggie(consumer):
     return Reservation.objects.filter(consumer=consumer, is_collected=True, posting__category__in=["V", "VE"]).count()
 
 
-def get_badges(consumer: Consumer) -> list[list]:
+def get_badges(consumer: Consumer):
     
     l_streak = get_longest_streak(consumer)
-    for i in range(1, 4):
-        badges[i][3] = l_streak if l_streak < badges[i][4] else badges[i][4]
+    for i in range(1, 5):
+        badges[i]["x"] = l_streak if l_streak < badges[i]["y"] else badges[i]["y"]
 
     bund_t = get_bundles_total(consumer)
-    for i in range(5, 8):
-        badges[i][3] = bund_t if bund_t < badges[i][4] else badges[i][4]
+    for i in range(5, 9):
+        badges[i]["x"] = bund_t if bund_t < badges[i]["y"] else badges[i]["y"]
 
     a_lover = get_animal_lover(consumer)
-    badges[9][3] = a_lover if a_lover < badges[9][4] else badges[9][4]
+    badges[9]["x"] = a_lover if a_lover < badges[9]["y"] else badges[9]["y"]
 
     v_veggie = get_very_veggie(consumer)
-    badges[10][3] = v_veggie if v_veggie < badges[10][4] else badges[10][4]
+    badges[10]["x"] = v_veggie if v_veggie < badges[10]["y"] else badges[10]["y"]
 
     return badges
 
 
-def get_new_badges(consumer: Consumer) -> list[list]:
+def get_new_badges(consumer: Consumer):
 
     new_badges = []
     
     l_streak = get_longest_streak(consumer)
     match l_streak:
         case 1:
-            new_badges.append(badges[1][:3]+[l_streak]+badges[1][4])
+            new_badges.append({**badges[1], "x": 1})
         case 4:
-            new_badges.append(badges[2][:3]+[l_streak]+badges[2][4])
+            new_badges.append({**badges[2], "x": 4})
         case 26:
-            new_badges.append(badges[3][:3]+[l_streak]+badges[3][4])
+            new_badges.append({**badges[3], "x": 26})
         case 52:
-            new_badges.append(badges[4][:3]+[l_streak]+badges[4][4])
+            new_badges.append({**badges[4], "x": 52})
 
     bund_t = get_bundles_total(consumer)
     match bund_t:
         case 1:
-            new_badges.append(badges[5][:3]+[bund_t]+badges[5][4])
+            new_badges.append({**badges[5], "x": 1})
         case 5:
-            new_badges.append(badges[6][:3]+[bund_t]+badges[6][4])
+            new_badges.append({**badges[6], "x": 5})
         case 10:
-            new_badges.append(badges[7][:3]+[bund_t]+badges[7][4])
+            new_badges.append({**badges[7], "x": 10})
         case 20:
-            new_badges.append(badges[8][:3]+[bund_t]+badges[8][4])
+            new_badges.append({**badges[8], "x": 20})
 
     a_lover = get_animal_lover(consumer)
     if a_lover == TARGET_BUNDLE_QUANTITY:
-        new_badges.append(badges[9][:3]+[a_lover]+badges[9][4])
+        new_badges.append({**badges[9], "x": a_lover})
 
     v_veggie = get_very_veggie(consumer)
     if v_veggie == TARGET_BUNDLE_QUANTITY:
-        new_badges.append(badges[10][:3]+[v_veggie]+badges[10][4])
+        new_badges.append({**badges[10], "x": v_veggie})
 
     return new_badges

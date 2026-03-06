@@ -428,9 +428,9 @@ def impact_view(request):
 
     consumer = getattr(request, "user", None).consumer
 
-    get_badges(consumer)
+    badges = get_badges(consumer)
 
-    return render(request, "main/impact.html")
+    return render(request, "main/impact.html", {"badges": badges})
 
 
 """
