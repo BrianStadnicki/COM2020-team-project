@@ -9,6 +9,15 @@ User = get_user_model()
 
 class TestBundleView(TestCase):
     def setUp(self):
+        # Create consumer user
+        # Create consumer user
+        self.consumer_user = User.objects.create_user(
+            username="consumer1",
+            email="consumer@example.com",
+            password="consumerpass",
+            user_type="consumer",
+        )
+
         # Create seller user
         self.user = User.objects.create_user(
             username="seller1",
@@ -54,6 +63,7 @@ class TestBundleView(TestCase):
             allergen_sulphite = False
         )
 
+    #passes
     def test_bundle_view_renders_correct_template(self):
         self.client.login(username="seller1", password="pass123")
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
@@ -73,7 +83,10 @@ class TestBundleView(TestCase):
 
         # Content checks
 
-        self.assertContains(response, "B&P") #testing for correct category
+        self.assertTrue(
+            "Bread & Pastries" in response.content.decode()
+            or "Bread &amp; Pastries" in response.content.decode()
+        ) #testing for correct category
         self.assertContains(response, "Test Bundle") #testing for correct name
         self.assertContains(response, "Bread") #testing for correct contents_description
         self.assertContains(response, "5") #testing for correct quantity
@@ -108,12 +121,14 @@ class TestBundleView(TestCase):
         self.assertContains(response, "5 p.m.")
         self.assertContains(response, "6 p.m.")
     
+    # passes
     def test_bundle_view_404_for_missing_bundle(self):
         self.client.login(username="seller1", password="pass123")
         url = reverse("bundle_view_url", args=[99999])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
     
+    # AssertionError: 302 != 403
     def test_consumer_cannot_view_expired_bundle(self):
         ''' Consumer cannot view expired bundles'''
         # setting the pickup window to be in the past
@@ -129,6 +144,7 @@ class TestBundleView(TestCase):
         # the consumer should be forbidden from accessing expired bundles
         self.assertEqual(response.status_code, 403)
 
+    #passes
     def test_seller_can_view_expired_bundle(self):
         '''Seller can still view expired bundles'''
         # setting the pickup window to be in the past
@@ -144,6 +160,21 @@ class TestBundleView(TestCase):
 
         # the seller should be able to see the expired bundle
         self.assertEqual(response.status_code, 200)
+    
+    # passes
+    def test_consumer_cannot_view_deleted_bundle(self):
+        '''Consumer cannot view deleted bundles'''
+        # deleting the mock bundle
+        bundle_id = self.bundle_posting.id
+        self.bundle_posting.delete()
+
+        # logging in as the consumer
+        self.client.login(username="consumer1", password="consumerpass")
+        url = reverse("bundle_view_url", args=[bundle_id])
+        response = self.client.get(url)
+
+        # the consumer should be forbidden from viewing the deleted bundle
+        self.assertEqual(response.status_code, 404)
 
 
         
