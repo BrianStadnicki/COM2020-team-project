@@ -54,10 +54,18 @@
         </div>
         <div class="col py-3">
             <div class="container">
-                {% if messages%}
+                {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}
                             <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if pickups %}
+                    <ul>
+                        {% for pickup in pickups %}
+                            <li>Reservation needs to be picked up between {{pickup.posting.pickup_window_start}} - {{pickup.posting.pickup_window_end}} at {{pickup.posting.seller.location}}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}

@@ -70,7 +70,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "main.streak_processor.reservation_streak",
+                "main.processor.reservation_streak",
+                "main.processor.bundle_pickup_time"
             ],
         },
     },

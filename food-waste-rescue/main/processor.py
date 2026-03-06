@@ -1,6 +1,7 @@
 import datetime as dt
 from django.utils import timezone
-from .models import Reservation
+from datetime import datetime, timedelta, time
+from .models import Bundle_posting, Reservation
 
 
 def week_start(day):
@@ -45,3 +46,21 @@ def reservation_streak(request):
         week -= dt.timedelta(weeks=1)
 
     return {"reservation_streak": streak}
+
+def bundle_pickup_time(request):
+    user = getattr(request, "user", None)
+
+    if user is None:
+        return {}
+
+    if not getattr(user, "is_authenticated", False):
+        return {}
+
+    if getattr(user, "user_type", None) != "consumer":
+        return {}
+    
+    pickups = []
+    for reservation in Reservation.objects.filter(consumer=user.consumer, posting__creation_time__date=datetime.date(datetime.today()), is_collected=False).all():
+        pickups.append(reservation)
+
+    return {"pickups": pickups}
