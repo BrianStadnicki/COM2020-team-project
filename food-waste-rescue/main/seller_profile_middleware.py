@@ -14,7 +14,9 @@ class SellerProfileMiddleware:
         if request.user.is_authenticated:
             if request.user.user_type == "seller":
                 if not hasattr(request.user, "seller"):
-                    return sellerExtra(request)
+                    response = sellerExtra(request)
+                    response.status_code = 302
+                    return response
 
         response = self.get_response(request)
 
