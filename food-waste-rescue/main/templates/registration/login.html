@@ -2,33 +2,11 @@
 
 {% block content %}
 
-    <nav class="navbar">
-            <div class="container-fluid">
-                <h1 class="navabar-brand">Login</h1>
-            </div>
-    </nav>
-
-{% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
-{# Show Django messages (e.g., "Check your details") #}
-{% if messages%}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
+<nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navabar-brand">Login</h1>
+        </div>
+</nav>
 
 {# Show non-field errors (e.g. password mismatch) #}
 {{ form.non_field_errors }}

@@ -2,25 +2,6 @@
 
 {% block content %}
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-
-{% endif %}
-
-{# Show Django messages (e.g., "Check your details") #}
-{% if messages%}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
 {{ form.non_field_errors }}
 
 <nav class="navbar">

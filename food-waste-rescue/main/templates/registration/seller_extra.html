@@ -2,27 +2,6 @@
 
 {% block content %}
 
-{% if form.errors %}
-    <p>Error signing up. Please check your details.</p>
-{% endif %}
-
-{# Show Django messages (e.g., "Check your details") #}
-{% if messages%}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{% if messages%}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
 {# Show non-field errors (e.g. password mismatch) #}
 {{ form.non_field_errors }}
 
