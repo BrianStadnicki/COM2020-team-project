@@ -7,8 +7,7 @@ from .forms import (
     GenericSignupForm,
     BundleNewForm,
     IssueReportNewForm,
-    IssueReportViewForm,
-    BundleDeleteForm,
+    IssueReportViewForm
 )
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
@@ -191,7 +190,6 @@ def bundle_new_view(request):
                     "main/bundle_new.html",
                     {
                         "form": form,
-                        "edit": False,
                         "confirm": True,
                         "categories": Bundle_posting.CATEGORYS,
                         "exp_res": exp_res,
@@ -205,70 +203,9 @@ def bundle_new_view(request):
         "main/bundle_new.html",
         {
             "form": form,
-            "edit": False,
             "categories": Bundle_posting.CATEGORYS,
             "confirm": False,
         },
-    )
-
-
-"""
-Seller: edit bundle
-"""
-
-
-@login_required
-def bundle_edit_view(request, id):
-    if request.user.user_type != "seller":
-        raise PermissionDenied
-    bundle = get_object_or_404(Bundle_posting, id=id)
-
-    if request.user.seller != bundle.seller:
-        raise PermissionDenied
-
-    if request.method == "POST":
-        form = BundleNewForm(request.POST or None, instance=bundle)
-        if form.is_valid():
-            bundle = form.save()
-            return redirect("bundle_view_url", id=bundle.id)
-    else:
-        form = BundleNewForm(None, initial=bundle.__dict__)
-        form.initial["pickup_window_start"] = form.initial[
-            "pickup_window_start"
-        ].__format__("%H:%M")
-        form.initial["pickup_window_end"] = form.initial[
-            "pickup_window_end"
-        ].__format__("%H:%M")
-
-    return render(
-        request,
-        "main/bundle_new.html",
-        {"form": form, "categories": Bundle_posting.CATEGORYS, "edit": True},
-    )
-
-
-"""
-Seller: remove bundle
-"""
-
-
-@login_required
-def bundle_delete_view(request, id):
-    if request.user.user_type != "seller":
-        raise PermissionDenied
-
-    bundle = get_object_or_404(Bundle_posting, id=id)
-
-    if request.user.seller != bundle.seller:
-        raise PermissionDenied
-
-    if request.method == "POST":
-        bundle.delete()
-        return redirect("bundles_view_url")
-    else:
-        form = BundleDeleteForm(None)
-    return render(
-        request, "main/bundle_confirm_delete.html", {"form": form, "post": bundle}
     )
 
 
