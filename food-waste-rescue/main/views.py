@@ -7,7 +7,7 @@ from .forms import (
     GenericSignupForm,
     BundleNewForm,
     IssueReportNewForm,
-    IssueReportViewForm
+    IssueReportViewForm,
 )
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow

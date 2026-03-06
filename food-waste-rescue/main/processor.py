@@ -47,6 +47,7 @@ def reservation_streak(request):
 
     return {"reservation_streak": streak}
 
+
 def bundle_pickup_time(request):
     user = getattr(request, "user", None)
 
@@ -58,9 +59,13 @@ def bundle_pickup_time(request):
 
     if getattr(user, "user_type", None) != "consumer":
         return {}
-    
+
     pickups = []
-    for reservation in Reservation.objects.filter(consumer=user.consumer, posting__creation_time__date=datetime.date(datetime.today()), is_collected=False).all():
+    for reservation in Reservation.objects.filter(
+        consumer=user.consumer,
+        posting__creation_time__date=datetime.date(datetime.today()),
+        is_collected=False,
+    ).all():
         pickups.append(reservation)
 
     return {"pickups": pickups}
