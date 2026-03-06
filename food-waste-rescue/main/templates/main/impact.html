@@ -12,20 +12,34 @@
 
 <div class="container-fluid">
     <div class="row">
-        {% for badge in badges %}
-            <div class="col-3">
-                <div class="row">
-                    <div class="col-4">
-                        <img src="{% static badge.url %}" class="img-fluid">
-                    </div>
-                    <div class="col-8">
-                        <p><strong>{{badge.name}}</strong></p>
-                        <p>{{badge.des}}</p>
-                        <p>{{badge.x}}/{{badge.y}}</p>
+        <div class="col-6">
+            <p>Carbon here</p>
+        </div>
+
+        <div class="col-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        {% for badge in badges %}
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <img src="{% static badge.url %}" 
+                                        class="img-fluid"
+                                        {% if badge.x != badge.y %}style="filter: grayscale(100%);"{% endif %}>
+                                        <p class="text-center"><strong>{{ badge.name }}</strong></p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-center">{{ badge.des }}</p>
+                                        <p class="text-center">{{ badge.x }}/{{ badge.y }}</p>
+                                    </div> 
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
-        {% endfor %}
+        </div>
     </div>
 </div>
 

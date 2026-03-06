@@ -8,13 +8,13 @@ badges = [{"name":"New Account", "url":"images/badge-award-medal-svgrepo-com.svg
           {"name":"1 Week Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for a week", "x":0, "y":1},
           {"name":"1 Month Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for 4 weeks", "x":0, "y":4},
           {"name":"6 Month Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for 26 weeks", "x":0, "y":26},
-          {"name":"1 Year Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for a 52 weeks", "x":0, "y":52},
+          {"name":"1 Year Streak", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Hold a streak for 52 weeks", "x":0, "y":52},
           {"name":"1 Bundle", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Collect 1 bundle", "x":0, "y":1},
           {"name":"5 Bundles", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Collect 5 bundles", "x":0, "y":5},
           {"name":"10 Bundles", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Collect 10 bundles", "x":0, "y":10},
           {"name":"20 Bundles", "url":"images/badge-award-medal-svgrepo-com.svg", "des":"Collect 20 bundles", "x":0, "y":20},
           {"name":"Animal Lover", "url":"images/badge-award-medal-svgrepo-com.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} pet food bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY},
-          {"name":"Very Veggie", "url":"images/badge-award-medal-svgrepo-com.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} vegetarian or vegan bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY}]
+          {"name":"Very Veggie", "url":"images/badge-award-medal-svgrepo-com.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} veggie bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY}]
 
 def week_start(day):
     return day - dt.timedelta(days=day.weekday())
@@ -81,40 +81,3 @@ def get_badges(consumer: Consumer):
     badges[10]["x"] = v_veggie if v_veggie < badges[10]["y"] else badges[10]["y"]
 
     return badges
-
-
-def get_new_badges(consumer: Consumer):
-
-    new_badges = []
-    
-    l_streak = get_longest_streak(consumer)
-    match l_streak:
-        case 1:
-            new_badges.append({**badges[1], "x": 1})
-        case 4:
-            new_badges.append({**badges[2], "x": 4})
-        case 26:
-            new_badges.append({**badges[3], "x": 26})
-        case 52:
-            new_badges.append({**badges[4], "x": 52})
-
-    bund_t = get_bundles_total(consumer)
-    match bund_t:
-        case 1:
-            new_badges.append({**badges[5], "x": 1})
-        case 5:
-            new_badges.append({**badges[6], "x": 5})
-        case 10:
-            new_badges.append({**badges[7], "x": 10})
-        case 20:
-            new_badges.append({**badges[8], "x": 20})
-
-    a_lover = get_animal_lover(consumer)
-    if a_lover == TARGET_BUNDLE_QUANTITY:
-        new_badges.append({**badges[9], "x": a_lover})
-
-    v_veggie = get_very_veggie(consumer)
-    if v_veggie == TARGET_BUNDLE_QUANTITY:
-        new_badges.append({**badges[10], "x": v_veggie})
-
-    return new_badges
