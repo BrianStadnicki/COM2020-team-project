@@ -317,7 +317,7 @@ class testSellerAndConsumerPages(TestCase):
         response = self.client.get(url)
         print(hasattr(user, "seller"))
         self.assertEqual(response.status_code, 302)
-        self.assertIn(reverse("seller-extra"), response.url)
+        self.assertTemplateUsed(response, "registration/seller_extra.html")
         
 
     #currently failing: AssertionError: 200 != 403
