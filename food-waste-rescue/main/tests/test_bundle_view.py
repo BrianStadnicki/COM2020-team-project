@@ -10,7 +10,6 @@ User = get_user_model()
 class TestBundleView(TestCase):
     def setUp(self):
         # Create consumer user
-        # Create consumer user
         self.consumer_user = User.objects.create_user(
             username="consumer1",
             email="consumer@example.com",

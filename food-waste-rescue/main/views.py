@@ -31,8 +31,6 @@ Seller: Show own bundles, pagination
 
 @login_required
 def bundles_view(request):
-    # checks to see if the user is seller or consumer
-
     ALLERGENS = [
         "Celery",
         "Crustacean",
@@ -50,6 +48,7 @@ def bundles_view(request):
         "Sulphite",
     ]
 
+    # checks to see if the user is seller or consumer
     if request.user.user_type != "seller":
         posts = Bundle_posting.objects
     else:
