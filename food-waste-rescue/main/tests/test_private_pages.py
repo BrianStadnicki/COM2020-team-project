@@ -324,8 +324,9 @@ class testSellerAndConsumerPages(TestCase):
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn(reverse("seller-extra"), response)
+        self.assertTemplateUsed(response, "registration/seller_extra.html")
         
+
     #currently failing: AssertionError: 200 != 403
     def test_bundle_view_non_owner_seller(self):
         other_user = User.objects.create_user(
