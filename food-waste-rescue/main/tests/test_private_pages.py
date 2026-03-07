@@ -63,26 +63,28 @@ class TestSellerOnlyPages(TestCase):
     """
     def setUp(self):
         # Create a mock Consumer
-        self.consumer = User.objects.create_user(
+        self.consumer_user = User.objects.create_user(
             username="consumer1",
             email="mockconsumer@gmail.com",
             password="consumerpass1",
             user_type="consumer"
         )
 
+        # Create Consumer profile
         self.consumer_profile = Consumer.objects.create(
             user=self.consumer_user
         )
 
         # Create a mock Seller
-        self.seller = User.objects.create_user(
+        self.seller_user = User.objects.create_user(
             username="seller1",
             email="mockseller@gmail.com",
             password="sellerpass1",
             user_type="seller"
         )
 
-        self.seller = Seller.objects.create(
+        # Create Seller Profile
+        self.seller_profile = Seller.objects.create(
             user=self.seller_user,
             location="Test Location",
             opening_time="09:00",
@@ -99,13 +101,36 @@ class TestSellerOnlyPages(TestCase):
         self.assertIn("/accounts/login", response.url)
         self.assertTrue(response.url.startswith("/accounts/login"))
 
+    # Currently failing: AssertionError: 302 != 200
+    def test_seller_extra_page_accessible_to_new_seller(self):
+        new_seller = User.objects.create_user(
+            username="new_seller",
+            email="new_seller@gmail.com",
+            password="newpass",
+            user_type="seller"
+        )
+
+        logged_in = self.client.login(username="new_seller", password="newpass")
+        print("Login success:", logged_in)
+
+        url = reverse("seller-extra")
+        response = self.client.get(url)
+
+        print("Status:", response.status_code)
+        print("Redirected to:", getattr(response, "url", None))
+        print("User inside request:", response.wsgi_request.user)
+        print("Authenticated:", response.wsgi_request.user.is_authenticated)
+
+        self.assertEqual(response.status_code, 200)
+    
     #passes
-    def test_seller_extra_page_accessible_to_logged_in_seller(self):
+    def test_seller_extra_redirects_if_profile_exists(self):
+        '''If the Seller already has a profile, don't let them make another one.'''
         self.client.login(username="seller1", password="sellerpass1")
         url = reverse("seller-extra")
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "registration/seller_extra.html")
+
+        self.assertEqual(response.status_code, 302)
     
     #passes
     def test_seller_extra_blocks_consumer(self):
