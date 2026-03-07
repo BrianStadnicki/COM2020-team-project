@@ -129,7 +129,7 @@ STATIC_URL = "static/"
 
 LOGIN_REDIRECT_URL = "/"
 
-LOGOUT_REDIRECT_URL = "login"
+LOGOUT_REDIRECT_URL = "logout"
 
 AUTH_USER_MODEL = "main.User"
 
