@@ -69,12 +69,26 @@ class TestSellerOnlyPages(TestCase):
             password="consumerpass1",
             user_type="consumer"
         )
+
+        self.consumer_profile = Consumer.objects.create(
+            user=self.consumer_user
+        )
+
         # Create a mock Seller
         self.seller = User.objects.create_user(
             username="seller1",
             email="mockseller@gmail.com",
             password="sellerpass1",
             user_type="seller"
+        )
+
+        self.seller = Seller.objects.create(
+            user=self.seller_user,
+            location="Test Location",
+            opening_time="09:00",
+            closing_time="18:00",
+            telephone_number="0123456789",
+            website_url="https://example.com"
         )
     
     #passes
@@ -87,13 +101,7 @@ class TestSellerOnlyPages(TestCase):
 
     #passes
     def test_seller_extra_page_accessible_to_logged_in_seller(self):
-        seller = User.objects.create_user(
-            username="seller_test",
-            email="mockuser@gmail.com",
-            password="password123",
-            user_type="seller",
-        )
-        self.client.login(username="seller_test", password="password123")
+        self.client.login(username="seller1", password="sellerpass1")
         url = reverse("seller-extra")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -315,11 +323,9 @@ class testSellerAndConsumerPages(TestCase):
         self.client.login(username="seller_no_profile", password="pass")
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
-        print(hasattr(user, "seller"))
         self.assertEqual(response.status_code, 302)
-        self.assertIn(reverse("seller-extra"), response.url)
+        self.assertIn(reverse("seller-extra"), response)
         
-
     #currently failing: AssertionError: 200 != 403
     def test_bundle_view_non_owner_seller(self):
         other_user = User.objects.create_user(

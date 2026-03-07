@@ -109,7 +109,6 @@ def bundle_view(request, id):
     if not hasattr(request.user, "consumer") and not hasattr(request.user, "seller"):
         return redirect("seller-extra")
 
-
     # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
     is_seller = (request.user.user_type == "seller") and (
         post.seller == request.user.seller
