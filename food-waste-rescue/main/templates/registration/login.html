@@ -34,6 +34,10 @@
         <input type="hidden" name="next" value="{{ next }}">
     </form>
 
+        {% if user.user_type == "seller" %}
+            <a class="btn btn-secondary me-1" href="{% url 'seller_profile_view_url' %}">Seller profile</a>
+        {% endif %}
+
         <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-outline-secondary me-1">Logout</button>
@@ -41,5 +45,6 @@
 
         <a class="btn btn-secondary" href="{% url 'register' %}">Sign Up</a>
     </div>
+</div>
 
 {% endblock %}
