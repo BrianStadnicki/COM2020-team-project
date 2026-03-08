@@ -24,7 +24,7 @@ urlpatterns = [
     path("impact", views.impact_view, name="impact_view_url"),
     path("accessibility", views.accessibility_view, name="accessibility_view_url"),
     path("accounts/register/", views.registerUser, name="register"),
-    path("accounts/registerseller/", views.sellerExtra, name="seller-extra"),
+    path("accounts/seller", views.seller_profile, name="seller_profile_view_url")
 ]
 
 if settings.DEBUG:

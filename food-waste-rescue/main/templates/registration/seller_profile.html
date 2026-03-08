@@ -7,7 +7,7 @@
 
 <nav class="navbar">
         <div class="container-fluid">
-            <h1 class="navabar-brand">Enter Seller Details</h1>
+            <h1 class="navbar-brand">Enter Seller Details</h1>
         </div>
 </nav>
 
@@ -15,30 +15,30 @@
     <form method="post" action=""> {% csrf_token %}
         <div class = "input-group mb-3">
             <span class="input-group-text" id="location">Location</span>
-            <input type="text" class="form-control" name="location" placeholder="Exeter">
+            <input type="text" class="form-control" name="location" placeholder="Exeter" value="{{ form.initial.location }}">
             {{form.location.errors}}
         </div>
         <div class = "input-group mb-3">
             <span class="input-group-text" id="opening_time">Opening Time</span>
-            <input type="text" class="form-control" name="opening_time" placeholder="09:00">
+            <input type="text" class="form-control" name="opening_time" placeholder="09:00" value="{{ form.initial.opening_time }}">
             {{form.opening_time.errors}}
         </div>
         <div class = "input-group mb-3">
             <span class="input-group-text" id="closing_time">Closing Time</span>
-            <input type="text" class="form-control" name="closing_time" placeholder="17:00">
+            <input type="text" class="form-control" name="closing_time" placeholder="17:00" value="{{ form.initial.closing_time }}">
             {{form.closing_time.errors}}
         </div>
         <div class = "input-group mb-3">
             <span class="input-group-text" id="telephone_number">Telephone Number</span>
-            <input type="text" class="form-control" name="telephone_number" placeholder="440123456789">
+            <input type="text" class="form-control" name="telephone_number" placeholder="440123456789" value="{{ form.initial.telephone_number }}">
             {{form.telephone_number.errors}}
         </div>
         <div class = "input-group mb-3">
             <span class="input-group-text" id="website_url">Website URL</span>
-            <input type="text" class="form-control" name="website_url" placeholder="https://www.exeter.ac.uk/">
+            <input type="text" class="form-control" name="website_url" placeholder="https://www.exeter.ac.uk/" value="{{ form.initial.website_url}}">
             {{form.website_url.errors}}
         </div>
-    <button type="submit" value="Save Seller Details" class="btn btn-primary">Sign Up!</button>
+    <button type="submit" value="Save Seller Details" class="btn btn-primary">Confirm details</button>
 
 </form>
 

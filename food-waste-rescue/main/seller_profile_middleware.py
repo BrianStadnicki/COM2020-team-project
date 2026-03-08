@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from main.views import sellerExtra
+from main.views import seller_profile
 
 
 class SellerProfileMiddleware:
@@ -14,7 +14,7 @@ class SellerProfileMiddleware:
         if request.user.is_authenticated:
             if request.user.user_type == "seller":
                 if not hasattr(request.user, "seller"):
-                    return sellerExtra(request)
+                    return seller_profile(request)
 
         response = self.get_response(request)
 

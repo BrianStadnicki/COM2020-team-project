@@ -372,6 +372,45 @@ def accessibility_view(request):
     return render(request, "main/accessibility.html")
 
 
+def seller_profile(request):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    
+    if hasattr(request.user, "seller"):
+        profile = request.user.seller
+    else:
+        profile = None
+    
+    if request.method == "POST":
+        form = SellerExtraForm(request.POST or None, instance=profile)
+        
+        if form.is_valid():
+            seller = form.save(commit=False)
+            seller.user = request.user
+            seller.save()
+            form.save_m2m()
+            messages.success(request, "Seller profile saved!")
+            report = form.save()
+            return redirect("seller_profile_view_url")
+    elif profile != None:
+        form = SellerExtraForm(None, initial=profile.__dict__)
+        form.initial["opening_time"] = form.initial[
+                    "opening_time"
+                ].__format__("%H:%M")
+        form.initial["closing_time"] = form.initial[
+                    "closing_time"
+                ].__format__("%H:%M")      
+    else:
+        form = SellerExtraForm()
+
+    return render(
+        request,
+        "registration/seller_profile.html",
+        {"form": form},
+    )
+
+
+
 ########### register here #####################################
 def registerUser(request):
     if request.user.is_authenticated:
@@ -405,30 +444,3 @@ def registerUser(request):
                 "registration/signup.html",
                 {"form": form, "title": "register here"},
             )
-
-
-def sellerExtra(request):
-    # attach the seller profile to request.user
-    user = request.user
-
-    # only sellers can access this page
-    if user.user_type != "seller":
-        raise PermissionDenied
-
-    # If seller profile already exists, don't let them create another
-    if hasattr(user, "seller"):
-        messages.info(request, "Seller profile already completed.")
-        return redirect("login")
-
-    if request.method == "POST":
-        form = SellerExtraForm(request.POST)
-        if form.is_valid():
-            seller = form.save(commit=False)
-            seller.user = user
-            seller.save()
-            form.save_m2m()
-            messages.success(request, "Seller profile completed!")
-            return redirect("login")
-    else:
-        form = SellerExtraForm()
-    return render(request, "registration/seller_extra.html", {"form": form})
