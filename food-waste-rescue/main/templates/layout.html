@@ -65,7 +65,7 @@
                 {% if pickups %}
                     <ul>
                         {% for pickup in pickups %}
-                            <li>Reservation needs to be picked up between {{pickup.posting.pickup_window_start}} - {{pickup.posting.pickup_window_end}} at {{pickup.posting.seller.location}}</li>
+                            <li>Bundle to pick up between {{pickup.posting.pickup_window_start}} - {{pickup.posting.pickup_window_end}} at {{pickup.posting.seller.location}}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
