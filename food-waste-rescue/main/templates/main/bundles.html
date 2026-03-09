@@ -23,9 +23,9 @@
                         <p>Category</p>
                         <select class="form-select" name="category">
                             <option selected value="">Select category</option>
-                            {% for cat_short, cat in categories %}
-                                <option value="{{cat_short}}" {% if cat_short == selected_category %}selected{% endif %}>
-                                    {{cat}}
+                            {% for category in categories %}
+                                <option value="{{category.id}}" {% if category.id == selected_category.id %}selected{% endif %}>
+                                    {{category.name}}
                                 </option>
                             {% empty %}
                                 <option>No categories</option>
@@ -64,7 +64,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <p>{{post.seller.user.username}}</p>
-                                        <p>{{post.category}}</p>
+                                        <p>{{post.category.name}}</p>
                                         <p>£{{post.price}}</p>
                                         <p>{{post.creation_time.date}}</p>
                                         <p>{{post.status_str}}</p>
