@@ -220,15 +220,35 @@ Consumer: Show own reservations with bundle details
 Seller: Show upcoming reservations with bundle details, edit status, search/verify code
 """
 
-
 @login_required
 def reservations_view(request):
-    return render(request, "main/reservations.html")
+    # checks to see if the user is seller or consumer
+    if request.user.user_type != "seller":
+        reservations = request.user.consumer.reservation_set
+    else:
+        reservations = request.user.seller.reservation_set
+
+    location = request.GET.get("location", "")
+
+    if request.user.user_type != "seller" and location:
+        reservations = reservations.filter(seller__location__icontains=location)
+
+    reservations = reservations.order_by("-time_stamp")
+    reservations = reservations.all()
+
+    return render(
+        request,
+        "main/reservations.html",
+        {
+            "reservations": reservations,
+            "selected-location": location
+        },
+    )
 
 
 """
-Consumer: Show/delete own reservation with bundle details
-Seller: Show/edit own reservation with bundle details
+Consumer: Show own reservation with bundle details
+Seller: Show own reservation with bundle details
 """
 
 
