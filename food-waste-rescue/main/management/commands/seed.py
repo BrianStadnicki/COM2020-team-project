@@ -1,4 +1,4 @@
-from main.models import User, Consumer, Seller, Bundle_posting, Reservation, IssueReport
+from main.models import Bundle_posting_category, User, Consumer, Seller, Bundle_posting, Reservation, IssueReport
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from faker import Faker
@@ -23,8 +23,19 @@ MODE_CLEAR = "clear"
 
 
 class BundleProvider:
+
+    CATEGORIES = [
+        "Meals",
+        "Bread & Pastries",
+        "Groceries",
+        "Flowers & Plants",
+        "Pet Food",
+        "Vegetarian",
+        "Vegan"
+    ]
+
     NAMES = {
-        "M": [
+        "Meals": [
             "Meat Bag",
             "Surprise Meat Bag",
             "Daily Special",
@@ -34,7 +45,7 @@ class BundleProvider:
             "Food Leftovers",
             "Magic Meal Bag",
         ],
-        "B&P": [
+        "Bread & Pastries": [
             "Bakery Bag",
             "Bakery Surprise Bag",
             "Pastry Bag",
@@ -44,7 +55,7 @@ class BundleProvider:
             "Magic Bakery Bag",
             "Magic Pastry Bag",
         ],
-        "G": [
+        "Groceries": [
             "Grocery Bag",
             "Grocery Surprise Bag",
             "Grocery Leftovers",
@@ -52,7 +63,7 @@ class BundleProvider:
             "Fresh Grocery Bag",
             "Magic Grocery Bag",
         ],
-        "F&P": [
+        "Flowers & Plants": [
             "Flower Bag",
             "Flower Surprise Bag",
             "Plant Bag",
@@ -62,9 +73,9 @@ class BundleProvider:
             "Magic Plant Bag",
             "Garden Warfare Bag",
         ],
-        "PF": ["Pet Food Bag", "Pet Food Surprise Bag", "Magic Pet Food Bag"],
-        "V": ["Vegetarian Bag", "Veggie Surprise Bag", "Magic Vegetarian Bag"],
-        "VE": [
+        "Pet Food": ["Pet Food Bag", "Pet Food Surprise Bag", "Magic Pet Food Bag"],
+        "Vegetarian": ["Vegetarian Bag", "Veggie Surprise Bag", "Magic Vegetarian Bag"],
+        "Vegan": [
             "Vegan Surprise Bag",
             "Plant-Based Rescue Box",
             "Magic Vegan Bag",
@@ -72,7 +83,7 @@ class BundleProvider:
     }
 
     CONTENTS = {
-        "M": [
+        "Meals": [
             "Breakfast to go.",
             "Brunch to go.",
             "Lunch to go.",
@@ -99,7 +110,7 @@ class BundleProvider:
             "Fast food.",
             "Cooked food with fresh ingredients.",
         ],
-        "B&P": [
+        "Bread & Pastries": [
             "Fresh bread.",
             "Assorted pastries.",
             "Croissants and rolls.",
@@ -115,7 +126,7 @@ class BundleProvider:
             "Cookies.",
             "Baked goods from today.",
         ],
-        "G": [
+        "Groceries": [
             "Mixed groceries.",
             "Fresh produce.",
             "Fruit and vegetables.",
@@ -127,7 +138,7 @@ class BundleProvider:
             "Seasonal groceries.",
             "Household food items.",
         ],
-        "F&P": [
+        "Flowers & Plants": [
             "Fresh flowers.",
             "Seasonal blooms.",
             "Mixed bouquets.",
@@ -137,7 +148,7 @@ class BundleProvider:
             "Outdoor plants.",
             "Assorted floral items.",
         ],
-        "PF": [
+        "Pet Food": [
             "Dry pet food.",
             "Wet pet food.",
             "Pet treats.",
@@ -148,7 +159,7 @@ class BundleProvider:
             "Pet food close to best-before.",
             "Pet snacks.",
         ],
-        "V": [
+        "Vegetarian": [
             "Vegetarian meals.",
             "Meat-free dishes.",
             "Vegetarian groceries.",
@@ -157,7 +168,7 @@ class BundleProvider:
             "Vegetarian ready-to-eat food.",
             "Vegetarian selection of items.",
         ],
-        "VE": [
+        "Vegan": [
             "Vegan meals.",
             "Plant-based dishes.",
             "Vegan groceries.",
@@ -197,6 +208,7 @@ def clear_data():
     IssueReport.objects.all().delete()
     Reservation.objects.all().delete()
     User.objects.all().delete()
+    Bundle_posting_category.objects.all().delete()
 
 
 def create_demo_user():
@@ -281,6 +293,10 @@ def create_seller_profile():
     logger.info("{} seller created.".format(seller))
     return seller
 
+def create_categories():
+    for category in BundleProvider.CATEGORIES:
+        Bundle_posting_category.objects.create(name=category)
+
 
 def create_bundle_posting(seller, creation=None, window_start=None, window_end=None):
     """Create bundle posting"""
@@ -301,9 +317,9 @@ def create_bundle_posting(seller, creation=None, window_start=None, window_end=N
         (time(21, 00), time(22, 00)),
     ]
 
-    categories = Bundle_posting.CATEGORYS
+    categories = Bundle_posting_category.objects.all()
 
-    selected_category = random.choice(categories)[0]
+    selected_category = random.choice(categories)
 
     if creation == None:
         # Creation time within last 6 weeks
@@ -318,8 +334,8 @@ def create_bundle_posting(seller, creation=None, window_start=None, window_end=N
     bundle_posting = Bundle_posting.objects.create(
         seller=seller,
         category=selected_category,
-        name=random.choice(BundleProvider.NAMES[selected_category])[:50],
-        contents_description=random.choice(BundleProvider.CONTENTS[selected_category])[
+        name=random.choice(BundleProvider.NAMES[selected_category.name])[:50],
+        contents_description=random.choice(BundleProvider.CONTENTS[selected_category.name])[
             :100
         ],
         quantity=random.randint(1, 5),
@@ -477,6 +493,8 @@ def run_seed(self, mode, seed):
     # Generate 25 sellers
     for _ in range(25):
         sellers.append(create_seller_profile())
+    
+    create_categories()
 
     # For each seller, there will be 25 bundle postings
     for seller in sellers:

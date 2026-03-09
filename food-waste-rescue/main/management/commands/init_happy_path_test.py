@@ -1,4 +1,4 @@
-from main.models import User, Consumer, Seller, Bundle_posting, Reservation, IssueReport
+from main.models import Bundle_posting_category, User, Consumer, Seller, Bundle_posting, Reservation, IssueReport
 from django.core.management.base import BaseCommand
 from datetime import time
 import random, logging
@@ -12,6 +12,15 @@ MODE_REFRESH = "refresh"
 """ Clear all data only """
 MODE_CLEAR = "clear"
 
+CATEGORIES = [
+        "Meals",
+        "Bread & Pastries",
+        "Groceries",
+        "Flowers & Plants",
+        "Pet Food",
+        "Vegetarian",
+        "Vegan"
+    ]
 
 class Command(BaseCommand):
     help = "Seed database with synthetic data"
@@ -102,3 +111,5 @@ def run_seed(self, mode, seed):
     # Generate demo user and demo seller (fixed)
     demo_user = create_demo_user()
     demo_seller = create_demo_seller()
+    for category in CATEGORIES:
+        Bundle_posting_category.objects.create(name=category)

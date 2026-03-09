@@ -10,7 +10,7 @@ from .forms import (
     IssueReportViewForm,
     BundleDeleteForm,
 )
-from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
+from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -61,6 +61,8 @@ def bundles_view(request):
         posts = posts.filter(seller__location__icontains=location)
 
     selected_category = request.GET.get("category", "")
+    selected_category 
+
     selected_allergens = request.GET.getlist("excluded-allergens")
 
     if selected_category and selected_category != "Select category":
@@ -75,18 +77,12 @@ def bundles_view(request):
     posts = posts.order_by("-creation_time")
     posts = posts.all()
 
-    for post in posts:
-        for index, name in post.CATEGORYS:
-            if index == post.category:
-                post.category = name
-                break
-
     return render(
         request,
         "main/bundles.html",
         {
             "posts": posts,
-            "categories": Bundle_posting.CATEGORYS,
+            "categories": list(Bundle_posting_category.objects.values_list("name", flat=True)),
             "allergens": ALLERGENS,
             "selected_category": selected_category,
             "selected_allergens": selected_allergens,
