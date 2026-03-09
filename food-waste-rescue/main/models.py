@@ -177,8 +177,8 @@ class Seller_actions(models.Model):
         ("IPD", "Increased Production"),
         ("RPD", "Reduced Production"),
         ("IPR", "Increased Price"),
-        ("RPR", "Reduces Price")
-        ("O", "Other")
+        ("RPR", "Reduces Price"),
+        ("O", "Other"),
     )
     type = models.CharField(max_length=5, choices=TYPES, default="RPD")
     details = models.CharField(max_length=1000, blank=True)
