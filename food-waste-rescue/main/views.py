@@ -10,7 +10,7 @@ from .forms import (
     IssueReportViewForm,
 )
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
-from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
+from .forecast_calc import avePerRes, avePerNoshow, avePerResDay, errorMSEReservations, errorMSENoShow
 from .badges import get_badges
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -185,6 +185,7 @@ def bundle_new_view(request):
 
                 exp_res = round(bundle.quantity * avePerRes(bundle.seller_id))
                 exp_no_show = round(exp_res * avePerNoshow(bundle.seller_id))
+                exp_res_day = round(bundle.quantity * avePerResDay(bundle.seller_id, datetime.date.day))
 
                 return render(
                     request,
@@ -195,6 +196,7 @@ def bundle_new_view(request):
                         "categories": Bundle_posting.CATEGORYS,
                         "exp_res": exp_res,
                         "exp_no_show": exp_no_show,
+                        "exp_res_day": exp_res_day
                     },
                 )
     else:
