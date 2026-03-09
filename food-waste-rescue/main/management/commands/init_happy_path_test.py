@@ -42,15 +42,15 @@ def clear_data():
     User.objects.all().delete()
 
 
-def create_demo_user():
+def create_demo_user(id):
     """Create a fixed demo user"""
     logger.info("Creating demo user")
     demo_user = User.objects.create_user(
-        username="demo", email="demo@exeter.ac.uk", password="demo"
+        username="demo" + str(id), email=str(id) + "demo@exeter.ac.uk", password="demo"
     )
     demo_user.user_type = "consumer"
     demo_user.save()
-    demo_consumer = Consumer.objects.create(pk=1, user=demo_user)
+    demo_consumer = Consumer.objects.create(pk=id, user=demo_user)
     demo_consumer.save()
     logger.info("{} demo user created.".format(demo_user))
 
@@ -100,5 +100,7 @@ def run_seed(self, mode, seed):
         return
 
     # Generate demo user and demo seller (fixed)
-    demo_user = create_demo_user()
+    create_demo_user(1)
+    create_demo_user(2)
+    create_demo_user(3)
     demo_seller = create_demo_seller()
