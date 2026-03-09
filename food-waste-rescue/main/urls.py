@@ -2,6 +2,7 @@ from django.urls import include, path
 from . import views
 from django.conf import settings
 from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
 
 if settings.DEBUG:
     from debug_toolbar.toolbar import debug_toolbar_urls
@@ -23,6 +24,7 @@ urlpatterns = [
     ),
     path("impact", views.impact_view, name="impact_view_url"),
     path("accessibility", views.accessibility_view, name="accessibility_view_url"),
+    path("tos", TemplateView.as_view(template_name="main/tos.html"), name="tos_url"),
     path("accounts/register/", views.registerUser, name="register"),
     path("accounts/seller", views.seller_profile, name="seller_profile_view_url")
 ]
