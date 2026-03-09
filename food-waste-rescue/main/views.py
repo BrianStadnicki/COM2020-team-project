@@ -383,6 +383,15 @@ def impact_view(request):
 
     return render(request, "main/impact.html", {"badges": badges})
 
+@login_required
+def action_view(request):
+
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    
+    seller = getattr(request, "user", None).seller
+
+    return render(request, "main/actions.html")
 
 """
 Consumer: View/Change accessibility settings
