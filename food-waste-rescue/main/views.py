@@ -10,7 +10,7 @@ from .forms import (
     IssueReportViewForm,
 )
 from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
-from .forecast_calc import avePerNoshowCat, avePerRes, avePerNoshow, avePerResCat, errorMSEReservations, errorMSENoShow
+from .forecast_calc import avePerNoshowCat, avePerRes, avePerNoshow, avePerResCat, errorMSENoShowCat, errorMSEReservations, errorMSENoShow, errorMSEReservationsCat
 from .badges import get_badges
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -267,6 +267,10 @@ def analytics_view(request):
     best_category = get_best_categories(seller)
     reservations_error = round(errorMSEReservations(seller), 2)
     reservations_no_show_error = round(errorMSENoShow(seller), 2)
+    reservations_error_cat = [{"name": Bundle_posting_category.objects.get(id=category_id).name, "error": round(errorMSEReservationsCat(seller, category_id), 2)} for category_id in list(Bundle_posting_category.objects.values_list("id", flat=True))]
+    reservations_no_show_error_cat = [ round(errorMSENoShowCat(seller, category_id), 2) for category_id in Bundle_posting_category.objects.values_list("id", flat=True)]
+    reservations_no_show_error_cat = [{"name": Bundle_posting_category.objects.get(id=category_id).name, "error": round(errorMSEReservationsCat(seller, category_id), 2)} for category_id in list(Bundle_posting_category.objects.values_list("id", flat=True))]
+
 
     return render(
         request,
@@ -278,6 +282,8 @@ def analytics_view(request):
             "best_category": best_category,
             "reservations_error": reservations_error,
             "reservations_no_show_error": reservations_no_show_error,
+            "reservations_error_cat": reservations_error_cat,
+            "reservations_no_show_error_cat": reservations_no_show_error_cat,
         },
     )
 

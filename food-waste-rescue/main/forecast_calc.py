@@ -127,15 +127,14 @@ def errorMSEReservations(seller_id):
 
     return mean_squared_error(Y_true, Y_pred)
 
-def errorMSEReservationsWeekDay(seller_id, day):
-    recent_postings = Bundle_posting.objects.filter(seller_id=seller_id)
+def errorMSEReservationsCat(seller_id, category_id):
+    recent_postings = Bundle_posting.objects.filter(seller_id=seller_id, category_id=category_id)
     recent_postings = recent_postings.filter(
-        creation_time__date__day=day
+        creation_time__lte=timezone.now() - timedelta(days=1)
     )
     recent_postings = list(
         recent_postings.filter(
-            creation_time__gte=timezone.now() - timedelta(weeks=3),
-            creation_time__date__day=day
+            creation_time__gte=timezone.now() - timedelta(weeks=3)
         ).all()
     )
 
@@ -148,9 +147,37 @@ def errorMSEReservationsWeekDay(seller_id, day):
 
     return mean_squared_error(Y_true, Y_pred)
 
-
 def errorMSENoShow(seller_id):
     recent_postings = Bundle_posting.objects.filter(seller_id=seller_id)
+    recent_postings = recent_postings.filter(
+        creation_time__lte=timezone.now() - timedelta(days=1)
+    )
+    recent_postings = list(
+        recent_postings.filter(
+            creation_time__gte=timezone.now() - timedelta(weeks=3)
+        ).all()
+    )
+
+    average_n_reservations = avePerRes(seller_id)
+    average_no_show = avePerNoshow(seller_id)
+
+    if len(recent_postings) == 0:
+        return 0
+
+    Y_true = [
+        posting.reservation_set.count()
+        - posting.reservation_set.filter(is_collected=True).count()
+        for posting in recent_postings
+    ]
+    Y_pred = [
+        posting.quantity * average_n_reservations * average_no_show
+        for posting in recent_postings
+    ]
+
+    return mean_squared_error(Y_true, Y_pred)
+
+def errorMSENoShowCat(seller_id, category_id):
+    recent_postings = Bundle_posting.objects.filter(seller_id=seller_id, category_id=category_id)
     recent_postings = recent_postings.filter(
         creation_time__lte=timezone.now() - timedelta(days=1)
     )

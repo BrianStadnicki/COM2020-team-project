@@ -127,6 +127,41 @@
                 </tbody>
             </table>
 
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">MSE for number of reservations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in reservations_error_cat %}
+                        <tr>
+                            <th scope="row">{{category.name}}</th>
+                            <td>{{category.error}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">MSE for reservation no show rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in reservations_no_show_error_cat %}
+                        <tr>
+                            <th scope="row">{{category.name}}</th>
+                            <td>{{category.error}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
         </div>
     </div>
 </div>
