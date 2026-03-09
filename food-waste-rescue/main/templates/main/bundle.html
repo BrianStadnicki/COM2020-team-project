@@ -15,7 +15,7 @@
                         <p>Pickup window: {{post.creation_time.date}} : {{post.pickup_window_start}} - {{post.pickup_window_end}}</p>
                         <p>Status: {{post.status_str}}</p>
                         <div class="col">
-                            <p>{{post.category}}</p>
+                            <p>{{post.category.name}}</p>
                             <p>Allergens: 
                                 {% if post.allergen_celery %}Celery {% endif %}
                                 {% if post.allergen_crustacean %}Crustacean {% endif %}
