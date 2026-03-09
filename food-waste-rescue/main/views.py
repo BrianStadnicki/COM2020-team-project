@@ -391,7 +391,9 @@ def action_view(request):
     
     seller = getattr(request, "user", None).seller
 
-    return render(request, "main/actions.html")
+    actions = Seller_actions.objects.filter(seller=seller).order_by("-time_stamp")
+
+    return render(request, "main/actions.html", {"actions":actions})
 
 """
 Consumer: View/Change accessibility settings
