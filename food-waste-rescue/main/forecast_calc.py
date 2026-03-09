@@ -49,16 +49,12 @@ def avePerResCat(seller_id, category_id):
     recent_postings_quantity_count = recent_postings.aggregate(Sum("quantity"))[
         "quantity__sum"
     ]
-    recent_reservations_count = recent_postings.
+    recent_reservations_count = Reservation.objects.filter(bundle_posting_id__in=recent_postings)
     recent_reservations_count = recent_reservations_count.filter(
-        category_id=category_id,
-        time_stamp__lte=timezone.now() - timedelta(weeks=3)
-    )
-    recent_reservations_count = recent_reservations_count.filter(
-        creation_time__date__day=day,
+        time_stamp__lte=timezone.now() - timedelta(weeks=3),
         time_stamp__gte=timezone.now() - timedelta(weeks=6)
     ).count()
-
+    
     if recent_postings_quantity_count == None:
         return 0
 
