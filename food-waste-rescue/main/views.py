@@ -137,7 +137,7 @@ def bundle_view(request, id):
                 action.seller = Seller.objects.get(user=request.user)
                 action.category = post.category
                 action.save()
-                return redirect("bundle_view", id=post.id)
+                return redirect("bundle_view_url", id=post.id)
 
     if request.user.user_type == "consumer":
         reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
