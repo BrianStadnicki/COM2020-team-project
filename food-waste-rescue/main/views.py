@@ -8,10 +8,10 @@ from .forms import (
     BundleNewForm,
     IssueReportNewForm,
     IssueReportViewForm,
-    BundleDeleteForm,
 )
 from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
+from .badges import get_badges
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
@@ -187,7 +187,6 @@ def bundle_new_view(request):
                     "main/bundle_new.html",
                     {
                         "form": form,
-                        "edit": False,
                         "confirm": True,
                         "categories": Bundle_posting.CATEGORYS,
                         "exp_res": exp_res,
@@ -201,70 +200,9 @@ def bundle_new_view(request):
         "main/bundle_new.html",
         {
             "form": form,
-            "edit": False,
             "categories": Bundle_posting.CATEGORYS,
             "confirm": False,
         },
-    )
-
-
-"""
-Seller: edit bundle
-"""
-
-
-@login_required
-def bundle_edit_view(request, id):
-    if request.user.user_type != "seller":
-        raise PermissionDenied
-    bundle = get_object_or_404(Bundle_posting, id=id)
-
-    if request.user.seller != bundle.seller:
-        raise PermissionDenied
-
-    if request.method == "POST":
-        form = BundleNewForm(request.POST or None, instance=bundle)
-        if form.is_valid():
-            bundle = form.save()
-            return redirect("bundle_view_url", id=bundle.id)
-    else:
-        form = BundleNewForm(None, initial=bundle.__dict__)
-        form.initial["pickup_window_start"] = form.initial[
-            "pickup_window_start"
-        ].__format__("%H:%M")
-        form.initial["pickup_window_end"] = form.initial[
-            "pickup_window_end"
-        ].__format__("%H:%M")
-
-    return render(
-        request,
-        "main/bundle_new.html",
-        {"form": form, "categories": Bundle_posting.CATEGORYS, "edit": True},
-    )
-
-
-"""
-Seller: remove bundle
-"""
-
-
-@login_required
-def bundle_delete_view(request, id):
-    if request.user.user_type != "seller":
-        raise PermissionDenied
-
-    bundle = get_object_or_404(Bundle_posting, id=id)
-
-    if request.user.seller != bundle.seller:
-        raise PermissionDenied
-
-    if request.method == "POST":
-        bundle.delete()
-        return redirect("bundles_view_url")
-    else:
-        form = BundleDeleteForm(None)
-    return render(
-        request, "main/bundle_confirm_delete.html", {"form": form, "post": bundle}
     )
 
 
@@ -417,7 +355,15 @@ Seller: View impact
 
 @login_required
 def impact_view(request):
-    return render(request, "main/impact.html")
+
+    if request.user.user_type != "consumer":
+        raise PermissionDenied
+
+    consumer = getattr(request, "user", None).consumer
+
+    badges = get_badges(consumer)
+
+    return render(request, "main/impact.html", {"badges": badges})
 
 
 """
@@ -429,6 +375,45 @@ Seller: View/Change accessibility settings
 @login_required
 def accessibility_view(request):
     return render(request, "main/accessibility.html")
+
+
+def seller_profile(request):
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    
+    if hasattr(request.user, "seller"):
+        profile = request.user.seller
+    else:
+        profile = None
+    
+    if request.method == "POST":
+        form = SellerExtraForm(request.POST or None, instance=profile)
+        
+        if form.is_valid():
+            seller = form.save(commit=False)
+            seller.user = request.user
+            seller.save()
+            form.save_m2m()
+            messages.success(request, "Seller profile saved!")
+            report = form.save()
+            return redirect("seller_profile_view_url")
+    elif profile != None:
+        form = SellerExtraForm(None, initial=profile.__dict__)
+        form.initial["opening_time"] = form.initial[
+                    "opening_time"
+                ].__format__("%H:%M")
+        form.initial["closing_time"] = form.initial[
+                    "closing_time"
+                ].__format__("%H:%M")      
+    else:
+        form = SellerExtraForm()
+
+    return render(
+        request,
+        "registration/seller_profile.html",
+        {"form": form},
+    )
+
 
 
 ########### register here #####################################
@@ -464,30 +449,3 @@ def registerUser(request):
                 "registration/signup.html",
                 {"form": form, "title": "register here"},
             )
-
-
-def sellerExtra(request):
-    # attach the seller profile to request.user
-    user = request.user
-
-    # only sellers can access this page
-    if user.user_type != "seller":
-        raise PermissionDenied
-
-    # If seller profile already exists, don't let them create another
-    if hasattr(user, "seller"):
-        messages.info(request, "Seller profile already completed.")
-        return redirect("login")
-
-    if request.method == "POST":
-        form = SellerExtraForm(request.POST)
-        if form.is_valid():
-            seller = form.save(commit=False)
-            seller.user = user
-            seller.save()
-            form.save_m2m()
-            messages.success(request, "Seller profile completed!")
-            return redirect("login")
-    else:
-        form = SellerExtraForm()
-    return render(request, "registration/seller_extra.html", {"form": form})

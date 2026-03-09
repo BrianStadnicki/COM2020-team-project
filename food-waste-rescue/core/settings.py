@@ -70,7 +70,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "main.streak_processor.reservation_streak",
+                "main.processor.reservation_streak",
+                "main.processor.bundle_pickup_time",
             ],
         },
     },
@@ -128,7 +129,7 @@ STATIC_URL = "static/"
 
 LOGIN_REDIRECT_URL = "/"
 
-LOGOUT_REDIRECT_URL = "login"
+LOGOUT_REDIRECT_URL = "logout"
 
 AUTH_USER_MODEL = "main.User"
 
