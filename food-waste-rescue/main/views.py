@@ -8,7 +8,8 @@ from .forms import (
     BundleNewForm,
     IssueReportNewForm,
     IssueReportViewForm,
-    ActionForm
+    ActionFormBundle,
+    ActionFormAnalytics
 )
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation, Seller_actions
 from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
@@ -131,7 +132,7 @@ def bundle_view(request, id):
                 reservation.is_collected = True
                 reservation.save()
         elif "submit_action" in request.POST:
-            form = ActionForm(request.POST)
+            form = ActionFormBundle(request.POST)
             if form.is_valid():
                 action = form.save(commit=False)
                 action.seller = Seller.objects.get(user=request.user)
@@ -261,6 +262,13 @@ def analytics_view(request):
     reservations_error = round(errorMSEReservations(seller), 2)
     reservations_no_show_error = round(errorMSENoShow(seller), 2)
 
+    if request.method == "POST":
+        form = ActionFormAnalytics(request.POST)
+        if form.is_valid():
+            action = form.save(commit=False)
+            action.seller = Seller.objects.get(user=request.user)
+            action.save()
+
     return render(
         request,
         "main/analytics.html",
@@ -271,6 +279,8 @@ def analytics_view(request):
             "best_category": best_category,
             "reservations_error": reservations_error,
             "reservations_no_show_error": reservations_no_show_error,
+            "types": Seller_actions.TYPES,
+            "categories": Bundle_posting.CATEGORYS
         },
     )
 

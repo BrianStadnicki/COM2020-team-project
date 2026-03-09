@@ -76,7 +76,12 @@ class ReservationForm(forms.ModelForm):
         model = Reservation
         fields = ["id", "is_collected"]
 
-class ActionForm(forms.ModelForm):
+class ActionFormBundle(forms.ModelForm):
     class Meta:
         model = Seller_actions
         fields = ["type", "details"]
+
+class ActionFormAnalytics(forms.ModelForm):
+    class Meta:
+        model = Seller_actions
+        fields = ["type", "category", "details"]
