@@ -4,18 +4,6 @@ from django.utils import timezone
 
 TARGET_BUNDLE_QUANTITY = 3
 
-badges = [{"name":"New Account", "url":"images/new_user.svg", "des":"Create a new account", "x":1, "y":1},
-          {"name":"1 Week Streak", "url":"images/basic_streak.svg", "des":"Hold a streak for a week", "x":0, "y":1},
-          {"name":"1 Month Streak", "url":"images/high_streak.svg", "des":"Hold a streak for 4 weeks", "x":0, "y":4},
-          {"name":"6 Month Streak", "url":"images/very_high_streak.svg", "des":"Hold a streak for 26 weeks", "x":0, "y":26},
-          {"name":"1 Year Streak", "url":"images/streak_gold_badge.svg", "des":"Hold a streak for 52 weeks", "x":0, "y":52},
-          {"name":"1 Bundle", "url":"images/basic_bundle_white.svg", "des":"Collect 1 bundle", "x":0, "y":1},
-          {"name":"5 Bundles", "url":"images/many_bundles.svg", "des":"Collect 5 bundles", "x":0, "y":5},
-          {"name":"10 Bundles", "url":"images/diamond_bundle.svg", "des":"Collect 10 bundles", "x":0, "y":10},
-          {"name":"20 Bundles", "url":"images/even_more_bundles.svg", "des":"Collect 20 bundles", "x":0, "y":20},
-          {"name":"Animal Lover", "url":"images/animal_lover.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} pet food bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY},
-          {"name":"Very Veggie", "url":"images/very_veggie.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} veggie bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY},
-          {"name":"Brian Badge", "url":"images/brian_badge.svg", "des":"Collect each category", "x":0, "y":len(set(Reservation.objects.values_list("posting__category", flat=True)))}]
 
 def week_start(day):
     return day - dt.timedelta(days=day.weekday())
@@ -69,6 +57,20 @@ def get_category_count(consumer):
 
 
 def get_badges(consumer: Consumer):
+    
+    badges = [{"name":"New Account", "url":"images/new_user.svg", "des":"Create a new account", "x":1, "y":1},
+          {"name":"1 Week Streak", "url":"images/basic_streak.svg", "des":"Hold a streak for a week", "x":0, "y":1},
+          {"name":"1 Month Streak", "url":"images/high_streak.svg", "des":"Hold a streak for 4 weeks", "x":0, "y":4},
+          {"name":"6 Month Streak", "url":"images/very_high_streak.svg", "des":"Hold a streak for 26 weeks", "x":0, "y":26},
+          {"name":"1 Year Streak", "url":"images/streak_gold_badge.svg", "des":"Hold a streak for 52 weeks", "x":0, "y":52},
+          {"name":"1 Bundle", "url":"images/basic_bundle_white.svg", "des":"Collect 1 bundle", "x":0, "y":1},
+          {"name":"5 Bundles", "url":"images/many_bundles.svg", "des":"Collect 5 bundles", "x":0, "y":5},
+          {"name":"10 Bundles", "url":"images/diamond_bundle.svg", "des":"Collect 10 bundles", "x":0, "y":10},
+          {"name":"20 Bundles", "url":"images/even_more_bundles.svg", "des":"Collect 20 bundles", "x":0, "y":20},
+          {"name":"Animal Lover", "url":"images/animal_lover.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} pet food bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY},
+          {"name":"Very Veggie", "url":"images/very_veggie.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} veggie bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY},
+          {"name":"Brian Badge", "url":"images/brian_badge.svg", "des":"Collect each category", "x":0, "y":len(set(Reservation.objects.values_list("posting__category", flat=True)))}]
+
     
     l_streak = get_longest_streak(consumer)
     for i in range(1, 5):
