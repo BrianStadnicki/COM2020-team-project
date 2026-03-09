@@ -40,21 +40,19 @@ def avePerResCat(seller_id, category_id):
     recent_postings = Bundle_posting.objects.filter(seller_id=seller_id)
     recent_postings = recent_postings.filter(
         category_id=category_id,
-        creation_time__lte=timezone.now() - timedelta(weeks=3)
-    )
-    recent_postings = recent_postings.filter(
-        category_id=category_id,
+        creation_time__lte=timezone.now() - timedelta(weeks=3),
         creation_time__gte=timezone.now() - timedelta(weeks=6)
     )
     recent_postings_quantity_count = recent_postings.aggregate(Sum("quantity"))[
         "quantity__sum"
     ]
-    recent_reservations_count = Reservation.objects.filter(bundle_posting_id__in=recent_postings)
+
+    recent_reservations_count = Reservation.objects.filter(posting_id__in=recent_postings)
     recent_reservations_count = recent_reservations_count.filter(
         time_stamp__lte=timezone.now() - timedelta(weeks=3),
         time_stamp__gte=timezone.now() - timedelta(weeks=6)
     ).count()
-    
+
     if recent_postings_quantity_count == None:
         return 0
 
@@ -69,6 +67,27 @@ def avePerResCat(seller_id, category_id):
 
 def avePerNoshow(seller_id):
     recent_reservations = Reservation.objects.filter(posting__seller_id=seller_id)
+    recent_reservations = recent_reservations.filter(
+        time_stamp__lte=timezone.now() - timedelta(weeks=3)
+    )
+    recent_reservations = recent_reservations.filter(
+        time_stamp__gte=timezone.now() - timedelta(weeks=6)
+    )
+    recent_reservations_count = recent_reservations.count()
+
+    no_shows = 0
+    for reservation in recent_reservations.all():
+        if reservation.status == "N":
+            no_shows += 1
+
+    if recent_reservations_count == 0:
+        return 0
+
+    return no_shows / recent_reservations_count
+
+
+def avePerNoshowCat(seller_id, category_id):
+    recent_reservations = Reservation.objects.filter(posting__seller_id=seller_id, posting__category_id=category_id)
     recent_reservations = recent_reservations.filter(
         time_stamp__lte=timezone.now() - timedelta(weeks=3)
     )

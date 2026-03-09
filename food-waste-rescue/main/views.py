@@ -10,7 +10,7 @@ from .forms import (
     IssueReportViewForm,
 )
 from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
-from .forecast_calc import avePerRes, avePerNoshow, avePerResCat, errorMSEReservations, errorMSENoShow
+from .forecast_calc import avePerNoshowCat, avePerRes, avePerNoshow, avePerResCat, errorMSEReservations, errorMSENoShow
 from .badges import get_badges
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -179,6 +179,7 @@ def bundle_new_view(request):
                 exp_res = round(bundle.quantity * avePerRes(bundle.seller_id))
                 exp_no_show = round(exp_res * avePerNoshow(bundle.seller_id))
                 exp_res_cat = round(bundle.quantity * avePerResCat(bundle.seller_id, bundle.category.id))
+                exp_no_show_cat = round(exp_res * avePerNoshowCat(bundle.seller_id, bundle.category.id))
 
                 return render(
                     request,
@@ -189,7 +190,8 @@ def bundle_new_view(request):
                         "categories": Bundle_posting_category.objects.all(),
                         "exp_res": exp_res,
                         "exp_no_show": exp_no_show,
-                        "exp_res_cat": exp_res_cat
+                        "exp_res_cat": exp_res_cat,
+                        "exp_no_show_cat": exp_no_show_cat
                     },
                 )
     else:
