@@ -156,8 +156,8 @@
                                 <label class="input-group-text" for="category">Category</label>
                                 <select class="form-select" name="category" value="{{ form.initial.category }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
                                     <option>Select Category</option>
-                                    {% for char, name in categories %}
-                                        <option value="{{ char }}" {% if form.initial.category == char %} selected="selected"{% endif %}>{{name}}</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if form.initial.category_id == category.id %} selected="selected"{% endif %}>{{category.name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>

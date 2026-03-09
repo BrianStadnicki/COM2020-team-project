@@ -166,7 +166,7 @@ class Seller_actions(models.Model):
         ("V", "Vegetarian"),
         ("VE", "Vegan"),
     )
-    category = models.CharField(max_length=5, choices=CATEGORYS, default="M")
+    category = models.ForeignKey(Bundle_posting_category, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(default=timezone.now, blank=True)    
     TYPES = (
         ("IPD", "Increased Production"),

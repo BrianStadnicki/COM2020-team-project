@@ -11,11 +11,7 @@ from .forms import (
     ActionFormBundle,
     ActionFormAnalytics
 )
-<<<<<<< HEAD
-from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation, Seller_actions
-=======
-from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
->>>>>>> origin/sprint-2
+from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation, Seller_actions
 from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
 from .badges import get_badges
 from django.contrib.auth.decorators import login_required
@@ -278,7 +274,7 @@ def analytics_view(request):
             "reservations_error": reservations_error,
             "reservations_no_show_error": reservations_no_show_error,
             "types": Seller_actions.TYPES,
-            "categories": Bundle_posting.CATEGORYS
+            "categories": Bundle_posting_category.objects.all()
         },
     )
 
