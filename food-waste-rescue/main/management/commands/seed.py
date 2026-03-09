@@ -222,9 +222,6 @@ def create_demo_user():
 def create_demo_seller():
     """Create a fixed demo seller"""
     logger.info("Creating demo seller")
-    wheelychair = False
-    wheelchairspin= random.randint(0,1)
-    if wheelchairspin == 1: wheelychair= True
 
     demo_seller_user = User.objects.create_user(
         username="demo_seller", email="demo_seller@exeter.ac.uk", password="demo_seller"
@@ -236,7 +233,6 @@ def create_demo_seller():
         closing_time=time(17, 0),
         telephone_number="441326370400",
         website_url="https://www.exeter.ac.uk/",
-        wheelchair= wheelychair
     )
     demo_seller_user.user_type = "seller"
     demo_seller_user.save()
@@ -280,6 +276,7 @@ def create_seller_profile():
         closing_time=time(random.randint(15, 23), random.choice([0, 15, 30, 45])),
         telephone_number=fake.phone_number(),
         website_url=fake.url(),
+        wheelchair=random.choice([True,False])
     )
     seller.save()
     logger.info("{} seller created.".format(seller))
