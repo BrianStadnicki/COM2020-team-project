@@ -116,7 +116,7 @@ def bundle_view(request, id):
             form = ReservationForm(request.POST)
 
             # Consumer makes a reservation
-            if form.data["submit"] == "Reserve":
+            if form.data["submit_res"] == "Reserve":
                 reservation = Reservation(
                     posting=post,
                     consumer=Consumer.objects.get(user=request.user),
@@ -126,7 +126,7 @@ def bundle_view(request, id):
                 reservation.claim_code_generator()
 
             # Seller marks the reservation as collected
-            elif form.data["submit"] == "Collected?":
+            elif form.data["submit_res"] == "Collected?":
                 reservation = Reservation.objects.get(id=int(form.data["id"]))
                 reservation.is_collected = True
                 reservation.save()
