@@ -30,7 +30,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active py-3 border-bottom rounded-0">
+                        <a class="nav-link active py-3 border-bottom rounded-0" href="{% url 'impact_view_url'%}">
                             <i class="bi bi-leaf" style="font-size: 2rem;" title="Impact"></i>
                         </a>
                     </li>
@@ -54,7 +54,24 @@
         </div>
         <div class="col py-3">
             <div class="container">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if pickups %}
+                    <ul>
+                        {% for pickup in pickups %}
+                            <li>Bundle to pick up between {{pickup.posting.pickup_window_start}} - {{pickup.posting.pickup_window_end}} at {{pickup.posting.seller.location}}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
                 {% block content %}
+                
                 {% endblock %}
             </div>
         </div>
