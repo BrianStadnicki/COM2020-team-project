@@ -88,7 +88,7 @@ def get_best_categories(seller):
 
     for bundle in bundles:
         if bundle.status == "C":
-            category_counter[bundle.category] += 1
+            category_counter[bundle.category.name] += 1
 
     top_3 = category_counter.most_common(3)
 
@@ -97,10 +97,6 @@ def get_best_categories(seller):
     for i in range(3):
         if i < len(top_3):
             category = top_3[i][0]
-            for index, name in Bundle_posting.CATEGORYS:
-                if index == category:
-                    category = name
-                    break
             result[str(i)] = f"{category}"
         else:
             result[str(i)] = f"-"

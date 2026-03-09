@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from main.models import Consumer, User
+from main.models import Bundle_posting_category, Consumer, User
 from main.models import Seller
 from main.models import Bundle_posting
 from main.models import IssueReport
@@ -25,3 +25,4 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.register(Bundle_posting_category)
