@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container-fluid">
+    <nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navbar-brand">Impact</h1>
+        </div>
+    </nav>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <p>Carbon here</p>
+        </div>
+
+        <div class="col-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        {% for badge in badges %}
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <img src="{% static badge.url %}" 
+                                        class="img-fluid"
+                                        {% if badge.x != badge.y %}style="filter: grayscale(100%);"{% endif %}>
+                                        <p class="text-center"><strong>{{ badge.name }}</strong></p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-center">{{ badge.des }}</p>
+                                        <p class="text-center">{{ badge.x }}/{{ badge.y }}</p>
+                                    </div> 
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

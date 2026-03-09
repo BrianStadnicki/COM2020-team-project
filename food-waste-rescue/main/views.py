@@ -11,6 +11,7 @@ from .forms import (
 )
 from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
+from .badges import get_badges
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
@@ -358,7 +359,15 @@ Seller: View impact
 
 @login_required
 def impact_view(request):
-    return render(request, "main/impact.html")
+
+    if request.user.user_type != "consumer":
+        raise PermissionDenied
+
+    consumer = getattr(request, "user", None).consumer
+
+    badges = get_badges(consumer)
+
+    return render(request, "main/impact.html", {"badges": badges})
 
 
 """
