@@ -9,7 +9,7 @@ from .forms import (
     IssueReportNewForm,
     IssueReportViewForm,
 )
-from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
+from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
 from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
 from .badges import get_badges
 from django.contrib.auth.decorators import login_required
@@ -60,10 +60,13 @@ def bundles_view(request):
     if request.user.user_type != "seller" and location:
         posts = posts.filter(seller__location__icontains=location)
 
-    selected_category = request.GET.get("category", "")
+    selected_category_id = request.GET.get("category", "")
+    selected_category = ""
+    
     selected_allergens = request.GET.getlist("excluded-allergens")
 
-    if selected_category and selected_category != "Select category":
+    if selected_category_id != "":
+        selected_category = Bundle_posting_category.objects.get(id=selected_category_id)
         posts = posts.filter(category=selected_category)
     if selected_allergens:
         q = Q()
@@ -75,18 +78,12 @@ def bundles_view(request):
     posts = posts.order_by("-creation_time")
     posts = posts.all()
 
-    for post in posts:
-        for index, name in post.CATEGORYS:
-            if index == post.category:
-                post.category = name
-                break
-
     return render(
         request,
         "main/bundles.html",
         {
             "posts": posts,
-            "categories": Bundle_posting.CATEGORYS,
+            "categories": Bundle_posting_category.objects.all(),
             "allergens": ALLERGENS,
             "selected_category": selected_category,
             "selected_allergens": selected_allergens,
@@ -137,11 +134,6 @@ def bundle_view(request, id):
         reports = post.issuereport_set.all()  # type: ignore
         reservations = post.reservation_set.all()  # type: ignore
 
-    for index, name in post.CATEGORYS:
-        if index == post.category:
-            post.category = name
-            break
-
     return render(
         request,
         "main/bundle.html",
@@ -182,6 +174,7 @@ def bundle_new_view(request):
                 form.initial["pickup_window_end"] = form.initial[
                     "pickup_window_end"
                 ].__format__("%H:%M")
+                form.initial["category"] = bundle.category.name
 
                 exp_res = round(bundle.quantity * avePerRes(bundle.seller_id))
                 exp_no_show = round(exp_res * avePerNoshow(bundle.seller_id))
@@ -192,7 +185,7 @@ def bundle_new_view(request):
                     {
                         "form": form,
                         "confirm": True,
-                        "categories": Bundle_posting.CATEGORYS,
+                        "categories": Bundle_posting_category.objects.all(),
                         "exp_res": exp_res,
                         "exp_no_show": exp_no_show,
                     },
@@ -204,7 +197,7 @@ def bundle_new_view(request):
         "main/bundle_new.html",
         {
             "form": form,
-            "categories": Bundle_posting.CATEGORYS,
+            "categories": Bundle_posting_category.objects.all(),
             "confirm": False,
         },
     )
