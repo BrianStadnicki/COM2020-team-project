@@ -215,15 +215,81 @@ Consumer: Show own reservations with bundle details
 Seller: Show upcoming reservations with bundle details, edit status, search/verify code
 """
 
-
 @login_required
 def reservations_view(request):
-    return render(request, "main/reservations.html")
+    # checks to see if the user is seller or consumer
+
+    ALLERGENS = [
+        "Celery",
+        "Crustacean",
+        "Dairy",
+        "Egg",
+        "Fish",
+        "Gluten",
+        "Lupin",
+        "Mollusc",
+        "Mustard",
+        "Nut",
+        "Peanut",
+        "Sesame",
+        "Soya",
+        "Sulphite",
+    ]
+
+    if request.user.user_type != "seller":
+        reservations = Reservation.objects
+    else:
+        reservations = request.user.seller.reservation_set
+
+    location = request.GET.get("location", "")
+
+    if request.user.user_type != "seller" and location:
+        reservations = reservations.filter(seller__location__icontains=location)
+
+    selected_category = request.GET.get("category", "")
+    selected_allergens = request.GET.getlist("excluded-allergens")
+
+    if selected_category and selected_category != "Select category":
+        reservations = reservations.filter(category=selected_category)
+
+    selected_status = request.GET.get("status", "")
+    if selected_status and selected_status != "Select status":
+        reservations = reservations.filter(status=selected_category)
+    
+    if selected_allergens:
+        q = Q()
+        for allergen in selected_allergens:
+            field = f"allergen_{allergen.lower()}"
+            q |= Q(**{field: True})
+        reservations = reservations.exclude(q)
+
+    reservations = reservations.order_by("-time_stamp")
+    reservations = reservations.all()
+
+    for reservation in reservations:
+        for index, name in reservation.posting.CATEGORYS:
+            if index == reservation.posting.category:
+                reservation.category = name
+                break
+
+    return render(
+        request,
+        "main/reservations.html",
+        {
+            "reservations": reservations,
+            "categories": Bundle_posting.CATEGORYS,
+            "allergens": ALLERGENS,
+            "selected_category": selected_category,
+            "selected_allergens": selected_allergens,
+            "selected-location": location,
+            "statuses": selected_status
+        },
+    )
 
 
 """
-Consumer: Show/delete own reservation with bundle details
-Seller: Show/edit own reservation with bundle details
+Consumer: Show own reservation with bundle details
+Seller: Show own reservation with bundle details
 """
 
 
