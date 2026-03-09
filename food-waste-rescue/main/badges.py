@@ -47,10 +47,10 @@ def get_longest_streak(consumer):
 
 
 def get_animal_lover(consumer):
-    return Reservation.objects.filter(consumer=consumer, is_collected=True, posting__category="PF").count()
+    return Reservation.objects.filter(consumer=consumer, is_collected=True, posting__category__name="Pet Food").count()
 
 def get_very_veggie(consumer):
-    return Reservation.objects.filter(consumer=consumer, is_collected=True, posting__category__in=["V", "VE"]).count()
+    return Reservation.objects.filter(consumer=consumer, is_collected=True, posting__category__name__in=["Vegan", "Vegetarian"]).count()
 
 def get_category_count(consumer):
     return len(set(Reservation.objects.filter(consumer=consumer, is_collected=True).values_list("posting__category", flat=True)))
