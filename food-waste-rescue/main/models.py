@@ -159,3 +159,26 @@ class Forecast_output(models.Model):
     rationale = models.CharField(max_length=1000, blank=True)
     time_recommendation = models.TimeField(blank=True)
     type = models.CharField(max_length=100, default="Linear Regression")
+
+class Seller_actions(models.Model):
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    CATEGORYS = (
+        ("M", "Meals"),
+        ("B&P", "Bread & Pastries"),
+        ("G", "Groceries"),
+        ("F&P", "Flowers & Plants"),
+        ("PF", "Pet Food"),
+        ("V", "Vegetarian"),
+        ("VE", "Vegan"),
+    )
+    category = models.CharField(max_length=5, choices=CATEGORYS, default="M")
+    time_stamp = models.DateTimeField(default=timezone.now, blank=True)    
+    TYPES = (
+        ("IPD", "Increased Production"),
+        ("RPD", "Reduced Production"),
+        ("IPR", "Increased Price"),
+        ("RPR", "Reduces Price")
+        ("O", "Other")
+    )
+    type = models.CharField(max_length=5, choices=TYPES, default="RPD")
+    details = models.CharField(max_length=1000, blank=True)
