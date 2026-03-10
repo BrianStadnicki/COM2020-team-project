@@ -282,6 +282,7 @@ def analytics_view(request):
             action = form.save(commit=False)
             action.seller = Seller.objects.get(user=request.user)
             action.save()
+            messages.success(request, "Action saved!")
 
     return render(
         request,
