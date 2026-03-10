@@ -8,7 +8,7 @@
     <h2>{{post.name|default:"Untitled Bundle"}}</h2>
     <p>{{post.contents_description|default:"No description provided."}}
     <div class="row mb-3">
-        <div class="col-9">
+        <div class="col-sm-9">
             <div class="card">
                 <div class="card-body">
                     <div class="row">    
@@ -33,7 +33,7 @@
                                 {% if post.allergen_sulphite %}Sulphite {% endif %}
                             </p>
                         </div>
-                        <div class="col">
+                        <div class="col-sm">
                             <p>Price: £{{post.price}}</p>
                             <p>Available: {{post.available}}</p>
                         </div>
@@ -55,7 +55,7 @@
                 {% endif %}
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-sm-3">
             <div class="card">
                 <div class="card-body">
                     <h2>{{post.seller.user.username}}</h2>
@@ -81,42 +81,44 @@
                     <h2>Reservations</h2>
                 </div>
                 <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                {% if is_seller %}
-                                    <th scope="col">Collected?</th>
-                                {% endif %}
-                                <th scope="col">Consumer</th>
-                                <th scope="col">Timestamp</th>
-                                <th scope="col">Claim Code</th>
-                                <th scope="col">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for reservation in reservations %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
                                 <tr>
                                     {% if is_seller %}
-                                        <th scope="row">
-                                            <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
-                                            <form method="post" action="">
-                                                {% csrf_token %}
-                                                <input type="hidden" value="True" name="is_collected">
-                                                <input type="hidden" value="{{ reservation.id }}" name="id">
-                                                {% if not reservation.is_collected %}
-                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary" name="submit_res">
-                                                {% endif %}
-                                            </form>
-                                        </th>
+                                        <th scope="col">Collected?</th>
                                     {% endif %}
-                                    <th>{{ reservation.consumer.user.username }}</th>
-                                    <th>{{ reservation.time_stamp }}</th>
-                                    <th>{{ reservation.claim_code }}</th>
-                                    <th>{{ reservation.status_str }}</th>
+                                    <th scope="col">Consumer</th>
+                                    <th scope="col">Timestamp</th>
+                                    <th scope="col">Claim Code</th>
+                                    <th scope="col">Status</th>
                                 </tr>
-                                {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for reservation in reservations %}
+                                    <tr>
+                                        {% if is_seller %}
+                                            <th scope="row">
+                                                <!-- Hiding the "Collected?" button from Consumers / only showing it to Sellers -->
+                                                <form method="post" action="">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" value="True" name="is_collected">
+                                                    <input type="hidden" value="{{ reservation.id }}" name="id">
+                                                    {% if not reservation.is_collected %}
+                                                        <input type="submit" value="Collected?" class="btn btn-outline-primary" name="submit_res">
+                                                    {% endif %}
+                                                </form>
+                                            </th>
+                                        {% endif %}
+                                        <th>{{ reservation.consumer.user.username }}</th>
+                                        <th>{{ reservation.time_stamp }}</th>
+                                        <th>{{ reservation.claim_code }}</th>
+                                        <th>{{ reservation.status_str }}</th>
+                                    </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -129,28 +131,30 @@
                     <h2>Reports</h2>
                 </div>
                 <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Response</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for report in reports %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <th scope="row"><a href="{% url 'report_view_url' report.id %}" class="btn btn-outline-primary">View</a></th>
-                                    <th>{{ report.status_str }}</th>
-                                    <th>{{ report.type_str }}</th>
-                                    <th>{{ report.description }}</th>
-                                    <th>{{ report.seller_response }}</th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Response</th>
                                 </tr>
-                                {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for report in reports %}
+                                    <tr>
+                                        <th scope="row"><a href="{% url 'report_view_url' report.id %}" class="btn btn-outline-primary">View</a></th>
+                                        <th>{{ report.status_str }}</th>
+                                        <th>{{ report.type_str }}</th>
+                                        <th>{{ report.description }}</th>
+                                        <th>{{ report.seller_response }}</th>
+                                    </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
