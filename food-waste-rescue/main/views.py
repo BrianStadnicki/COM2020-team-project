@@ -386,6 +386,10 @@ def accessibility_view(request):
 
 
 def seller_profile(request):
+    
+    if not request.user.is_authenticated:
+        return redirect("account_login")
+
     if request.user.user_type != "seller":
         raise PermissionDenied
     

@@ -95,7 +95,7 @@ class TestSellerOnlyPages(TestCase):
     
     #passes
     def test_seller_extra_page_requires_login(self):
-        url = reverse("seller-extra")
+        url = reverse("seller_profile_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
