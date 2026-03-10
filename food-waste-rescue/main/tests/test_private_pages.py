@@ -2,7 +2,7 @@ from datetime import time
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from main.models import Bundle_posting, Consumer, IssueReport, Seller
+from main.models import Bundle_posting, Bundle_posting_category, Consumer, IssueReport, Seller
 
 User = get_user_model()
 
@@ -62,6 +62,18 @@ class TestSellerOnlyPages(TestCase):
     The Seller-only pages are bundle_new_view, bundle_confirm_view, and analytics_view.
     """
     def setUp(self):
+        CATEGORIES = [
+            "Meals",
+            "Bread & Pastries",
+            "Groceries",
+            "Flowers & Plants",
+            "Pet Food",
+            "Vegetarian",
+            "Vegan"
+        ]
+        for category in CATEGORIES:
+            Bundle_posting_category.objects.create(name=category)
+
         # Create a mock Consumer
         self.consumer_user = User.objects.create_user(
             username="consumer1",
@@ -237,6 +249,18 @@ class testSellerAndConsumerPages(TestCase):
     """
 
     def setUp(self):
+        CATEGORIES = [
+            "Meals",
+            "Bread & Pastries",
+            "Groceries",
+            "Flowers & Plants",
+            "Pet Food",
+            "Vegetarian",
+            "Vegan"
+        ]
+        for category in CATEGORIES:
+            Bundle_posting_category.objects.create(name=category)
+
         # Create a mock Consumer
         self.consumer_user = User.objects.create_user(
             username="test_consumer2",
@@ -621,6 +645,17 @@ class testSellerAndConsumerPages(TestCase):
 class testConsumerOnlyPages(TestCase):
 
     def setUp(self):
+        CATEGORIES = [
+            "Meals",
+            "Bread & Pastries",
+            "Groceries",
+            "Flowers & Plants",
+            "Pet Food",
+            "Vegetarian",
+            "Vegan"
+        ]
+        for category in CATEGORIES:
+            Bundle_posting_category.objects.create(name=category)
 
         # Create a seller user and their profile
         self.seller_user = User.objects.create_user(

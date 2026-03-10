@@ -1,14 +1,27 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from main.models import Bundle_posting, Seller
+from main.models import Bundle_posting, Bundle_posting_category, Seller
 from django.utils import timezone
 from datetime import datetime, time
 
 User = get_user_model()
 
+
 class TestBundleView(TestCase):
     def setUp(self):
+        CATEGORIES = [
+            "Meals",
+            "Bread & Pastries",
+            "Groceries",
+            "Flowers & Plants",
+            "Pet Food",
+            "Vegetarian",
+            "Vegan"
+        ]
+        for category in CATEGORIES:
+            Bundle_posting_category.objects.create(name=category)
+        
         # Create consumer user
         self.consumer_user = User.objects.create_user(
             username="consumer1",
