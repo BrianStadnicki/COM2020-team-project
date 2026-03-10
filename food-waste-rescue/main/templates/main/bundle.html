@@ -65,6 +65,10 @@
                     <p>{{post.seller.telephone_number}}</p>
                     <p>{{post.seller.user.email}}</p>
                     <p><a class="link-opacity-50-hover" href={{post.seller.website_url}}>{{post.seller.website_url}}</a></p>
+                    {% if post.seller.wheelchair %}
+                    <i class="bi bi-person-wheelchair"></i>
+                    {% endif %}
+
                 </div>
             </div>
         </div>

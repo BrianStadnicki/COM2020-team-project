@@ -28,6 +28,7 @@ class SellerExtraForm(forms.ModelForm):
             "closing_time",
             "telephone_number",
             "website_url",
+            "wheelchair"
         ]
 
 

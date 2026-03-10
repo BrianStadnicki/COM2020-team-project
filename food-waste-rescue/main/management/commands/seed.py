@@ -288,6 +288,7 @@ def create_seller_profile():
         closing_time=time(random.randint(15, 23), random.choice([0, 15, 30, 45])),
         telephone_number=fake.phone_number(),
         website_url=fake.url(),
+        wheelchair=random.choice([True,False])
     )
     seller.save()
     logger.info("{} seller created.".format(seller))
