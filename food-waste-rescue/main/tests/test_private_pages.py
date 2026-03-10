@@ -122,7 +122,27 @@ class TestSellerOnlyPages(TestCase):
 
         self.assertEqual(response.status_code, 200)
     
-    # TODO: need a test to check that existing sellers can edit their profiles
+    #passes
+    def test_existing_seller_can_edit_profile(self):
+        # Log in the existing seller created in setUp()
+        logged_in = self.client.login(username="seller1", password="sellerpass1")
+        self.assertTrue(logged_in)
+
+        url = reverse("seller_profile_view_url")
+        response = self.client.get(url)
+
+        # Should be allowed to access the page
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "registration/seller_profile.html")
+
+        # Form should be pre-filled with existing profile data
+        form = response.context["form"]
+
+        self.assertEqual(form.initial["location"], "Test Location")
+        self.assertEqual(form.initial["opening_time"], "09:00")
+        self.assertEqual(form.initial["closing_time"], "18:00")
+        self.assertEqual(form.initial["telephone_number"], "0123456789")
+        self.assertEqual(form.initial["website_url"], "https://example.com")
     
     #passes
     def test_seller_profile_page_blocks_consumer(self):
