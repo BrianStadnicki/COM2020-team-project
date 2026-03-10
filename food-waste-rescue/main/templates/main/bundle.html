@@ -47,7 +47,7 @@
                     <form method="post" action="">
                         {% csrf_token %}
                         <input type="hidden" value="create" name="status">
-                        <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit">
+                        <input type="submit" value="Reserve" class="btn btn-outline-primary mt-3 me-auto" name="submit_res">
                     </form>
                 {% endif%}
                 {% if not is_seller %}
@@ -100,7 +100,7 @@
                                                 <input type="hidden" value="True" name="is_collected">
                                                 <input type="hidden" value="{{ reservation.id }}" name="id">
                                                 {% if not reservation.is_collected %}
-                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary" name="submit">
+                                                    <input type="submit" value="Collected?" class="btn btn-outline-primary" name="submit_res">
                                                 {% endif %}
                                             </form>
                                         </th>
@@ -151,6 +151,7 @@
             </div>
         </div>
     </div>
+<<<<<<< 133-claim-code-validation
 
     {% if user.user_type == "seller" %}
     <div class="row mt-3"> 
@@ -182,6 +183,48 @@
     </div>
     {% endif %}
 
+=======
+    {% if is_seller %}
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card p-3">
+                    <div class="card-title">
+                        <h2>Actions</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="">
+                            {% csrf_token %}
+
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="type">Type</label>
+                                <select class="form-select" name="type" value="{{ form.initial.type }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
+                                    <option>Select Type</option>
+                                    {% for char, name in types %}
+                                        <option value="{{ char }}" {% if form.initial.type == char %} selected="selected"{% endif %}>{{name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            {{ form.type.errors }}
+
+                            <div class="input-group">
+                                <span class="input-group-text" >Details</span>
+                                <textarea class="form-control" aria-label="details" name="details" {% if confirm %} style="pointer-events: none;" {% endif %}>{{ form.initial.details }} </textarea>
+                            </div>
+
+                            {{ form.details.errors }}
+
+                            <div class="d-flex justify-content-end">
+                                    <button type="submit" value="confirm" class="btn btn-primary me-auto mt-3" name="submit_action">Confirm</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+>>>>>>> sprint-2
 </div>
 
 {% endblock %}
