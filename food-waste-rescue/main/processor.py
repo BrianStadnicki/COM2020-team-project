@@ -2,7 +2,7 @@ import datetime as dt
 from django.utils import timezone
 from datetime import datetime, timedelta, time
 from .models import Bundle_posting, Reservation
-
+from django.core.exceptions import ObjectDoesNotExist
 
 def week_start(day):
     return day - dt.timedelta(days=day.weekday())
