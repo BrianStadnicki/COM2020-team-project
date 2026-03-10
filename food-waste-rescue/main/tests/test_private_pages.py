@@ -93,7 +93,7 @@ class TestSellerOnlyPages(TestCase):
             website_url="https://example.com"
         )
     
-    #failing
+    #passes
     def test_seller_profile_page_requires_login(self):
         url = reverse("seller_profile_view_url")
         response = self.client.get(url)

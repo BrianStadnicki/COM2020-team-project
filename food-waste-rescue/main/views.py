@@ -386,12 +386,12 @@ def accessibility_view(request):
 
 @login_required
 def seller_profile(request):
-    
-    if not request.user.is_authenticated:
-        return redirect("account_login")
 
     if request.user.user_type != "seller":
         raise PermissionDenied
+    
+    #checking for existing profile:
+    profile = Seller.objects.filter(user=request.user).first()
     
     if hasattr(request.user, "seller"):
         profile = request.user.seller
