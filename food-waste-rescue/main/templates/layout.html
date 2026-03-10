@@ -25,21 +25,28 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active py-3 border-bottom rounded-0">
+                        <a class="nav-link active py-3 border-bottom rounded-0"  href="{% url 'reservations_view_url'%}">
                             <i class="bi bi-basket" style="font-size: 2rem;" title="Reservations"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active py-3 border-bottom rounded-0" href="{% url 'impact_view_url'%}">
-                            <i class="bi bi-leaf" style="font-size: 2rem;" title="Impact"></i>
-                        </a>
-                    </li>
+                    {% if user.user_type == "consumer" %}
+                        <li class="nav-item">
+                            <a class="nav-link active py-3 border-bottom rounded-0" href="{% url 'impact_view_url'%}">
+                                <i class="bi bi-leaf" style="font-size: 2rem;" title="Impact"></i>
+                            </a>
+                        </li>
+                    {% endif %}
                     {% if user.user_type == "seller" %}
-                    <li class="nav-item">
-                        <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'analytics_view_url'%}">
-                            <i class="bi bi-graph-up" style="font-size: 2rem;" title="Analytics"></i>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'analytics_view_url'%}">
+                                <i class="bi bi-graph-up" style="font-size: 2rem;" title="Analytics"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'action_view_url' %}">
+                                <i class="bi bi-tools" style="font-size: 2rem;" title="Actions"></i>
+                            </a>
+                        </li>
                     {% endif %}
                     <li class="nav-item mt-auto">
                         <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'reports_view_url' %}">
