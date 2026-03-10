@@ -23,6 +23,7 @@ urlpatterns = [
         "bundle/<int:id>/report/new", views.report_new_view, name="report_new_view_url"
     ),
     path("impact", views.impact_view, name="impact_view_url"),
+    path("actions", views.action_view, name="action_view_url"),
     path("accessibility", views.accessibility_view, name="accessibility_view_url"),
     path("tos", TemplateView.as_view(template_name="main/tos.html"), name="tos_url"),
     path("accounts/register/", views.registerUser, name="register"),

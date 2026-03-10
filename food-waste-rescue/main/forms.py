@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
 from .models import Seller
-from .models import Bundle_posting, IssueReport, Reservation
+from .models import Bundle_posting, IssueReport, Reservation, Seller_actions
 
 
 class GenericSignupForm(UserCreationForm):
@@ -28,6 +28,7 @@ class SellerExtraForm(forms.ModelForm):
             "closing_time",
             "telephone_number",
             "website_url",
+            "wheelchair"
         ]
 
 
@@ -75,3 +76,13 @@ class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
         fields = ["id", "is_collected"]
+
+class ActionFormBundle(forms.ModelForm):
+    class Meta:
+        model = Seller_actions
+        fields = ["type", "details"]
+
+class ActionFormAnalytics(forms.ModelForm):
+    class Meta:
+        model = Seller_actions
+        fields = ["type", "category", "details"]
