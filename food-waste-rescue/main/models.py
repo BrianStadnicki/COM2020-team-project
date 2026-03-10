@@ -154,3 +154,17 @@ class Forecast_output(models.Model):
     rationale = models.CharField(max_length=1000, blank=True)
     time_recommendation = models.TimeField(blank=True)
     type = models.CharField(max_length=100, default="Linear Regression")
+
+class Seller_actions(models.Model):
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    category = models.ForeignKey(Bundle_posting_category, on_delete=models.CASCADE)
+    time_stamp = models.DateTimeField(default=timezone.now, blank=True)    
+    TYPES = (
+        ("IPD", "Increased Production"),
+        ("RPD", "Reduced Production"),
+        ("IPR", "Increased Price"),
+        ("RPR", "Reduces Price"),
+        ("O", "Other"),
+    )
+    type = models.CharField(max_length=5, choices=TYPES, default="RPD")
+    details = models.CharField(max_length=1000, blank=True)
