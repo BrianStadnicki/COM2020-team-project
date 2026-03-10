@@ -294,7 +294,7 @@ class testSellerAndConsumerPages(TestCase):
         # Create a mock bundle
         self.bundle_posting = Bundle_posting.objects.create(
             seller=self.seller_profile,
-            category="Bakery",
+            category=Bundle_posting_category.objects.get(name="Bread & Pastries"),
             name="Test Bundle",
             contents_description="Bread",
             quantity=5,
@@ -370,19 +370,21 @@ class testSellerAndConsumerPages(TestCase):
 
     # currently failing: AssertionError: 200 != 302
     def test_bundle_view_redirects_seller_without_profile(self):
-    # create a seller user but DO NOT create Seller profile
         user = User.objects.create_user(
             username="seller_without_profile",
             email="seller_without_profile@gmail.com",
             password="password1234",
             user_type="seller"
         )
-        self.client.login(username="seller_no_profile", password="pass")
+
+        self.client.login(username="seller_without_profile", password="password1234")
+
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
+
+        # Expected behaviour: redirect to seller profile completion page
         self.assertEqual(response.status_code, 302)
-        self.assertTemplateUsed(response, "registration/seller_profile.html")
-        
+        self.assertIn(reverse("seller_profile_view_url"), response.url)
 
     #currently failing: AssertionError: 200 != 403
     def test_bundle_view_non_owner_seller(self):
@@ -687,7 +689,7 @@ class testConsumerOnlyPages(TestCase):
         # Create a mock bundle
         self.bundle_posting = Bundle_posting.objects.create(
             seller=self.seller_profile,
-            category="Bakery",
+            category=Bundle_posting_category.objects.get(name="Bread & Pastries"),
             name="Test Bundle",
             contents_description="Bread",
             quantity=5,
