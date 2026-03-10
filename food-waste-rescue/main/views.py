@@ -137,7 +137,6 @@ def bundle_view(request, id):
     error = None
 
     if request.method == "POST":
-<<<<<<< 133-claim-code-validation
         form = ReservationForm(request.POST)
 
         # Consumer makes a reservation
@@ -167,7 +166,7 @@ def bundle_view(request, id):
                     matched_reservation = Reservation.objects.filter( claim_code=c_code).first()
                     if not matched_reservation:
                         error = "Invalid claim code"
-=======
+                        
         if "submit_res" in request.POST:
             form = ReservationForm(request.POST)
 
@@ -194,7 +193,6 @@ def bundle_view(request, id):
                 action.category = post.category
                 action.save()
                 return redirect("bundle_view_url", id=post.id)
->>>>>>> sprint-2
 
     if request.user.user_type == "consumer":
         reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
@@ -212,12 +210,9 @@ def bundle_view(request, id):
             "reservations": reservations,
             "is_seller": is_seller,
             "is_today": is_today,
-<<<<<<< 133-claim-code-validation
             "matched_reservation": matched_reservation,
-            "error": error
-=======
+            "error": error,
             "types": Seller_actions.TYPES
->>>>>>> sprint-2
         },
     )
 
