@@ -384,7 +384,7 @@ Seller: View/Change accessibility settings
 def accessibility_view(request):
     return render(request, "main/accessibility.html")
 
-
+@login_required
 def seller_profile(request):
     
     if not request.user.is_authenticated:

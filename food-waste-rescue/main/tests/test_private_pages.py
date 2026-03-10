@@ -93,16 +93,15 @@ class TestSellerOnlyPages(TestCase):
             website_url="https://example.com"
         )
     
-    #passes
-    def test_seller_extra_page_requires_login(self):
+    #failing
+    def test_seller_profile_page_requires_login(self):
         url = reverse("seller_profile_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
-        self.assertTrue(response.url.startswith("/accounts/login"))
 
-    # Currently failing: AssertionError: 302 != 200
-    def test_seller_extra_page_accessible_to_new_seller(self):
+    #failing
+    def test_seller_profile_page_accessible_to_new_seller(self):
         new_seller = User.objects.create_user(
             username="new_seller",
             email="new_seller@gmail.com",
@@ -113,7 +112,7 @@ class TestSellerOnlyPages(TestCase):
         logged_in = self.client.login(username="new_seller", password="newpass")
         print("Login success:", logged_in)
 
-        url = reverse("seller-extra")
+        url = reverse("seller_profile_view_url")
         response = self.client.get(url)
 
         print("Status:", response.status_code)
@@ -123,17 +122,10 @@ class TestSellerOnlyPages(TestCase):
 
         self.assertEqual(response.status_code, 200)
     
-    #passes
-    def test_seller_extra_redirects_if_profile_exists(self):
-        '''If the Seller already has a profile, don't let them make another one.'''
-        self.client.login(username="seller1", password="sellerpass1")
-        url = reverse("seller-extra")
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 302)
+    # TODO: need a test to check that existing sellers can edit their profiles
     
     #passes
-    def test_seller_extra_blocks_consumer(self):
+    def test_seller_profile_page_blocks_consumer(self):
         """Users should only be able to access 'seller-extra' if they selected 'Seller' in
         the registration page."""
         consumer = User.objects.create_user(
@@ -143,7 +135,7 @@ class TestSellerOnlyPages(TestCase):
             user_type = "consumer"
         )
         self.client.login(username="consumer_test", password="password456")
-        url = reverse("seller-extra")
+        url = reverse("seller_profile_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
