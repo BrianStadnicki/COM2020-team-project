@@ -157,15 +157,6 @@ class Forecast_output(models.Model):
 
 class Seller_actions(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
-    CATEGORYS = (
-        ("M", "Meals"),
-        ("B&P", "Bread & Pastries"),
-        ("G", "Groceries"),
-        ("F&P", "Flowers & Plants"),
-        ("PF", "Pet Food"),
-        ("V", "Vegetarian"),
-        ("VE", "Vegan"),
-    )
     category = models.ForeignKey(Bundle_posting_category, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(default=timezone.now, blank=True)    
     TYPES = (
