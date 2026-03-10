@@ -38,8 +38,14 @@
             <input type="text" class="form-control" name="website_url" placeholder="https://www.exeter.ac.uk/" value="{{ form.initial.website_url}}">
             {{form.website_url.errors}}
         </div>
-    <button type="submit" value="Save Seller Details" class="btn btn-primary">Confirm details</button>
 
-</form>
+        <div class="mb-3">
+            <input class="btn-check" type="checkbox" id="wheelchair" name="wheelchair" autocomplete="off" {% if form.initial.wheelchair == True %}checked{% endif %}>
+            <label class="btn btn-outline-secondary" for="wheelchair">Wheelchair Accessible</label>
+            {{form.wheelchair.errors}}
+        </div>
+        <button type="submit" value="Save Seller Details" class="btn btn-primary">Confirm details</button>
 
+    </form>
+</div>
 {% endblock %}

@@ -23,9 +23,9 @@
                         <p>Category</p>
                         <select class="form-select" name="category">
                             <option selected value="">Select category</option>
-                            {% for cat_short, cat in categories %}
-                                <option value="{{cat_short}}" {% if cat_short == selected_category %}selected{% endif %}>
-                                    {{cat}}
+                            {% for category in categories %}
+                                <option value="{{category.id}}" {% if category.id == selected_category.id %}selected{% endif %}>
+                                    {{category.name}}
                                 </option>
                             {% empty %}
                                 <option>No categories</option>
@@ -40,6 +40,12 @@
                                 <label class="form-check-label" for="a{{ forloop.counter }}">{{allergen}}</label>
                             </div>
                         {% endfor %}
+                        <p class="mt-3">Wheelchair</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="wheelchair"
+                            value=True  id="a{{ forloop.counter }}" >
+                            <label class="form-check-label" {% if selected_wheelchair %}checked{% endif %}>Wheelchair acessable</label>
+                        </div>
                         <!-- Location filter - only visible to Consumers -->
                         {% if request.user.user_type == "consumer" %}
                             <p class="mt-3">Location</p>
@@ -64,7 +70,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <p>{{post.seller.user.username}}</p>
-                                        <p>{{post.category}}</p>
+                                        <p>{{post.category.name}}</p>
                                         <p>£{{post.price}}</p>
                                         <p>{{post.creation_time.date}}</p>
                                         <p>{{post.status_str}}</p>
@@ -72,6 +78,7 @@
                                     <div class="col">
                                         <p>{{post.seller.location}}</p>
                                         <a href="{% url 'bundle_view_url' post.id %}" class="btn btn-outline-primary">View</a>
+                                    <div class="mt-2"> {% if post.seller.wheelchair %}<p><i class="bi bi-person-wheelchair"></i></p>{% endif %}</div>
                                     </div>
                                 </div>
                             </div>
