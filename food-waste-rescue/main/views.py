@@ -229,7 +229,7 @@ Seller: Show upcoming reservations with bundle details, edit status, search/veri
 def reservations_view(request):
     # checks to see if the user is seller or consumer
     if request.user.user_type != "seller":
-        reservations = request.user.cosumer.reservation_set
+        reservations = request.user.consumer.reservation_set
     else:
         # Get reservations related to seller
         reservations = Reservation.objects.filter(posting__seller=request.user.seller)
