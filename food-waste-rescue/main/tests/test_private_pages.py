@@ -110,15 +110,8 @@ class TestSellerOnlyPages(TestCase):
         )
 
         logged_in = self.client.login(username="new_seller", password="newpass")
-        print("Login success:", logged_in)
-
         url = reverse("seller_profile_view_url")
         response = self.client.get(url)
-
-        print("Status:", response.status_code)
-        print("Redirected to:", getattr(response, "url", None))
-        print("User inside request:", response.wsgi_request.user)
-        print("Authenticated:", response.wsgi_request.user.is_authenticated)
 
         self.assertEqual(response.status_code, 200)
     
