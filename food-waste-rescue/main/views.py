@@ -8,8 +8,10 @@ from .forms import (
     BundleNewForm,
     IssueReportNewForm,
     IssueReportViewForm,
+    ActionFormBundle,
+    ActionFormAnalytics
 )
-from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
+from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation, Seller_actions
 from .forecast_calc import avePerNoshowCat, avePerRes, avePerNoshow, avePerResCat, errorMSENoShowCat, errorMSEReservations, errorMSENoShow, errorMSEReservationsCat
 from .badges import get_badges
 from django.contrib.auth.decorators import login_required
@@ -64,10 +66,15 @@ def bundles_view(request):
     selected_category = ""
     
     selected_allergens = request.GET.getlist("excluded-allergens")
+    selected_wheelchair = request.GET.get("wheelchair")
 
     if selected_category_id != "":
         selected_category = Bundle_posting_category.objects.get(id=selected_category_id)
         posts = posts.filter(category=selected_category)
+
+    if selected_wheelchair:
+        posts = posts.filter(seller__wheelchair=True)
+
     if selected_allergens:
         q = Q()
         for allergen in selected_allergens:
@@ -109,23 +116,32 @@ def bundle_view(request, id):
     is_today = post.creation_time.date() == datetime.datetime.today().date()
 
     if request.method == "POST":
-        form = ReservationForm(request.POST)
+        if "submit_res" in request.POST:
+            form = ReservationForm(request.POST)
 
-        # Consumer makes a reservation
-        if form.data["submit"] == "Reserve":
-            reservation = Reservation(
-                posting=post,
-                consumer=Consumer.objects.get(user=request.user),
-                # claim_code generated in the reservation model method.
-            )
-            reservation.save()
-            reservation.claim_code_generator()
+            # Consumer makes a reservation
+            if form.data["submit_res"] == "Reserve":
+                reservation = Reservation(
+                    posting=post,
+                    consumer=Consumer.objects.get(user=request.user),
+                    # claim_code generated in the reservation model method.
+                )
+                reservation.save()
+                reservation.claim_code_generator()
 
-        # Seller marks the reservation as collected
-        elif form.data["submit"] == "Collected?":
-            reservation = Reservation.objects.get(id=int(form.data["id"]))
-            reservation.is_collected = True
-            reservation.save()
+            # Seller marks the reservation as collected
+            elif form.data["submit_res"] == "Collected?":
+                reservation = Reservation.objects.get(id=int(form.data["id"]))
+                reservation.is_collected = True
+                reservation.save()
+        elif "submit_action" in request.POST:
+            form = ActionFormBundle(request.POST)
+            if form.is_valid():
+                action = form.save(commit=False)
+                action.seller = Seller.objects.get(user=request.user)
+                action.category = post.category
+                action.save()
+                return redirect("bundle_view_url", id=post.id)
 
     if request.user.user_type == "consumer":
         reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
@@ -143,6 +159,7 @@ def bundle_view(request, id):
             "reservations": reservations,
             "is_seller": is_seller,
             "is_today": is_today,
+            "types": Seller_actions.TYPES
         },
     )
 
@@ -272,6 +289,14 @@ def analytics_view(request):
     reservations_no_show_error_cat = [{"name": Bundle_posting_category.objects.get(id=category_id).name, "error": round(errorMSEReservationsCat(seller, category_id), 2)} for category_id in list(Bundle_posting_category.objects.values_list("id", flat=True))]
 
 
+    if request.method == "POST":
+        form = ActionFormAnalytics(request.POST)
+        if form.is_valid():
+            action = form.save(commit=False)
+            action.seller = Seller.objects.get(user=request.user)
+            action.save()
+            messages.success(request, "Action saved!")
+
     return render(
         request,
         "main/analytics.html",
@@ -284,6 +309,8 @@ def analytics_view(request):
             "reservations_no_show_error": reservations_no_show_error,
             "reservations_error_cat": reservations_error_cat,
             "reservations_no_show_error_cat": reservations_no_show_error_cat,
+            "types": Seller_actions.TYPES,
+            "categories": Bundle_posting_category.objects.all()
         },
     )
 
@@ -392,6 +419,17 @@ def impact_view(request):
 
     return render(request, "main/impact.html", {"badges": badges})
 
+@login_required
+def action_view(request):
+
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    
+    seller = getattr(request, "user", None).seller
+
+    actions = Seller_actions.objects.filter(seller=seller).order_by("-time_stamp")
+
+    return render(request, "main/actions.html", {"actions":actions})
 
 """
 Consumer: View/Change accessibility settings

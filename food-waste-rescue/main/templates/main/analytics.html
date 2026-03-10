@@ -164,6 +164,57 @@
 
         </div>
     </div>
+
+    <div class="row mt-3">
+            <div class="col-12">
+                <div class="card p-3">
+                    <div class="card-title">
+                        <h2>Actions</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="">
+                            {% csrf_token %}
+
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="type">Type</label>
+                                <select class="form-select" name="type" value="{{ form.initial.type }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
+                                    <option>Select Type</option>
+                                    {% for char, name in types %}
+                                        <option value="{{ char }}" {% if form.initial.type == char %} selected="selected"{% endif %}>{{name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            {{ form.type.errors }}
+
+                            <div class="input-group mb-3">
+                                <label class="input-group-text" for="category">Category</label>
+                                <select class="form-select" name="category" value="{{ form.initial.category }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
+                                    <option>Select Category</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if form.initial.category_id == category.id %} selected="selected"{% endif %}>{{category.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            {{ form.category.errors }}
+
+                            <div class="input-group">
+                                <span class="input-group-text" >Details</span>
+                                <textarea class="form-control" aria-label="details" name="details" {% if confirm %} style="pointer-events: none;" {% endif %}>{{ form.initial.details }} </textarea>
+                            </div>
+
+                            {{ form.details.errors }}
+
+                            <div class="d-flex justify-content-end">
+                                    <button type="submit" value="confirm" class="btn btn-primary me-auto mt-3" name="submit">Confirm</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 
 {% endblock %}
