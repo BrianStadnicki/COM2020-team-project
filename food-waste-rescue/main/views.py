@@ -87,7 +87,7 @@ def bundles_view(request):
         form = ReservationForm(request.POST)
         
         if form.data["submit"] == "validate_code":
-                c_code = request.POST.get("claim_code")
+                c_code = request.POST.get("claim_code").strip()
                 
                 if c_code == "":
                     error = "A claim code needs to be entered"
@@ -137,37 +137,23 @@ def bundle_view(request, id):
     error = None
 
     if request.method == "POST":
-        form = ReservationForm(request.POST)
-
-        # Consumer makes a reservation
-        if form.data["submit"] == "Reserve":
-            reservation = Reservation(
-                posting=post,
-                consumer=Consumer.objects.get(user=request.user),
-                # claim_code generated in the reservation model method.
-            )
-            reservation.save()
-            reservation.claim_code_generator()
-
-        # Seller marks the reservation as collected
-        elif form.data["submit"] == "Collected?":
-            reservation = Reservation.objects.get(id=int(form.data["id"]))
-            reservation.is_collected = True
-            reservation.save()
             
-        elif form.data["submit"] == "validate_code":
-                c_code = request.POST.get("claim_code")
+        if "submit_code" in request.POST:
+            form = ReservationForm(request.POST)
+            
+            if form.data["submit_code"] == "validate_code":
+                c_code = request.POST.get("claim_code").strip()
                 
                 if c_code == "":
                     error = "A claim code needs to be entered"
                 elif not c_code.isdigit():
                     error = "Claim code needs to be a number"
                 else:
-                    matched_reservation = Reservation.objects.filter( claim_code=c_code).first()
+                    matched_reservation = Reservation.objects.filter(claim_code=c_code).first()
                     if not matched_reservation:
                         error = "Invalid claim code"
                         
-        if "submit_res" in request.POST:
+        elif "submit_res" in request.POST:
             form = ReservationForm(request.POST)
 
             # Consumer makes a reservation
@@ -185,6 +171,7 @@ def bundle_view(request, id):
                 reservation = Reservation.objects.get(id=int(form.data["id"]))
                 reservation.is_collected = True
                 reservation.save()
+                
         elif "submit_action" in request.POST:
             form = ActionFormBundle(request.POST)
             if form.is_valid():
@@ -192,7 +179,7 @@ def bundle_view(request, id):
                 action.seller = Seller.objects.get(user=request.user)
                 action.category = post.category
                 action.save()
-                return redirect("bundle_view_url", id=post.id)
+                return redirect("bundle_view_url", id=post.id) #type: ignore
 
     if request.user.user_type == "consumer":
         reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
