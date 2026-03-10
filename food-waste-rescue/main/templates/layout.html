@@ -7,13 +7,24 @@
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <style>
+        @media (min-width: 768px) {
+            #navbar-container {
+                width: min-content;
+            }
+
+            #navbar-list {
+                height: 100vh
+            }
+        }
+    </style>
     <title>Food Waste Rescue</title>
 </head>
 <body class="container-fluid">
     <div class="">
-        <div class="col-1 fixed-top">
-            <div class="d-flex flex-column bg-primary" style="width: min-content;">
-                <ul class="d-flex nav nav-pills nav-flush flex-column text-center" style="height: 100vh">
+        <div class="col-md-1 fixed-top">
+            <div id="navbar-container" class="d-flex flex-row bg-primary">
+                <ul id="navbar-list" class="d-flex nav nav-pills nav-flush flex-row text-center">
                     <li class="nav-item mb-auto">
                         <a class="nav-link active py-3 border-bottom rounded-0" href="/accounts/login">
                             <i class="bi bi-person-circle" style="font-size: 2rem;" title="Profile"></i>
