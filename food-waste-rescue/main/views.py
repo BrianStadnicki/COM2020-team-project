@@ -94,7 +94,8 @@ def bundles_view(request):
             "allergens": ALLERGENS,
             "selected_category": selected_category,
             "selected_allergens": selected_allergens,
-            "selected-location": location,
+            "selected_location": location,
+            "selected_wheelchair": selected_wheelchair
         },
     )
 
