@@ -284,10 +284,7 @@ def analytics_view(request):
     best_category = get_best_categories(seller)
     reservations_error = round(errorMSEReservations(seller), 2)
     reservations_no_show_error = round(errorMSENoShow(seller), 2)
-    reservations_error_cat = [{"name": Bundle_posting_category.objects.get(id=category_id).name, "error": round(errorMSEReservationsCat(seller, category_id), 2)} for category_id in list(Bundle_posting_category.objects.values_list("id", flat=True))]
-    reservations_no_show_error_cat = [ round(errorMSENoShowCat(seller, category_id), 2) for category_id in Bundle_posting_category.objects.values_list("id", flat=True)]
-    reservations_no_show_error_cat = [{"name": Bundle_posting_category.objects.get(id=category_id).name, "error": round(errorMSEReservationsCat(seller, category_id), 2)} for category_id in list(Bundle_posting_category.objects.values_list("id", flat=True))]
-
+    reservations_error_cat_zip = [{"name": Bundle_posting_category.objects.get(id=category_id).name, "error": round(errorMSEReservationsCat(seller, category_id), 2), "noshow": round(errorMSENoShowCat(seller, category_id), 2)} for category_id in list(Bundle_posting_category.objects.values_list("id", flat=True))]
 
     if request.method == "POST":
         form = ActionFormAnalytics(request.POST)
@@ -307,8 +304,7 @@ def analytics_view(request):
             "best_category": best_category,
             "reservations_error": reservations_error,
             "reservations_no_show_error": reservations_no_show_error,
-            "reservations_error_cat": reservations_error_cat,
-            "reservations_no_show_error_cat": reservations_no_show_error_cat,
+            "reservations_error_cat_zip": reservations_error_cat_zip,
             "types": Seller_actions.TYPES,
             "categories": Bundle_posting_category.objects.all()
         },

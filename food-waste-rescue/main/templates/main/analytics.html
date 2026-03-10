@@ -107,61 +107,29 @@
 
         <div class="col-3 ms-5">
             <h3 class="text-center mb-4">Forecast errors</h3>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Error</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">MSE for number of reservations</th>
-                        <td>{{reservations_error}}</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">MSE for reservation no-show rate</th>
-                        <td>{{reservations_no_show_error}}</td>
-                    </tr>
-                </tbody>
-            </table>
-
             <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">Category</th>
                         <th scope="col">MSE for number of reservations</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for category in reservations_error_cat %}
-                        <tr>
-                            <th scope="row">{{category.name}}</th>
-                            <td>{{category.error}}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Category</th>
                         <th scope="col">MSE for reservation no show rate</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for category in reservations_no_show_error_cat %}
+                    <tr>
+                        <th scope="row">All</th>
+                        <td>{{reservations_error}}</td>
+                        <td>{{reservations_no_show_error}}</td>
+                    </tr>
+                    {% for category in reservations_error_cat_zip %}
                         <tr>
                             <th scope="row">{{category.name}}</th>
                             <td>{{category.error}}</td>
+                            <td>{{category.noshow}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-
-
         </div>
     </div>
 
