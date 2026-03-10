@@ -6,12 +6,12 @@ from collections import Counter
 BUNDLE_WEIGHT = 0.6  # kg
 
 
-def get_sell_through(seller):
+def get_sell_through(seller, price_low, price_high):
     collected = 0
     expired = 0
     total = 0
 
-    bundles = Bundle_posting.objects.filter(seller=seller)
+    bundles = Bundle_posting.objects.filter(seller=seller, price__gte=price_low, price__lte=price_high)
 
     for bundle in bundles:
         if bundle.status == "C":
@@ -27,7 +27,7 @@ def get_sell_through(seller):
         if reservation.status == "N":
             no_show += 1
 
-    sell_through = f"{collected / total * 100:.1f}%" if total else "0.0%"
+    sell_through = f"{collected / total * 100:.1f}" if total else "0.0"
 
     return {
         "collected": collected,

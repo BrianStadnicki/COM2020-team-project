@@ -24,6 +24,7 @@ from .analytics import (
     get_sell_through,
     get_waste_proxy,
 )
+import json
 
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
@@ -278,13 +279,15 @@ def analytics_view(request):
 
     seller = getattr(request, "user", None).seller
 
-    sell_through = get_sell_through(seller)
+    sell_through = get_sell_through(seller, 0, 1000000000000)
     waste_proxy = get_waste_proxy(seller)
     best_pickup = get_best_pickup(seller)
     best_category = get_best_categories(seller)
     reservations_error = round(errorMSEReservations(seller), 2)
     reservations_no_show_error = round(errorMSENoShow(seller), 2)
     reservations_error_cat_zip = [{"name": Bundle_posting_category.objects.get(id=category_id).name, "error": round(errorMSEReservationsCat(seller, category_id), 2), "noshow": round(errorMSENoShowCat(seller, category_id), 2)} for category_id in list(Bundle_posting_category.objects.values_list("id", flat=True))]
+
+    sell_through_price = [{"price": i/10, "data": get_sell_through(seller, i/10, (i/10)+0.5)} for i in range(0, 105, 5)]
 
     if request.method == "POST":
         form = ActionFormAnalytics(request.POST)
@@ -299,6 +302,7 @@ def analytics_view(request):
         "main/analytics.html",
         {
             "sell_through": sell_through,
+            "sell_through_price": json.dumps(sell_through_price),
             "waste_proxy": waste_proxy,
             "best_pickup": best_pickup,
             "best_category": best_category,

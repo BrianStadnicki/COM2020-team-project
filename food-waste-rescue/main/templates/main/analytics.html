@@ -1,6 +1,86 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js "></script>
+
+<script type="module">
+    (async function() {
+    
+    let data = JSON.parse("{{ sell_through_price | escapejs }}");
+    console.log(data);
+
+    new Chart(
+        document.getElementById('sell-through-graph'),
+        {
+            type: 'line',
+            options: {
+                responsive: true,
+                plugins: {
+                title: {
+                    display: true,
+                    text: "Sell through rate by price point"
+                },
+            },
+            scales: {
+                x: {
+                    type: "linear",
+                    display: true,
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: "£ Price point"
+                    }
+                },
+                y1: {
+                    type: "linear",
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: "Number of bundles"
+                    }
+                },
+                y2: {
+                    type: "linear",
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: "Sell through rate %"
+                    }
+                },
+            },
+        },
+        data: {
+            labels: data.map(row => row.price),
+            datasets: [
+                {
+                    label: 'Sell through rate',
+                    data: data.map(row => row.data.sell_through),
+                    yAxisID: 'y2'
+                },
+                {
+                    label: 'Collected',
+                    data: data.map(row => row.data.collected),
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'No Show',
+                    data: data.map(row => row.data.no_show),
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'Expired',
+                    data: data.map(row => row.data.expired),
+                    yAxisID: 'y1'
+                }
+            ]
+        }
+        }
+    );
+})();
+</script>
+
 <div class="container-fluid">
     <nav class="navbar">
         <div class="container-fluid">
@@ -39,7 +119,7 @@
                     </div>
                 </div>
                 <div class="col-1">
-                    <p>{{sell_through.sell_through}}</p>
+                    <p>{{sell_through.sell_through}}%</p>
                 </div>
             </div>
 
@@ -131,6 +211,10 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <div class="row mt-3" style="width: 1000px;">
+        <canvas id="sell-through-graph"></canvas>
     </div>
 
     <div class="row mt-3">
