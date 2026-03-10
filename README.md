@@ -106,7 +106,7 @@ python manage.py migrate
 python manage.py seed --mode=refresh --seed=123
 ```
 
-### Add happy path test data
+### Add manual test data
 
 ```sh
 python manage.py init_happy_path_test --mode=refresh --seed=123
@@ -142,6 +142,7 @@ cd food-waste-rescue
 python -m venv .env
 windows: Set-ExecutionPolicy Unrestricted -Scope Process
 .env\Scripts\activate
+python manage.py migrate
 ```
 
 3. Run a test suite, e.g.:
