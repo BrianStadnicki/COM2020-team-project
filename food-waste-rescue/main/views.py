@@ -184,6 +184,7 @@ def bundle_view(request, id):
                 action.seller = Seller.objects.get(user=request.user)
                 action.category = post.category
                 action.save()
+                messages.success(request, "Action saved!")
                 return redirect("bundle_view_url", id=post.id) #type: ignore
 
     if request.user.user_type == "consumer":
