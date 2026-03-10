@@ -22,6 +22,7 @@ class Seller(models.Model):
     closing_time = models.TimeField(default=datetime.time(17, 00))
     telephone_number = models.CharField(max_length=100, default="441392661000")
     website_url = models.URLField(default="https://www.exeter.ac.uk/")
+    wheelchair = models.BooleanField(default=False)
 
 
 class Bundle_posting_category(models.Model):

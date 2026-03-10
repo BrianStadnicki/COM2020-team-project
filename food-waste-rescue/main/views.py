@@ -66,10 +66,15 @@ def bundles_view(request):
     selected_category = ""
     
     selected_allergens = request.GET.getlist("excluded-allergens")
+    selected_wheelchair = request.GET.get("wheelchair")
 
     if selected_category_id != "":
         selected_category = Bundle_posting_category.objects.get(id=selected_category_id)
         posts = posts.filter(category=selected_category)
+
+    if selected_wheelchair:
+        posts = posts.filter(seller__wheelchair=True)
+
     if selected_allergens:
         q = Q()
         for allergen in selected_allergens:
