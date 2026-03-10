@@ -43,7 +43,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="wheelchair"
                             value=True  id="a{{ forloop.counter }}" >
-                            <label class="form-check-label" {% if selected_wheelchair %}checked{% endif %}>Wheelchair acessable</label>
+                            <label class="form-check-label" {% if selected_wheelchair %}checked{% endif %}>Wheelchair accessible</label>
                         </div>
                         <!-- Location filter - only visible to Consumers -->
                         {% if request.user.user_type == "consumer" %}
