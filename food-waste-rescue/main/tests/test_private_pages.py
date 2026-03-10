@@ -100,7 +100,7 @@ class TestSellerOnlyPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
 
-    #failing
+    #passes
     def test_seller_profile_page_accessible_to_new_seller(self):
         new_seller = User.objects.create_user(
             username="new_seller",
