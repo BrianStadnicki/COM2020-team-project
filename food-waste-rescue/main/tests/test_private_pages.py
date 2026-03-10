@@ -355,13 +355,16 @@ class testSellerAndConsumerPages(TestCase):
     def test_bundle_view_redirects_seller_without_profile(self):
     # create a seller user but DO NOT create Seller profile
         user = User.objects.create_user(
-            username="seller_no_profile", password="pass", user_type="seller"
+            username="seller_without_profile",
+            email="seller_without_profile@gmail.com",
+            password="password1234",
+            user_type="seller"
         )
         self.client.login(username="seller_no_profile", password="pass")
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertTemplateUsed(response, "registration/seller_extra.html")
+        self.assertTemplateUsed(response, "registration/seller_profile.html")
         
 
     #currently failing: AssertionError: 200 != 403
@@ -540,36 +543,6 @@ class testSellerAndConsumerPages(TestCase):
     
     # ---------------------------------------------------------------------------
 
-    #Tests for impact_view
-
-    # We need to actually implement the logic for this!
-
-    #passes
-    def test_impact_view_redirects_for_anonymous(self):
-        """Anonymous users should get 302 Redirect and be redirected to login"""
-        url = reverse("impact_view_url")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertIn("/accounts/login", response.url)
-    
-    # currently failing
-    def test_impact_view_allows_consumer(self):
-        """Consumers should get 200 OK"""
-        self.client.login(username="consumer2", password="consumerpass2")
-        url = reverse("impact_view_url")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-    #currently failing
-    def test_impact_view_allows_seller(self):
-        """Sellers shoud get 200 OK"""
-        self.client.login(username="seller2", password="sellerpass2")
-        url = reverse("impact_view_url")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-    
-    # ---------------------------------------------------------------------------
-
     #Tests for accessibility_view
 
     # We need to implement accessibility_view
@@ -682,7 +655,7 @@ class testConsumerOnlyPages(TestCase):
             user=self.consumer_user
         )
 
-        # Create a bumdle owned by the seller
+        # Create a bundle owned by the seller
         # Create a mock bundle
         self.bundle_posting = Bundle_posting.objects.create(
             seller=self.seller_profile,
@@ -719,5 +692,33 @@ class testConsumerOnlyPages(TestCase):
         """Sellers shoud get 403 Forbidden"""
         self.client.login(username="seller1", password="sellerpass")
         url = reverse("report_new_view_url", args=[self.bundle_posting.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+
+        # ---------------------------------------------------------------------------
+
+    #Tests for impact_view
+
+    #passes
+    def test_impact_view_redirects_for_anonymous(self):
+        """Anonymous users should get 302 Redirect and be redirected to login"""
+        url = reverse("impact_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login", response.url)
+    
+    #passes
+    def test_impact_view_allows_consumer(self):
+        """Consumers should get 200 OK"""
+        self.client.login(username="consumer1", password="consumerpass")
+        url = reverse("impact_view_url")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    #passes
+    def test_impact_view_forbidden_for_seller(self):
+        """Sellers shoud get 200 OK"""
+        self.client.login(username="seller1", password="sellerpass")
+        url = reverse("impact_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
