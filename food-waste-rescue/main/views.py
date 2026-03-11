@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Count, F
 from .forms import (
     ReservationForm,
     SellerExtraForm,
@@ -68,6 +68,8 @@ def bundles_view(request):
     
     selected_allergens = request.GET.getlist("excluded-allergens")
     selected_wheelchair = request.GET.get("wheelchair")
+    selected_inactive = request.GET.get("show-inactive")
+    selected_expired = request.GET.get("show-expired")
 
     if selected_category_id != "":
         selected_category = Bundle_posting_category.objects.get(id=selected_category_id)
@@ -75,6 +77,20 @@ def bundles_view(request):
 
     if selected_wheelchair:
         posts = posts.filter(seller__wheelchair=True)
+
+    hidden_posts = posts.none()
+
+    annotated_posts = posts.annotate(collected_count=Count("reservation", filter=Q(reservation__is_collected=True)))
+
+    if not selected_inactive:
+        hidden_posts |= annotated_posts.filter(collected_count=F("quantity"))
+
+    if not selected_expired:
+        hidden_posts |= annotated_posts.exclude(collected_count=F("quantity")
+        ).exclude(creation_time__date=datetime.datetime.today().date(),
+            pickup_window_end__gt=datetime.datetime.today().time())
+
+    posts = posts.exclude(id__in=hidden_posts.values("id"))
 
     if selected_allergens:
         q = Q()
@@ -86,6 +102,32 @@ def bundles_view(request):
     posts = posts.order_by("-creation_time")
     posts = posts.all()
 
+    matched_reservation = None
+    error = None
+
+    if request.method == "POST":
+        form = ReservationForm(request.POST)
+        
+        if form.data["submit"] == "validate_code":
+            c_code = request.POST.get("claim_code").strip()
+            
+            if c_code == "":
+                error = "A claim code needs to be entered"
+                
+            elif not c_code.isdigit():
+                error = "Claim code needs to be a number"
+            
+            else:
+                matched_reservation = Reservation.objects.filter(claim_code=c_code, posting__in=posts).first()
+                
+                if not matched_reservation:
+                    error = "Invalid claim code"
+        elif form.data["submit"] == "Collected?":
+            reservation = Reservation.objects.get(id=int(form.data["id"]))
+            reservation.is_collected = True
+            reservation.save()
+
+
     return render(
         request,
         "main/bundles.html",
@@ -95,7 +137,12 @@ def bundles_view(request):
             "allergens": ALLERGENS,
             "selected_category": selected_category,
             "selected_allergens": selected_allergens,
-            "selected-location": location,
+            "selected_location": location,
+            "matched_reservation": matched_reservation,
+            "error": error,
+            "selected_wheelchair": selected_wheelchair,
+            "selected_expired": selected_expired,
+            "selected_inactive": selected_inactive
         },
     )
 
@@ -116,8 +163,27 @@ def bundle_view(request, id):
     )
     is_today = post.creation_time.date() == datetime.datetime.today().date()
 
+    matched_reservation = None
+    error = None
+
     if request.method == "POST":
-        if "submit_res" in request.POST:
+            
+        if "submit_code" in request.POST:
+            form = ReservationForm(request.POST)
+            
+            if form.data["submit_code"] == "validate_code":
+                c_code = request.POST.get("claim_code").strip()
+                
+                if c_code == "":
+                    error = "A claim code needs to be entered"
+                elif not c_code.isdigit():
+                    error = "Claim code needs to be a number"
+                else:
+                    matched_reservation = Reservation.objects.filter(claim_code=c_code).first()
+                    if not matched_reservation:
+                        error = "Invalid claim code"
+                        
+        elif "submit_res" in request.POST:
             form = ReservationForm(request.POST)
 
             # Consumer makes a reservation
@@ -135,6 +201,7 @@ def bundle_view(request, id):
                 reservation = Reservation.objects.get(id=int(form.data["id"]))
                 reservation.is_collected = True
                 reservation.save()
+                
         elif "submit_action" in request.POST:
             form = ActionFormBundle(request.POST)
             if form.is_valid():
@@ -142,7 +209,10 @@ def bundle_view(request, id):
                 action.seller = Seller.objects.get(user=request.user)
                 action.category = post.category
                 action.save()
-                return redirect("bundle_view_url", id=post.id)
+                messages.success(request, "Action saved!")
+                return redirect("bundle_view_url", id=post.id) #type: ignore
+            else:
+                messages.info(request, "Invalid action")
 
     if request.user.user_type == "consumer":
         reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
@@ -160,6 +230,8 @@ def bundle_view(request, id):
             "reservations": reservations,
             "is_seller": is_seller,
             "is_today": is_today,
+            "matched_reservation": matched_reservation,
+            "error": error,
             "types": Seller_actions.TYPES
         },
     )
@@ -236,12 +308,8 @@ def reservations_view(request):
     if request.user.user_type != "seller":
         reservations = request.user.consumer.reservation_set
     else:
-        reservations = request.user.seller.reservation_set
-
-    location = request.GET.get("location", "")
-
-    if request.user.user_type != "seller" and location:
-        reservations = reservations.filter(seller__location__icontains=location)
+        # Get reservations related to seller
+        reservations = Reservation.objects.filter(posting__seller=request.user.seller)
 
     reservations = reservations.order_by("-time_stamp")
     reservations = reservations.all()
@@ -251,7 +319,6 @@ def reservations_view(request):
         "main/reservations.html",
         {
             "reservations": reservations,
-            "selected-location": location
         },
     )
 
@@ -296,6 +363,8 @@ def analytics_view(request):
             action.seller = Seller.objects.get(user=request.user)
             action.save()
             messages.success(request, "Action saved!")
+        else:
+            messages.info(request, "Action form invalid")
 
     return render(
         request,

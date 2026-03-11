@@ -53,6 +53,11 @@
                             <i class="bi bi-exclamation-circle" style="font-size: 2rem;" title="Report"></i>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'tos_url' %}">
+                            <i class="bi bi-journal-text" style="font-size: 2rem;" title="Terms of Service"></i>
+                        </a>
+                    </li>
                     {% if user.user_type == "consumer" %}
                         <span class="badge text-bg-info fs-3">{{ reservation_streak }}</span>
                     {% endif %}
