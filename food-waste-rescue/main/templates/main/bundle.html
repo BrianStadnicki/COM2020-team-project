@@ -181,7 +181,7 @@
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="id" value="{{ matched_reservation.id }}">
-                            <button type="submit" name="submit" value="Collected?" class="btn btn-outline-primary"> Mark as Collected </button>
+                            <button type="submit" name="submit_res" value="Collected?" class="btn btn-outline-primary"> Mark as Collected </button>
                         </form>
                     {% endif %}
                 </div>
