@@ -14,11 +14,11 @@
 
         #navbar-list {
             flex-direction: row;
-            width: 100vh;
+            width: 100%;
         }
 
-        #navbar-container {
-            width: 100vh;
+        #streak-count {
+            font-size: 10vw;
         }
 
         @media (min-width: 576px) {
@@ -38,6 +38,10 @@
             .navbar-icon {
                 font-size: 2.5rem;
             }
+
+            #streak-count {
+                font-size: 50px;
+            }
         }
     </style>
     <title>Food Waste Rescue</title>
@@ -47,49 +51,49 @@
         <div class="col-md-1 row-sm">
             <div id="navbar-container" class="bg-primary">
                 <div id="navbar-list" class="d-flex text-center">
-                    <div class="nav-item flex-sm-fill">
-                        <a class="nav-link active border-bottom rounded-0" href="/accounts/login">
-                            <i class="bi bi-person-circle navbar-icon" title="Profile"></i>
+                    <div class="nav-item flex-fill">
+                        <a class="nav-link active rounded-0 justify-sm-content-start" href="/accounts/login">
+                            <i class="bi bi-person-circle navbar-icon text-white" title="Profile"></i>
                         </a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active border-top border-bottom rounded-0" href="{% url 'bundles_view_url'%}">
-                            <i class="bi bi-house-fill navbar-icon" title="Main"></i>
+                        <a class="nav-link active rounded-0" href="{% url 'bundles_view_url'%}">
+                            <i class="bi bi-house-fill navbar-icon text-white" title="Main"></i>
                         </a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link active border-top border-bottom rounded-0"  href="{% url 'reservations_view_url'%}">
-                            <i class="bi bi-basket navbar-icon" title="Reservations"></i>
+                        <a class="nav-link active rounded-0"  href="{% url 'reservations_view_url'%}">
+                            <i class="bi bi-basket navbar-icon text-white" title="Reservations"></i>
                         </a>
                     </div>
                     {% if user.user_type == "consumer" %}
                         <div class="nav-item">
-                            <a class="nav-link active border-top border-bottom rounded-0" href="{% url 'impact_view_url'%}">
-                                <i class="bi bi-leaf navbar-icon" title="Impact"></i>
+                            <a class="nav-link active rounded-0" href="{% url 'impact_view_url'%}">
+                                <i class="bi bi-leaf navbar-icon text-white" title="Impact"></i>
                             </a>
                         </div>
                     {% endif %}
                     {% if user.user_type == "seller" %}
                         <div class="nav-item">
-                            <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'analytics_view_url'%}">
-                                <i class="bi bi-graph-up navbar-icon" title="Analytics"></i>
+                            <a class="nav-link active order-bottom border-top rounded-0" href="{% url 'analytics_view_url'%}">
+                                <i class="bi bi-graph-up navbar-icon text-white" title="Analytics"></i>
                             </a>
                         </div>
                         <div class="nav-item">
-                            <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'action_view_url' %}">
-                                <i class="bi bi-tools navbar-icon" title="Actions"></i>
+                            <a class="nav-link active rounded-0" href="{% url 'action_view_url' %}">
+                                <i class="bi bi-tools navbar-icon text-white" title="Actions"></i>
                             </a>
                         </div>
                     {% endif %}
                     
-                    <div class="nav-item align-content-end flex-sm-grow-1">
-                        <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'reports_view_url' %}">
-                            <i class="bi bi-exclamation-circle navbar-icon" title="Report"></i>
+                    <div class="nav-item align-content-end flex-grow-1">
+                        <a class="nav-link active rounded-0" href="{% url 'reports_view_url' %}">
+                            <i class="bi bi-exclamation-circle navbar-icon text-white" title="Report"></i>
                         </a>
                     </div>
                     <div class="nav-item">
                         {% if user.user_type == "consumer" %}
-                            <span class="nav-link active border-bottom border-top rounded-0 text-bg-info fs-3 m-0">{{ reservation_streak }}</span>
+                            <span id="streak-count" class="nav-link active rounded-0 text-bg-info m-0">{{ reservation_streak }}</span>
                         {% endif %}
                     </div>
 
