@@ -1,9 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from main.models import Bundle_posting, Bundle_posting_category, Consumer, Seller
+from main.models import Bundle_posting, Bundle_posting_category, Consumer, Reservation, Seller
 from django.utils import timezone
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
+from django.db.models import Count, Q, F
 
 User = get_user_model()
 
@@ -48,64 +49,79 @@ class TestBundlesView(TestCase):
             closing_time="18:00",
             telephone_number="0123456789",
             website_url="https://example.com"
+            wheelchair=True,
         )
 
         # Create bundles
+
+        # Active bundle
         self.bundle_posting1 = Bundle_posting.objects.create(
             seller=self.seller,
-            category="B&P",
+            category = Bundle_posting_category.objects.get(name="Bread & Pastries"),
             name="Test Bundle",
             contents_description="Bread",
             quantity=5,
             price=2.00,
-            creation_time=timezone.make_aware(datetime(2026, 1, 1, 12, 0)),
-            pickup_window_start=time(17, 0),
-            pickup_window_end=time(18, 0),
+            creation_time=timezone.now(),
+            pickup_window_start=time(0, 0),
+            pickup_window_end=time(23, 59),
             allergen_gluten=True,
         )
 
+        # Expired bundle
         self.bundle_posting2 = Bundle_posting.objects.create(
             seller=self.seller,
-            category="M",
+            category = Bundle_posting_category.objects.get(name="Meals"),
             name="Test Bundle 2",
             contents_description="Peanut Sauce Chicken Curry with Rice",
             quantity=5,
             price=2.00,
-            creation_time=timezone.make_aware(datetime(2026, 1, 1, 12, 0)),
-            pickup_window_start=time(17, 0),
-            pickup_window_end=time(18, 0),
+            creation_time=timezone.now() - timedelta(days=1),
+            pickup_window_start=time(0, 0),
+            pickup_window_end=time(0, 0),
             allergen_dairy=True,
             allergen_nut=True,
             allergen_peanut=True,
         )
 
+        # Inactive bundle (fully collected)
         self.bundle_posting3 = Bundle_posting.objects.create(
             seller=self.seller,
             category="G",
             name="Test Bundle 3",
             contents_description="Fruit and Veg Bundle",
-            quantity=5,
+            quantity=1,
             price=2.00,
-            creation_time=timezone.make_aware(datetime(2026, 1, 1, 12, 0)),
+            creation_time=timezone.now(),
             pickup_window_start=time(17, 0),
-            pickup_window_end=time(18, 0),
-            # no allergens
+            pickup_window_end=time(23, 59),
+        )
+        Reservation.objects.create(
+            posting=self.bundle_posting3,
+            consumer=self.consumer_profile,
+            is_collected=True,
         )
 
-    # currently failing
-    # but, currently, bundles_view has no logic to filter out expired bundles
+    # Default behaviour 
+
     def test_consumer_sees_only_active_bundles(self):
         self.client.login(username="consumer1", password="consumerpass")
         response = self.client.get(reverse("bundles_view_url"))
-
         posts = response.context["posts"]
 
-        # expired bundle should NOT be included
-        self.assertNotIn(self.status == "E", posts)
+        self.assertIn(self.bundle_posting1, posts)   # active
+        self.assertNotIn(self.bundle_posting2, posts)  # expired
+        self.assertNotIn(self.bundle_posting3, posts)  # inactive
 
-        # active bundles should be included
+    def test_seller_sees_all_bundles(self):
+        self.client.login(username="seller1", password="pass123")
+        response = self.client.get(reverse("bundles_view_url"))
+        posts = response.context["posts"]
+
         self.assertIn(self.bundle_posting1, posts)
         self.assertIn(self.bundle_posting2, posts)
+        self.assertIn(self.bundle_posting3, posts)
+
 
 
 
