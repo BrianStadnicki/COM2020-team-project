@@ -191,6 +191,8 @@ def bundle_view(request, id):
                 action.save()
                 messages.success(request, "Action saved!")
                 return redirect("bundle_view_url", id=post.id) #type: ignore
+            else:
+                messages.info(request, "Invalid action")
 
     if request.user.user_type == "consumer":
         reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
@@ -340,6 +342,8 @@ def analytics_view(request):
             action.seller = Seller.objects.get(user=request.user)
             action.save()
             messages.success(request, "Action saved!")
+        else:
+            messages.info(request, "Action form invalid")
 
     return render(
         request,
