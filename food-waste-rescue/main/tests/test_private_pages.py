@@ -389,7 +389,7 @@ class testSellerAndConsumerPages(TestCase):
     #currently failing: AssertionError: 200 != 403
     def test_bundle_view_non_owner_seller(self):
         other_user = User.objects.create_user(
-            username="other_seller", password="pass", user_type="seller"
+            username="other_seller", email="otherseller@gmail.com", password="pass", user_type="seller"
         )
         other_profile = Seller.objects.create(user=other_user, location="X", opening_time="09:00", closing_time="17:00", telephone_number="0", website_url="https://x")
         self.client.login(username="other_seller", password="pass")

@@ -138,8 +138,8 @@ def bundle_view(request, id):
     post = get_object_or_404(Bundle_posting, pk=id)
 
     # Sellers without a Seller profile cannot view bundles
-    if not hasattr(request.user, "consumer") and not hasattr(request.user, "seller"):
-        return redirect("seller-extra")
+    if request.user.user_type == "seller" and not Seller.objects.filter(user=request.user).exists():
+        return redirect("seller_profile_view_url")
 
     # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
     is_seller = (request.user.user_type == "seller") and (
