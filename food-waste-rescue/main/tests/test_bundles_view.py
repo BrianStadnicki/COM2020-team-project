@@ -114,15 +114,19 @@ class TestBundlesView(TestCase):
         self.assertNotIn(self.bundle_posting2, posts)  # expired
         self.assertNotIn(self.bundle_posting3, posts)  # inactive
 
-    # failing
-    def test_seller_sees_all_bundles(self):
+    def test_seller_sees_only_active_bundles_by_default(self):
         self.client.login(username="seller1", password="pass123")
         response = self.client.get(reverse("bundles_view_url"))
         posts = response.context["posts"]
 
+        # Active bundle should be visible
         self.assertIn(self.bundle_posting1, posts)
-        self.assertIn(self.bundle_posting2, posts)
-        self.assertIn(self.bundle_posting3, posts)
+
+        # Expired bundle should NOT be visible by default
+        self.assertNotIn(self.bundle_posting2, posts)
+
+        # Inactive bundle should NOT be visible by default
+        self.assertNotIn(self.bundle_posting3, posts)
 
     # filters
 
