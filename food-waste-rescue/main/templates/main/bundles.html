@@ -110,7 +110,7 @@
                                         <p>{{post.category.name}}</p>
                                         <p>£{{post.price}}</p>
                                         <p>{{post.creation_time.date}}</p>
-                                        <!--<p>{{post.status_str}}</p>-->
+                                        <p>Status: {% if post.status_str == "Reserved" and post.available != 0 %}Available{% else %}{{post.status_str}}{% endif %}</p>
                                     </div>
                                     <div class="col">
                                         <p>{{post.seller.location}}</p>
