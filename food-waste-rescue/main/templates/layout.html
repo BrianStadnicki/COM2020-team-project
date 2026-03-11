@@ -35,49 +35,44 @@
     <div class="row">
         <div class="col-md-1 row-sm">
             <div id="navbar-container" class="d-flex flex-row bg-primary">
-                <ul id="navbar-list" class="d-flex nav nav-pills nav-flush flex-row text-center">
-                    <li class="nav-item mb-auto">
-                        <a class="nav-link active py-3 border-bottom rounded-0" href="/accounts/login">
+                <ul id="navbar-list" class="d-flex nav nav-pills nav-flush text-center">
+                    <li class="nav-item">
+                        <a class="nav-link active border-bottom rounded-0" href="/accounts/login">
                             <i class="bi bi-person-circle navbar-icon" title="Profile"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'bundles_view_url'%}">
+                    <li class="nav-item mt-auto mb-auto">
+                        <a class="nav-link active border-top border-bottom rounded-0" href="{% url 'bundles_view_url'%}">
                             <i class="bi bi-house-fill navbar-icon" title="Main"></i>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active py-3 border-bottom rounded-0"  href="{% url 'reservations_view_url'%}">
+                        <a class="nav-link active border-top border-bottom rounded-0"  href="{% url 'reservations_view_url'%}">
                             <i class="bi bi-basket navbar-icon" title="Reservations"></i>
                         </a>
-                    </li>
-                    {% if user.user_type == "consumer" %}
-                        <li class="nav-item">
-                            <a class="nav-link active py-3 border-bottom rounded-0" href="{% url 'impact_view_url'%}">
+                        {% if user.user_type == "consumer" %}
+                            <a class="nav-link active border-top border-bottom rounded-0" href="{% url 'impact_view_url'%}">
                                 <i class="bi bi-leaf navbar-icon" title="Impact"></i>
                             </a>
-                        </li>
-                    {% endif %}
-                    {% if user.user_type == "seller" %}
-                        <li class="nav-item">
-                            <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'analytics_view_url'%}">
+                        {% endif %}
+                        {% if user.user_type == "seller" %}
+                            <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'analytics_view_url'%}">
                                 <i class="bi bi-graph-up navbar-icon" title="Analytics"></i>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'action_view_url' %}">
+                            <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'action_view_url' %}">
                                 <i class="bi bi-tools navbar-icon" title="Actions"></i>
                             </a>
-                        </li>
-                    {% endif %}
+                        {% endif %}
+                    </li>
+                    
                     <li class="nav-item mt-auto">
-                        <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'reports_view_url' %}">
+                        <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'reports_view_url' %}">
                             <i class="bi bi-exclamation-circle navbar-icon" title="Report"></i>
                         </a>
+                        {% if user.user_type == "consumer" %}
+                            <span class="nav-link active border-bottom border-top rounded-0 text-bg-info fs-3 m-0">{{ reservation_streak }}</span>
+                        {% endif %}
                     </li>
-                    {% if user.user_type == "consumer" %}
-                        <span class="badge text-bg-info fs-3">{{ reservation_streak }}</span>
-                    {% endif %}
+
+                    
                 </ul>
             </div>
         </div>
