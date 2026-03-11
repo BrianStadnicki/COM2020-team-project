@@ -12,13 +12,12 @@
             font-size:0.8rem;
         }
 
-        #main-content {
-            margin-top: 100px;
-        }
-
         @media (min-width: 768px) {
             #navbar-container {
                 width: min-content;
+                position: fixed;
+                left: 0px;
+                right: 0px;
             }
 
             #navbar-list {
@@ -28,17 +27,13 @@
             .navbar-icon {
                 font-size: 2rem;
             }
-
-            .main-content {
-               margin-top: 0px;
-            }
         }
     </style>
     <title>Food Waste Rescue</title>
 </head>
-<body class="container-fluid">
-    <div class="">
-        <div class="col-md-1 fixed-top">
+<body class="container-fluid p-0">
+    <div class="row">
+        <div class="col-md-1 row-sm">
             <div id="navbar-container" class="d-flex flex-row bg-primary">
                 <ul id="navbar-list" class="d-flex nav nav-pills nav-flush flex-row text-center">
                     <li class="nav-item mb-auto">
@@ -87,7 +82,7 @@
             </div>
         </div>
 
-        <div id="main-content" class="col py-3 mt-sm-5">
+        <div id="main-content" class="col-md-11 row-sm-12 py-3">
             <div class="container">
                 {% if messages %}
                     <ul class="messages">
