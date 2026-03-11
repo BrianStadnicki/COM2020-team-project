@@ -48,7 +48,7 @@ class TestBundlesView(TestCase):
             opening_time="09:00",
             closing_time="18:00",
             telephone_number="0123456789",
-            website_url="https://example.com"
+            website_url="https://example.com",
             wheelchair=True,
         )
 
@@ -87,7 +87,7 @@ class TestBundlesView(TestCase):
         # Inactive bundle (fully collected)
         self.bundle_posting3 = Bundle_posting.objects.create(
             seller=self.seller,
-            category="G",
+            category = Bundle_posting_category.objects.get(name="Groceries"),
             name="Test Bundle 3",
             contents_description="Fruit and Veg Bundle",
             quantity=1,
@@ -104,6 +104,7 @@ class TestBundlesView(TestCase):
 
     # Default behaviour 
 
+    # passes
     def test_consumer_sees_only_active_bundles(self):
         self.client.login(username="consumer1", password="consumerpass")
         response = self.client.get(reverse("bundles_view_url"))
@@ -113,6 +114,7 @@ class TestBundlesView(TestCase):
         self.assertNotIn(self.bundle_posting2, posts)  # expired
         self.assertNotIn(self.bundle_posting3, posts)  # inactive
 
+    # failing
     def test_seller_sees_all_bundles(self):
         self.client.login(username="seller1", password="pass123")
         response = self.client.get(reverse("bundles_view_url"))
@@ -121,6 +123,16 @@ class TestBundlesView(TestCase):
         self.assertIn(self.bundle_posting1, posts)
         self.assertIn(self.bundle_posting2, posts)
         self.assertIn(self.bundle_posting3, posts)
+
+    # filters
+
+    # passes
+    def test_filter_show_expired(self):
+        self.client.login(username="consumer1", password="consumerpass")
+        response = self.client.get(reverse("bundles_view_url") + "?show-expired=1")
+        posts = response.context["posts"]
+
+        self.assertIn(self.bundle_posting2, posts)
 
 
 
