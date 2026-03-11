@@ -84,6 +84,32 @@ def bundles_view(request):
     posts = posts.order_by("-creation_time")
     posts = posts.all()
 
+    matched_reservation = None
+    error = None
+
+    if request.method == "POST":
+        form = ReservationForm(request.POST)
+        
+        if form.data["submit"] == "validate_code":
+            c_code = request.POST.get("claim_code").strip()
+            
+            if c_code == "":
+                error = "A claim code needs to be entered"
+                
+            elif not c_code.isdigit():
+                error = "Claim code needs to be a number"
+            
+            else:
+                matched_reservation = Reservation.objects.filter(claim_code=c_code, posting__in=posts).first()
+                
+                if not matched_reservation:
+                    error = "Invalid claim code"
+        elif form.data["submit"] == "Collected?":
+            reservation = Reservation.objects.get(id=int(form.data["id"]))
+            reservation.is_collected = True
+            reservation.save()
+
+
     return render(
         request,
         "main/bundles.html",
@@ -94,6 +120,8 @@ def bundles_view(request):
             "selected_category": selected_category,
             "selected_allergens": selected_allergens,
             "selected-location": location,
+            "matched_reservation": matched_reservation,
+            "error": error
         },
     )
 
@@ -119,8 +147,27 @@ def bundle_view(request, id):
     )
     is_today = post.creation_time.date() == datetime.datetime.today().date()
 
+    matched_reservation = None
+    error = None
+
     if request.method == "POST":
-        if "submit_res" in request.POST:
+            
+        if "submit_code" in request.POST:
+            form = ReservationForm(request.POST)
+            
+            if form.data["submit_code"] == "validate_code":
+                c_code = request.POST.get("claim_code").strip()
+                
+                if c_code == "":
+                    error = "A claim code needs to be entered"
+                elif not c_code.isdigit():
+                    error = "Claim code needs to be a number"
+                else:
+                    matched_reservation = Reservation.objects.filter(claim_code=c_code).first()
+                    if not matched_reservation:
+                        error = "Invalid claim code"
+                        
+        elif "submit_res" in request.POST:
             form = ReservationForm(request.POST)
 
             # Consumer makes a reservation
@@ -138,6 +185,7 @@ def bundle_view(request, id):
                 reservation = Reservation.objects.get(id=int(form.data["id"]))
                 reservation.is_collected = True
                 reservation.save()
+                
         elif "submit_action" in request.POST:
             form = ActionFormBundle(request.POST)
             if form.is_valid():
@@ -145,7 +193,10 @@ def bundle_view(request, id):
                 action.seller = Seller.objects.get(user=request.user)
                 action.category = post.category
                 action.save()
-                return redirect("bundle_view_url", id=post.id)
+                messages.success(request, "Action saved!")
+                return redirect("bundle_view_url", id=post.id) #type: ignore
+            else:
+                messages.info(request, "Invalid action")
 
     if request.user.user_type == "consumer":
         reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
@@ -163,6 +214,8 @@ def bundle_view(request, id):
             "reservations": reservations,
             "is_seller": is_seller,
             "is_today": is_today,
+            "matched_reservation": matched_reservation,
+            "error": error,
             "types": Seller_actions.TYPES
         },
     )
@@ -293,6 +346,8 @@ def analytics_view(request):
             action.seller = Seller.objects.get(user=request.user)
             action.save()
             messages.success(request, "Action saved!")
+        else:
+            messages.info(request, "Action form invalid")
 
     return render(
         request,
