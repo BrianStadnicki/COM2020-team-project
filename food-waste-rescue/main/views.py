@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Count, F
 from .forms import (
     ReservationForm,
     SellerExtraForm,
@@ -66,6 +66,8 @@ def bundles_view(request):
     
     selected_allergens = request.GET.getlist("excluded-allergens")
     selected_wheelchair = request.GET.get("wheelchair")
+    selected_inactive = request.GET.get("show-inactive")
+    selected_expired = request.GET.get("show-expired")
 
     if selected_category_id != "":
         selected_category = Bundle_posting_category.objects.get(id=selected_category_id)
@@ -73,6 +75,20 @@ def bundles_view(request):
 
     if selected_wheelchair:
         posts = posts.filter(seller__wheelchair=True)
+
+    hidden_posts = posts.none()
+
+    annotated_posts = posts.annotate(collected_count=Count("reservation", filter=Q(reservation__is_collected=True)))
+
+    if not selected_inactive:
+        hidden_posts |= annotated_posts.filter(collected_count=F("quantity"))
+
+    if not selected_expired:
+        hidden_posts |= annotated_posts.exclude(collected_count=F("quantity")
+        ).exclude(creation_time__date=datetime.datetime.today().date(),
+            pickup_window_end__gt=datetime.datetime.today().time())
+
+    posts = posts.exclude(id__in=hidden_posts.values("id"))
 
     if selected_allergens:
         q = Q()
@@ -119,9 +135,12 @@ def bundles_view(request):
             "allergens": ALLERGENS,
             "selected_category": selected_category,
             "selected_allergens": selected_allergens,
-            "selected-location": location,
+            "selected_location": location,
             "matched_reservation": matched_reservation,
-            "error": error
+            "error": error,
+            "selected_wheelchair": selected_wheelchair,
+            "selected_expired": selected_expired,
+            "selected_inactive": selected_inactive
         },
     )
 
@@ -291,11 +310,6 @@ def reservations_view(request):
         # Get reservations related to seller
         reservations = Reservation.objects.filter(posting__seller=request.user.seller)
 
-    location = request.GET.get("location", "")
-
-    if request.user.user_type != "seller" and location:
-        reservations = reservations.filter(seller__location__icontains=location)
-
     reservations = reservations.order_by("-time_stamp")
     reservations = reservations.all()
 
@@ -304,7 +318,6 @@ def reservations_view(request):
         "main/reservations.html",
         {
             "reservations": reservations,
-            "selected-location": location
         },
     )
 

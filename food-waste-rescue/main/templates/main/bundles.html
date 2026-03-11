@@ -41,9 +41,19 @@
                         {% endfor %}
                         <p class="mt-3">Wheelchair</p>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="wheelchair"
-                            value=True  id="a{{ forloop.counter }}" >
-                            <label class="form-check-label" {% if selected_wheelchair %}checked{% endif %}>Wheelchair accessible</label>
+                            <input class="form-check-input" type="checkbox" name="wheelchair" value=True {% if selected_wheelchair %}checked{% endif %}>
+                            <label class="form-check-label">Wheelchair accessible</label>
+                        </div>
+                        <p class="mt-3">Show Bundles</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="show-inactive"
+                            value="True" {% if selected_inactive %}checked{% endif %}>
+                            <label class="form-check-label">Show Inactive</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="show-expired"
+                            value="True" {% if selected_expired %}checked{% endif %}>
+                            <label class="form-check-label">Show Expired</label>
                         </div>
                         <!-- Location filter - only visible to Consumers -->
                         {% if request.user.user_type == "consumer" %}
@@ -100,7 +110,7 @@
                                         <p>{{post.category.name}}</p>
                                         <p>£{{post.price}}</p>
                                         <p>{{post.creation_time.date}}</p>
-                                        <p>{{post.status_str}}</p>
+                                        <p>Status: {% if post.status_str == "Reserved" and post.available != 0 %}Available{% else %}{{post.status_str}}{% endif %}</p>
                                     </div>
                                     <div class="col">
                                         <p>{{post.seller.location}}</p>
