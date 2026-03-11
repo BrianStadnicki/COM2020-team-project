@@ -9,23 +9,34 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
         .navbar-icon {
-            font-size:0.8rem;
+            font-size: 10vw;
         }
 
-        @media (min-width: 768px) {
+        #navbar-list {
+            flex-direction: row;
+            width: 100vh;
+        }
+
+        #navbar-container {
+            width: 100vh;
+        }
+
+        @media (min-width: 576px) {
             #navbar-container {
-                width: min-content;
+                width: 50px;
                 position: fixed;
                 left: 0px;
                 right: 0px;
             }
 
             #navbar-list {
-                height: 100vh
+                height: 100vh;
+                flex-direction: column;
+                width: 100%;
             }
 
             .navbar-icon {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
         }
     </style>
@@ -34,46 +45,56 @@
 <body class="container-fluid p-0">
     <div class="row">
         <div class="col-md-1 row-sm">
-            <div id="navbar-container" class="d-flex flex-row bg-primary">
-                <ul id="navbar-list" class="d-flex nav nav-pills nav-flush text-center">
-                    <li class="nav-item">
+            <div id="navbar-container" class="bg-primary">
+                <div id="navbar-list" class="d-flex text-center">
+                    <div class="nav-item flex-sm-fill">
                         <a class="nav-link active border-bottom rounded-0" href="/accounts/login">
                             <i class="bi bi-person-circle navbar-icon" title="Profile"></i>
                         </a>
-                    </li>
-                    <li class="nav-item mt-auto mb-auto">
+                    </div>
+                    <div class="nav-item">
                         <a class="nav-link active border-top border-bottom rounded-0" href="{% url 'bundles_view_url'%}">
                             <i class="bi bi-house-fill navbar-icon" title="Main"></i>
                         </a>
+                    </div>
+                    <div class="nav-item">
                         <a class="nav-link active border-top border-bottom rounded-0"  href="{% url 'reservations_view_url'%}">
                             <i class="bi bi-basket navbar-icon" title="Reservations"></i>
                         </a>
-                        {% if user.user_type == "consumer" %}
+                    </div>
+                    {% if user.user_type == "consumer" %}
+                        <div class="nav-item">
                             <a class="nav-link active border-top border-bottom rounded-0" href="{% url 'impact_view_url'%}">
                                 <i class="bi bi-leaf navbar-icon" title="Impact"></i>
                             </a>
-                        {% endif %}
-                        {% if user.user_type == "seller" %}
+                        </div>
+                    {% endif %}
+                    {% if user.user_type == "seller" %}
+                        <div class="nav-item">
                             <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'analytics_view_url'%}">
                                 <i class="bi bi-graph-up navbar-icon" title="Analytics"></i>
                             </a>
+                        </div>
+                        <div class="nav-item">
                             <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'action_view_url' %}">
                                 <i class="bi bi-tools navbar-icon" title="Actions"></i>
                             </a>
-                        {% endif %}
-                    </li>
+                        </div>
+                    {% endif %}
                     
-                    <li class="nav-item mt-auto">
+                    <div class="nav-item align-content-end flex-sm-grow-1">
                         <a class="nav-link active border-bottom border-top rounded-0" href="{% url 'reports_view_url' %}">
                             <i class="bi bi-exclamation-circle navbar-icon" title="Report"></i>
                         </a>
+                    </div>
+                    <div class="nav-item">
                         {% if user.user_type == "consumer" %}
                             <span class="nav-link active border-bottom border-top rounded-0 text-bg-info fs-3 m-0">{{ reservation_streak }}</span>
                         {% endif %}
-                    </li>
+                    </div>
 
                     
-                </ul>
+                </div>
             </div>
         </div>
 
