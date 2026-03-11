@@ -165,6 +165,45 @@ class TestBundlesView(TestCase):
         posts = response.context["posts"]
         self.assertIn(self.bundle_posting1, posts)
 
+    # post actions
+    def test_validate_claim_code_success(self):
+        reservation = Reservation.objects.create(
+            posting=self.bundle_posting1,
+            consumer=self.consumer_profile,
+        )
+        reservation.claim_code_generator()
+        self.client.login(username="consumer1", password="consumerpass")
+        response = self.client.post(
+            reverse("bundles_view_url"),
+            {"submit": "validate_code", "claim_code": reservation.claim_code},
+        )
+        self.assertEqual(response.context["matched_reservation"], reservation)
+        self.assertIsNone(response.context["error"])
+
+    def test_validate_claim_code_invalid(self):
+        self.client.login(username="consumer1", password="consumerpass")
+        response = self.client.post(
+            reverse("bundles_view_url"),
+            {"submit": "validate_code", "claim_code": "999999"},
+        )
+
+        self.assertEqual(response.context["error"], "Invalid claim code")
+
+    def test_seller_marks_reservation_collected(self):
+        reservation = Reservation.objects.create(
+            posting=self.bundle_posting1,
+            consumer=self.consumer_profile,
+        )
+
+        self.client.login(username="seller1", password="pass123")
+        self.client.post(
+            reverse("bundles_view_url"),
+            {"submit": "Collected?", "id": reservation.id},
+        )
+
+        reservation.refresh_from_db()
+        self.assertTrue(reservation.is_collected)
+
 
 
 
