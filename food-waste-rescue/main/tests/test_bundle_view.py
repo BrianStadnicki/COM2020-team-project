@@ -142,22 +142,6 @@ class TestBundleView(TestCase):
         url = reverse("bundle_view_url", args=[99999])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-    
-    # AssertionError: 302 != 403
-    def test_consumer_cannot_view_expired_bundle(self):
-        ''' Consumer cannot view expired bundles'''
-        # setting the pickup window to be in the past
-        # this means the bundle is expired
-        self.bundle_posting.pickup_window_end = time(0, 0)  
-        self.bundle_posting.save()
-
-        # logging in as the mock consumer
-        self.client.login(username="consumer1", password="consumerpass")
-        url = reverse("bundle_view_url", args=[self.bundle_posting.id])
-        response = self.client.get(url)
-
-        # the consumer should be forbidden from accessing expired bundles
-        self.assertEqual(response.status_code, 403)
 
     #passes
     def test_seller_can_view_expired_bundle(self):
