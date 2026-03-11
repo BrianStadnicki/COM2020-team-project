@@ -135,8 +135,36 @@ class TestBundlesView(TestCase):
         self.client.login(username="consumer1", password="consumerpass")
         response = self.client.get(reverse("bundles_view_url") + "?show-expired=1")
         posts = response.context["posts"]
-
         self.assertIn(self.bundle_posting2, posts)
+
+    def test_filter_show_inactive(self):
+        """Inactive bundles appear when ?show-inactive=1 is used."""
+        self.client.login(username="seller1", password="pass123")
+        response = self.client.get(reverse("bundles_view_url") + "?show-inactive=1")
+        posts = response.context["posts"]
+        self.assertIn(self.bundle_posting3, posts)
+
+    def test_filter_by_location(self):
+        """Location filter should match seller location."""
+        self.client.login(username="consumer1", password="consumerpass")
+        response = self.client.get(reverse("bundles_view_url") + "?location=Test")
+        posts = response.context["posts"]
+        self.assertIn(self.bundle_posting1, posts)
+
+    def test_filter_excluded_allergens(self):
+        """Bundles containing excluded allergens should be removed."""
+        self.client.login(username="consumer1", password="consumerpass")
+        response = self.client.get(reverse("bundles_view_url") + "?excluded-allergens=gluten")
+        posts = response.context["posts"]
+        self.assertNotIn(self.bundle_posting1, posts)  # contains gluten
+
+    def test_filter_wheelchair_accessible(self):
+        """Wheelchair filter should show only accessible sellers."""
+        self.client.login(username="consumer1", password="consumerpass")
+        response = self.client.get(reverse("bundles_view_url") + "?wheelchair=1")
+        posts = response.context["posts"]
+        self.assertIn(self.bundle_posting1, posts)
+
 
 
 
