@@ -306,11 +306,6 @@ def reservations_view(request):
         # Get reservations related to seller
         reservations = Reservation.objects.filter(posting__seller=request.user.seller)
 
-    location = request.GET.get("location", "")
-
-    if request.user.user_type != "seller" and location:
-        reservations = reservations.filter(seller__location__icontains=location)
-
     reservations = reservations.order_by("-time_stamp")
     reservations = reservations.all()
 
@@ -319,7 +314,6 @@ def reservations_view(request):
         "main/reservations.html",
         {
             "reservations": reservations,
-            "selected-location": location
         },
     )
 
