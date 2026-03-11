@@ -138,7 +138,7 @@ def bundles_view(request):
             "selected_allergens": selected_allergens,
             "selected_location": location,
             "matched_reservation": matched_reservation,
-            "error": error
+            "error": error,
             "selected_wheelchair": selected_wheelchair,
             "selected_expired": selected_expired,
             "selected_inactive": selected_inactive
