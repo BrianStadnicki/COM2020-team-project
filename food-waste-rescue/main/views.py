@@ -92,19 +92,24 @@ def bundles_view(request):
         form = ReservationForm(request.POST)
         
         if form.data["submit"] == "validate_code":
-                c_code = request.POST.get("claim_code").strip()
+            c_code = request.POST.get("claim_code").strip()
+            
+            if c_code == "":
+                error = "A claim code needs to be entered"
                 
-                if c_code == "":
-                    error = "A claim code needs to be entered"
-                    
-                elif not c_code.isdigit():
-                    error = "Claim code needs to be a number"
+            elif not c_code.isdigit():
+                error = "Claim code needs to be a number"
+            
+            else:
+                matched_reservation = Reservation.objects.filter(claim_code=c_code, posting__in=posts).first()
                 
-                else:
-                    matched_reservation = Reservation.objects.filter(claim_code=c_code, posting__in=posts).first()
-                    
-                    if not matched_reservation:
-                        error = "Invalid claim code"
+                if not matched_reservation:
+                    error = "Invalid claim code"
+        elif form.data["submit"] == "Collected?":
+            reservation = Reservation.objects.get(id=int(form.data["id"]))
+            reservation.is_collected = True
+            reservation.save()
+
 
     return render(
         request,
