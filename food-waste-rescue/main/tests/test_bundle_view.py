@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from main.models import Bundle_posting, Bundle_posting_category, Seller
+from main.models import Bundle_posting, Bundle_posting_category, Consumer, Seller
 from django.utils import timezone
 from datetime import datetime, time
 
@@ -30,6 +30,9 @@ class TestBundleView(TestCase):
             user_type="consumer",
         )
 
+        # Create consumer profile
+        Consumer.objects.create(user=self.consumer_user)
+
         # Create seller user
         self.user = User.objects.create_user(
             username="seller1",
@@ -51,7 +54,7 @@ class TestBundleView(TestCase):
         # Create Bundle_posting
         self.bundle_posting = Bundle_posting.objects.create(
             seller = self.seller, 
-            category = "B&P",
+            category = Bundle_posting_category.objects.get(name="Bread & Pastries"),
             name = "Test Bundle",
             contents_description = "Bread",
             quantity = 5,

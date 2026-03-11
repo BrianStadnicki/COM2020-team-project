@@ -2,7 +2,7 @@ from datetime import time
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from main.models import Bundle_posting, Bundle_posting_category, Consumer, IssueReport, Seller
+from main.models import Bundle_posting, Bundle_posting_category, Consumer, IssueReport, Reservation, Seller
 
 User = get_user_model()
 
@@ -593,6 +593,7 @@ class testSellerAndConsumerPages(TestCase):
 
     # Need to implement the logic for this
 
+    # passes
     def test_reservations_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("reservations_view_url")
@@ -600,19 +601,41 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
-    def test_reservations_view_allows_consumer(self):
-        """Consumers should get 200 OK"""
-        self.client.login(username="consumer2", password="consumerpass2")
+    #passes
+    def test_reservations_view_shows_consumer_reservations(self):
+        # Create a reservation for the consumer
+        res = Reservation.objects.create(
+            posting=self.bundle_posting,
+            consumer=self.consumer_profile
+        )
+
+        self.client.login(username="test_consumer2", password="consumerpass2")
         url = reverse("reservations_view_url")
         response = self.client.get(url)
+
         self.assertEqual(response.status_code, 200)
 
-    def test_reservations_view_allows_seller(self):
-        """Sellers shoud get 200 OK"""
-        self.client.login(username="seller2", password="sellerpass2")
+        reservations = response.context["reservations"]
+        self.assertIn(res, reservations)
+        self.assertEqual(len(reservations), 1)
+    
+    # passes
+    def test_reservations_view_shows_seller_reservations(self):
+    # Create a reservation for the seller's bundle
+        res = Reservation.objects.create(
+            posting=self.bundle_posting,
+            consumer=self.consumer_profile
+        )
+
+        self.client.login(username="test_seller2", password="sellerpass2")
         url = reverse("reservations_view_url")
         response = self.client.get(url)
+
         self.assertEqual(response.status_code, 200)
+
+        reservations = response.context["reservations"]
+        self.assertIn(res, reservations)
+        self.assertEqual(len(reservations), 1)
 
     # ---------------------------------------------------------------------------
 
