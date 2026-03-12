@@ -273,7 +273,6 @@ def analytics_view(request):
         raise PermissionDenied
 
     seller = getattr(request, "user", None).seller
-
     sell_through = get_sell_through(seller)
     waste_proxy = get_waste_proxy(seller)
     best_pickup = get_best_pickup(seller)
@@ -405,9 +404,30 @@ def impact_view(request):
 
     consumer = getattr(request, "user", None).consumer
 
+    Reservations = Reservation.objects.filter(consumer=consumer, is_collected=True).values_list("posting",flat=True)
+    totalCo2 =0
+    
+
+    for i in Reservations:
+        bundle = Bundle_posting.objects.values_list("category",flat=True).get(id=i)
+        category= Bundle_posting_category.objects.values_list("name").get(id=bundle)[0]
+        if category == "Meals":
+            totalCo2 += 1
+        if category == "Bread & Pastries":
+            totalCo2 += 1
+        if category == "Groceries":
+            totalCo2 += 1
+        if category == "Flowers & Plants":
+            totalCo2 += 1
+        if category == "Pet Food":
+            totalCo2 += 1
+        if category == "Vegetarian":
+            totalCo2 += 1
+        if category == "Vegan":
+            totalCo2 += 1
     badges = get_badges(consumer)
 
-    return render(request, "main/impact.html", {"badges": badges})
+    return render(request, "main/impact.html", {"badges": badges,"CO2Saved": totalCo2})
 
 @login_required
 def action_view(request):
