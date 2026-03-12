@@ -7,7 +7,6 @@
     (async function() {
     
     let data = JSON.parse("{{ sell_through_price | escapejs }}");
-    console.log(data);
 
     new Chart(
         document.getElementById('sell-through-graph'),
@@ -20,6 +19,7 @@
                     display: true,
                     text: "Sell through rate by price point"
                 },
+                maintainAspectRatio: 1
             },
             scales: {
                 x: {
@@ -213,8 +213,10 @@
         </div>
     </div>
 
-    <div class="row mt-3" style="width: 1000px;">
-        <canvas id="sell-through-graph"></canvas>
+    <div class="row mt-3">
+        <div class="position-relative" style="width:70vw; height: 40vw;">
+            <canvas id="sell-through-graph"></canvas>
+        </div>
     </div>
 
     <div class="row mt-3">
