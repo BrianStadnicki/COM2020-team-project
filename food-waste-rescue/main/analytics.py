@@ -56,6 +56,30 @@ def get_waste_proxy(seller):
         "week": "{0:.2f}".format(week * BUNDLE_WEIGHT),
     }
 
+def get_estimated_co2(consumer):
+    reservations = Reservation.objects.filter(consumer=consumer, is_collected=True).all()
+
+    co2 = 0
+
+    for reservation in reservations:
+        match reservation.posting.category.name:
+            case "Meals":
+                co2 += 1
+            case "Bread & Pastries":
+                co2 += 2
+            case "Groceries":
+                co2 += 3
+            case "Flowers & Plants":
+                co2 += 4
+            case "Pet Food":
+                co2 += 5
+            case "Vegetarian":
+                co2 += 6
+            case "Vegan":
+                co2 += 7
+    
+    return co2
+
 
 def get_best_pickup(seller):
     window_counter = Counter()

@@ -21,6 +21,7 @@ import datetime
 from .analytics import (
     get_best_categories,
     get_best_pickup,
+    get_estimated_co2,
     get_sell_through,
     get_waste_proxy,
 )
@@ -485,8 +486,9 @@ def impact_view(request):
     consumer = getattr(request, "user", None).consumer
 
     badges = get_badges(consumer)
+    co2_saved = get_estimated_co2(consumer)
 
-    return render(request, "main/impact.html", {"badges": badges})
+    return render(request, "main/impact.html", {"badges": badges, "co2_saved": co2_saved})
 
 @login_required
 def action_view(request):
