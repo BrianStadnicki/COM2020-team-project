@@ -487,8 +487,9 @@ def impact_view(request):
 
     badges = get_badges(consumer)
     co2_saved = get_estimated_co2(consumer)
+    bundles = Reservation.objects.filter(consumer=consumer).count()
 
-    return render(request, "main/impact.html", {"badges": badges, "co2_saved": co2_saved})
+    return render(request, "main/impact.html", {"badges": badges, "co2_saved": co2_saved, "bundles": bundles})
 
 @login_required
 def action_view(request):
