@@ -319,17 +319,6 @@ def reservations_view(request):
 
 
 """
-Consumer: Show own reservation with bundle details
-Seller: Show own reservation with bundle details
-"""
-
-
-@login_required
-def reservation_view(request, id):
-    return render(request, "main/reservation.html")
-
-
-"""
 Seller: Show analytics
 """
 
@@ -489,17 +478,6 @@ def action_view(request):
     actions = Seller_actions.objects.filter(seller=seller).order_by("-time_stamp")
 
     return render(request, "main/actions.html", {"actions":actions})
-
-"""
-Consumer: View/Change accessibility settings
-Seller: View/Change accessibility settings
-"""
-
-
-@login_required
-def accessibility_view(request):
-    return render(request, "main/accessibility.html")
-
 
 def seller_profile(request):
     if request.user.user_type != "seller":
