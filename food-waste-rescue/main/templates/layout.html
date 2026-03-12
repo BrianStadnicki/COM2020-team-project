@@ -92,6 +92,11 @@
                         </a>
                     </div>
                     <div class="nav-item">
+                        <a class="nav-link active py-3 border-bottom border-top rounded-0" href="{% url 'tos_url' %}">
+                            <i class="bi bi-journal-text" style="font-size: 2rem;" title="Terms of Service"></i>
+                        </a>
+                    </div>
+                    <div class="nav-item">
                         {% if user.user_type == "consumer" %}
                             <span id="streak-count" class="nav-link active rounded-0 text-bg-info m-0">{{ reservation_streak }}</span>
                         {% endif %}
