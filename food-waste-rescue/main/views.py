@@ -162,6 +162,9 @@ def bundle_view(request, id):
     )
     is_today = post.creation_time.date() == datetime.datetime.today().date()
 
+    if request.user.user_type == "seller" and post.seller.user != request.user:
+        raise PermissionDenied
+
     matched_reservation = None
     error = None
 
