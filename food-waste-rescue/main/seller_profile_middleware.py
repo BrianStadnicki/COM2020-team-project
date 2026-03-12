@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from django.urls import reverse
 from main.views import seller_profile
 
 
@@ -14,7 +15,8 @@ class SellerProfileMiddleware:
         if request.user.is_authenticated:
             if request.user.user_type == "seller":
                 if not hasattr(request.user, "seller"):
-                    return seller_profile(request)
+                    if request.path != reverse("seller_profile_view_url"):
+                        return redirect("seller_profile_view_url")
 
         response = self.get_response(request)
 
