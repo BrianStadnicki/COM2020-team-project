@@ -1,6 +1,86 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+<script src="/static/js/chart.umd.min.js"></script>
+
+<script type="module">
+    (async function() {
+    
+    let data = JSON.parse("{{ sell_through_price | escapejs }}");
+
+    new Chart(
+        document.getElementById('sell-through-graph'),
+        {
+            type: 'line',
+            options: {
+                responsive: true,
+                plugins: {
+                title: {
+                    display: true,
+                    text: "Sell through rate by price point"
+                },
+                maintainAspectRatio: 1
+            },
+            scales: {
+                x: {
+                    type: "linear",
+                    display: true,
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: "£ Price point"
+                    }
+                },
+                y1: {
+                    type: "linear",
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: "Number of bundles"
+                    }
+                },
+                y2: {
+                    type: "linear",
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: "Sell through rate %"
+                    }
+                },
+            },
+        },
+        data: {
+            labels: data.map(row => row.price),
+            datasets: [
+                {
+                    label: 'Sell through rate',
+                    data: data.map(row => row.data.sell_through),
+                    yAxisID: 'y2'
+                },
+                {
+                    label: 'Collected',
+                    data: data.map(row => row.data.collected),
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'No Show',
+                    data: data.map(row => row.data.no_show),
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'Expired',
+                    data: data.map(row => row.data.expired),
+                    yAxisID: 'y1'
+                }
+            ]
+        }
+        }
+    );
+})();
+</script>
+
 <div class="container-fluid">
     <nav class="navbar">
         <div class="container-fluid">
@@ -9,10 +89,9 @@
     </nav>
 </div>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-5 me-5">
-
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-3 col-sm-5 col-12 me-5">
             <h3 class="text-center mb-4">Sell through rate</h3>
 
             <table class="table">
@@ -33,44 +112,42 @@
             </table>
 
             <div class="row">
-                <div class="col-11">
+                <div class="col-10">
                     <div class="progress" role="progressbar">
-                        <div class="progress-bar" style="width: {{sell_through.sell_through}}"></div>
+                        <div class="progress-bar" style="width: {{sell_through.sell_through}}%"></div>
                     </div>
                 </div>
                 <div class="col-1">
-                    <p>{{sell_through.sell_through}}</p>
+                    <p>{{sell_through.sell_through}}%</p>
                 </div>
             </div>
 
         </div>
-        <div class="col-3 me-5">
+        <div class="col-md-3 col-sm-4 col-12 me-5">
 
             <h3 class="text-center mb-4">Waste proxy</h3>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Waste avoided</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">Last 7 days</th>
-                        <td>{{waste_proxy.week}}kg</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">All time</th>
-                        <td>{{waste_proxy.total}}kg</td>
-                    </tr>
-                </tbody>
-            </table>
-
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Waste avoided</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Last 7 days</th>
+                            <td>{{waste_proxy.week}}kg</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">All time</th>
+                            <td>{{waste_proxy.total}}kg</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-    <div class="row mt-3">
-        <div class="col-5">
+        <div class="col-md-3 col-sm-5 col-12">
 
             <h3 class="text-center mb-4">Operational insights</h3>
 
@@ -105,81 +182,90 @@
 
         </div>
 
-        <div class="col-3 ms-5">
+        <div class="col-md-8 col-sm-12 table-responsive">
             <h3 class="text-center mb-4">Forecast errors</h3>
-
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Error</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">All</th>
+                        {% for category in reservations_error_cat_zip %}
+                            <th scope="col">{{category.name}}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th scope="row">MSE for number of reservations</th>
-                        <td>{{reservations_error}}</td>
+                        <th scope="col">MSE for number of reservations</th>
+                        <td scope="col">{{reservations_error}}</td>
+                        {% for category in reservations_error_cat_zip %}
+                            <td>{{category.error}}</td>
+                        {% endfor %}
                     </tr>
                     <tr>
-                        <th scope="row">MSE for reservation no-show rate</th>
-                        <td>{{reservations_no_show_error}}</td>
+                        <th scope="col">MSE for reservation no show rate</th>
+                        <td scope="col">{{reservations_no_show_error}}</td>
+                        {% for category in reservations_error_cat_zip %}
+                            <td>{{category.noshow}}</td>
+                        {% endfor %}
                     </tr>
                 </tbody>
             </table>
-
         </div>
-    </div>
 
-    <div class="row mt-3">
-            <div class="col-12">
-                <div class="card p-3">
-                    <div class="card-title">
-                        <h2>Actions</h2>
-                    </div>
-                    <div class="card-body">
-                        <form method="post" action="">
-                            {% csrf_token %}
+        <div class="position-relative ms-auto me-auto" style="width:70vw; height: 40vw;">
+            <canvas id="sell-through-graph"></canvas>
+        </div>
 
-                            <div class="input-group mb-3">
-                                <label class="input-group-text" for="type">Type</label>
-                                <select class="form-select" name="type" value="{{ form.initial.type }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
-                                    <option>Select Type</option>
-                                    {% for char, name in types %}
-                                        <option value="{{ char }}" {% if form.initial.type == char %} selected="selected"{% endif %}>{{name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+        <div class="col-12">
+            <div class="card p-3">
+                <div class="card-title">
+                    <h2>Actions</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="">
+                        {% csrf_token %}
 
-                            {{ form.type.errors }}
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="type">Type</label>
+                            <select class="form-select" name="type" value="{{ form.initial.type }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
+                                <option>Select Type</option>
+                                {% for char, name in types %}
+                                    <option value="{{ char }}" {% if form.initial.type == char %} selected="selected"{% endif %}>{{name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-                            <div class="input-group mb-3">
-                                <label class="input-group-text" for="category">Category</label>
-                                <select class="form-select" name="category" value="{{ form.initial.category }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
-                                    <option>Select Category</option>
-                                    {% for category in categories %}
-                                        <option value="{{ category.id }}" {% if form.initial.category_id == category.id %} selected="selected"{% endif %}>{{category.name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                        {{ form.type.errors }}
 
-                            {{ form.category.errors }}
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="category">Category</label>
+                            <select class="form-select" name="category" value="{{ form.initial.category }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
+                                <option>Select Category</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if form.initial.category_id == category.id %} selected="selected"{% endif %}>{{category.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-                            <div class="input-group">
-                                <span class="input-group-text" >Details</span>
-                                <textarea class="form-control" aria-label="details" name="details" {% if confirm %} style="pointer-events: none;" {% endif %}>{{ form.initial.details }} </textarea>
-                            </div>
+                        {{ form.category.errors }}
 
-                            {{ form.details.errors }}
+                        <div class="input-group">
+                            <span class="input-group-text" >Details</span>
+                            <textarea class="form-control" aria-label="details" name="details" {% if confirm %} style="pointer-events: none;" {% endif %}>{{ form.initial.details }} </textarea>
+                        </div>
 
-                            <div class="d-flex justify-content-end">
-                                    <button type="submit" value="confirm" class="btn btn-primary me-auto mt-3" name="submit">Confirm</button>
-                            </div>
+                        {{ form.details.errors }}
 
-                        </form>
-                    </div>
+                        <div class="d-flex justify-content-end">
+                                <button type="submit" value="confirm" class="btn btn-primary me-auto mt-3" name="submit">Confirm</button>
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 
 {% endblock %}
