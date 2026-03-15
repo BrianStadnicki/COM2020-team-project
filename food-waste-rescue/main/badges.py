@@ -26,7 +26,7 @@ def get_longest_streak(consumer):
         res_weeks.add(week)
 
     longest_streak = 0
-    current_streak = 1
+    current_streak = 0
 
     res_weeks = list(res_weeks)
     res_weeks.sort()
