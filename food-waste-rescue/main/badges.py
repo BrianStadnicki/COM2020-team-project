@@ -1,4 +1,4 @@
-from .models import Consumer, Reservation
+from .models import Bundle_posting_category, Consumer, Reservation
 import datetime as dt
 from django.utils import timezone
 
@@ -69,7 +69,7 @@ def get_badges(consumer: Consumer):
           {"name":"20 Bundles", "url":"images/even_more_bundles.svg", "des":"Collect 20 bundles", "x":0, "y":20},
           {"name":"Animal Lover", "url":"images/animal_lover.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} pet food bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY},
           {"name":"Very Veggie", "url":"images/very_veggie.svg", "des":f"Collect {TARGET_BUNDLE_QUANTITY} veggie bundles", "x":0, "y":TARGET_BUNDLE_QUANTITY},
-          {"name":"Brian Badge", "url":"images/brian_badge.svg", "des":"Collect each category", "x":0, "y":len(set(Reservation.objects.values_list("posting__category", flat=True)))}]
+          {"name":"Brian Badge", "url":"images/brian_badge.svg", "des":"Collect each category", "x":0, "y":len(set(Bundle_posting_category.objects.values_list("name", flat=True)))}]
 
     
     l_streak = get_longest_streak(consumer)
