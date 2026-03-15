@@ -308,6 +308,49 @@ def test_streak_one_year(self):
 
     self.assertIn("1 Year Streak", badge_names)
 
+def test_progress_values_for_category_badges(self):
+    """Ensure x/y progress values are correct for category-specific badges."""
+    pet_cat = Bundle_posting_category.objects.get(name="Pet Food")
+    veg_cat = Bundle_posting_category.objects.get(name="Vegetarian")
+
+    # 2 pet food bundles
+    for _ in range(2):
+        posting = Bundle_posting.objects.create(
+            seller=self.seller,
+            category=pet_cat,
+            name="Pet Food Bundle",
+            quantity=1,
+        )
+        Reservation.objects.create(
+            posting=posting,
+            consumer=self.consumer,
+            is_collected=True,
+        )
+
+    # 1 veggie bundle
+    posting = Bundle_posting.objects.create(
+        seller=self.seller,
+        category=veg_cat,
+        name="Veggie Bundle",
+        quantity=1,
+    )
+    Reservation.objects.create(
+        posting=posting,
+        consumer=self.consumer,
+        is_collected=True,
+    )
+
+    badges = get_badges(self.consumer)
+    badge_map = {b["name"]: b for b in badges}
+
+    # Animal Lover (needs 3)
+    self.assertEqual(badge_map["Animal Lover"]["x"], 2)
+    self.assertEqual(badge_map["Animal Lover"]["y"], 3)
+
+    # Very Veggie (needs 3)
+    self.assertEqual(badge_map["Very Veggie"]["x"], 1)
+    self.assertEqual(badge_map["Very Veggie"]["y"], 3)
+
 
 
 
