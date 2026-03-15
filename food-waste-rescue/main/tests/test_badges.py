@@ -93,6 +93,53 @@ class TestBadges(TestCase):
 
         self.assertIn("5 Bundles", badge_names)
 
+    # passes
+    def test_badge_ten_bundles(self):
+        category = Bundle_posting_category.objects.get(name="Meals")
+
+        for _ in range(10):
+            posting = Bundle_posting.objects.create(
+                seller=self.seller,
+                category=category,
+                name="Meal",
+                quantity=1,
+            )
+            Reservation.objects.create(
+                posting=posting,
+                consumer=self.consumer,
+                is_collected=True,
+            )
+
+        badges = get_badges(self.consumer)
+        badge_names = [b["name"] for b in badges]
+
+        self.assertIn("10 Bundles", badge_names)
+
+    def test_badge_twenty_bundles(self):
+        category = Bundle_posting_category.objects.get(name="Meals")
+
+        for _ in range(20):
+            posting = Bundle_posting.objects.create(
+                seller=self.seller,
+                category=category,
+                name="Meal",
+                quantity=1,
+            )
+            Reservation.objects.create(
+                posting=posting,
+                consumer=self.consumer,
+                is_collected=True,
+            )
+
+        badges = get_badges(self.consumer)
+        badge_names = [b["name"] for b in badges]
+
+        self.assertIn("20 Bundles", badge_names)
+
+
+
+
+
 
 
 
