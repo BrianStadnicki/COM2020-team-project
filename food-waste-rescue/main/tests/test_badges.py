@@ -19,7 +19,7 @@ class TestBadges(TestCase):
         self.consumer = Consumer.objects.create(user=self.user)
 
         # Create categories
-        CATEGORIES = [
+        self.categories = [
             "Meals",
             "Bread & Pastries",
             "Groceries",
@@ -28,7 +28,7 @@ class TestBadges(TestCase):
             "Vegetarian",
             "Vegan"
         ]
-        for category in CATEGORIES:
+        for category in self.categories:
             Bundle_posting_category.objects.create(name=category)
         
         # create "Seller" user
@@ -181,6 +181,30 @@ class TestBadges(TestCase):
         badge_names = [b["name"] for b in badges]
 
         self.assertIn("Very Veggie", badge_names)
+
+    # brian badge (all categories)
+
+    def test_brian_badge(self):
+        for cat_name in self.categories:
+            cat = Bundle_posting_category.objects.get(name=cat_name)
+            posting = Bundle_posting.objects.create(
+                seller=self.seller,
+                category=cat,
+                name="Bundle",
+                quantity=1,
+            )
+            Reservation.objects.create(
+                posting=posting,
+                consumer=self.consumer,
+                is_collected=True,
+            )
+
+        badges = get_badges(self.consumer)
+        badge_names = [b["name"] for b in badges]
+
+        self.assertIn("Brian Badge", badge_names)
+
+
 
 
 
