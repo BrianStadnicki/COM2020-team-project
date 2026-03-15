@@ -405,26 +405,26 @@ def impact_view(request):
     consumer = getattr(request, "user", None).consumer
 
     Reservations = Reservation.objects.filter(consumer=consumer, is_collected=True).values_list("posting",flat=True)
-    totalCo2 =0
+    totalCo2 = 0.00
     
 
     for i in Reservations:
         bundle = Bundle_posting.objects.values_list("category",flat=True).get(id=i)
         category= Bundle_posting_category.objects.values_list("name").get(id=bundle)[0]
         if category == "Meals":
-            totalCo2 += 1
+            totalCo2 += 10.20
         if category == "Bread & Pastries":
-            totalCo2 += 1
+            totalCo2 += 0.89
         if category == "Groceries":
-            totalCo2 += 1
+            totalCo2 += 3.45
         if category == "Flowers & Plants":
-            totalCo2 += 1
+            totalCo2 += 32.78
         if category == "Pet Food":
-            totalCo2 += 1
+            totalCo2 += 2.55
         if category == "Vegetarian":
-            totalCo2 += 1
+            totalCo2 += 0.76
         if category == "Vegan":
-            totalCo2 += 1
+            totalCo2 += 0.40
     badges = get_badges(consumer)
 
     return render(request, "main/impact.html", {"badges": badges,"CO2Saved": totalCo2})
