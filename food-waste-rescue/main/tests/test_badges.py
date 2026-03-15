@@ -115,6 +115,7 @@ class TestBadges(TestCase):
 
         self.assertIn("10 Bundles", badge_names)
 
+    # passes
     def test_badge_twenty_bundles(self):
         category = Bundle_posting_category.objects.get(name="Meals")
 
@@ -135,6 +136,53 @@ class TestBadges(TestCase):
         badge_names = [b["name"] for b in badges]
 
         self.assertIn("20 Bundles", badge_names)
+
+    # category-specific badges
+
+    # passes
+    def test_animal_lover_badge(self):
+        pet_cat = Bundle_posting_category.objects.get(name="Pet Food")
+
+        for _ in range(3):
+            posting = Bundle_posting.objects.create(
+                seller=self.seller,
+                category=pet_cat,
+                name="Pet Food Bundle",
+                quantity=1,
+            )
+            Reservation.objects.create(
+                posting=posting,
+                consumer=self.consumer,
+                is_collected=True,
+            )
+
+        badges = get_badges(self.consumer)
+        badge_names = [b["name"] for b in badges]
+
+        self.assertIn("Animal Lover", badge_names)
+
+    def test_very_veggie_badge(self):
+        veg_cat = Bundle_posting_category.objects.get(name="Vegetarian")
+
+        for _ in range(3):
+            posting = Bundle_posting.objects.create(
+                seller=self.seller,
+                category=veg_cat,
+                name="Veggie Bundle",
+                quantity=1,
+            )
+            Reservation.objects.create(
+                posting=posting,
+                consumer=self.consumer,
+                is_collected=True,
+            )
+
+        badges = get_badges(self.consumer)
+        badge_names = [b["name"] for b in badges]
+
+        self.assertIn("Very Veggie", badge_names)
+
+
 
 
 
