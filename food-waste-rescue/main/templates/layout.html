@@ -22,6 +22,14 @@
             font-size: 10vw;
         }
 
+        #main-content {
+            width: 100%;
+        }
+
+        #navbar-sizer {
+            width: 100%;
+        }
+
         @media (min-width: 576px) {
             #navbar-container {
                 width: 50px;
@@ -47,13 +55,24 @@
             .navbar-growers {
                 flex-grow: 1;
             }
+
+            #main-content {
+                width: 100vh - 50px;
+                padding-left: 50px;
+            }
+
+            #navbar-sizer {
+                width: 50px;
+                margin: 0px;
+                padding: 0px;
+            }
         }
     </style>
     <title>Food Waste Rescue</title>
 </head>
 <body class="container-fluid p-0">
     <div class="row">
-        <div class="col-md-1 row-sm">
+        <div id="navbar-sizer">
             <div id="navbar-container" class="bg-primary">
                 <div id="navbar-list" class="d-flex text-center">
                     <div class="nav-item navbar-growers">
@@ -110,8 +129,8 @@
             </div>
         </div>
 
-        <div id="main-content" class="col-md-11 row-sm-12 py-3">
-            <div class="container">
+        <div id="main-content" class="py-3">
+            <div class="container p-0 my-0 mx-auto">
                 {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}
