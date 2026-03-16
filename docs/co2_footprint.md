@@ -1,4 +1,4 @@
-all results taken is per kg of product excluding flowers which is for a bouquet
+all results taken is Kg of C02 produced per kg of product excluding flowers which is done per bouquet
 
 Meat bag:
 taken from average of the top 5 meat consumed
@@ -8,13 +8,13 @@ pig : 12.31
 poultry: 9.87
 goat: 23.5
 
-average per o.6kg: 15.07
+average per 0.6kg: 15.07
 
 Bread and pastries:
 taken from how much breads takes
 bread: 0.89
 
-average per o.6kg: 0.53
+average per 0.6kg: 0.53
 
 Groceries:
 taken from top 5 Uk grocery items in the uk
@@ -24,7 +24,7 @@ butter: 11
 potatoes:0.12
 coffee: 10
 
-average per o.6kg: 3.45
+average per 0.6kg: 3.45
 
 flowers and plants:
 taken from the cost to import an average bouquet of flowers
@@ -36,7 +36,7 @@ average per bouquet: 32.78
 Pet food:
 pet food :4.25kg
 
-average per o.6kg: 2.55
+average per 0.6kg: 2.55
 
 vegetarian bag:
 taken from 5 of the most popular dairy and fruit and veg
@@ -47,7 +47,7 @@ bananas: 0.7
 apples: 0.4
 tomatoes: 1.81
 
-average per o.6kg: 0.76
+average per 0.6kg: 0.76
 
 vegan beg:
 taken from 5 most popular fruit and veg
@@ -58,4 +58,4 @@ tomatoes: 1.81
 oranges: 0.34
 potatoes: 0.12
 
-average per o.6kg: 0.40
+average per 0.6kg: 0.40
