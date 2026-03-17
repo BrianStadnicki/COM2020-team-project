@@ -59,24 +59,24 @@ def get_waste_proxy(seller):
 def get_estimated_co2(consumer):
     reservations = Reservation.objects.filter(consumer=consumer, is_collected=True).all()
 
-    co2 = 0
+    co2 = 0.00
 
     for reservation in reservations:
         match reservation.posting.category.name:
             case "Meals":
-                co2 += 1
+                co2 += 10.20
             case "Bread & Pastries":
-                co2 += 2
+                co2 += 0.89
             case "Groceries":
-                co2 += 3
+                co2 += 3.45
             case "Flowers & Plants":
-                co2 += 4
+                co2 += 17.21
             case "Pet Food":
-                co2 += 5
+                co2 += 4.25
             case "Vegetarian":
-                co2 += 6
+                co2 += 0.76
             case "Vegan":
-                co2 += 7
+                co2 += 0.40
     
     return co2
 
