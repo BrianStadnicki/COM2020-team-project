@@ -2,38 +2,16 @@
 
 {% block content %}
 
-    <nav class="navbar">
-            <div class="container-fluid">
-                <h1 class="navabar-brand">Login</h1>
-            </div>
-    </nav>
-
-{% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
-{# Show Django messages (e.g., "Check your details") #}
-{% if messages%}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
+<nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navbar-brand">Login</h1>
+        </div>
+</nav>
 
 {# Show non-field errors (e.g. password mismatch) #}
 {{ form.non_field_errors }}
 
-<div class="container-fluid">
+<div class="container-fluid2">
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
 
@@ -49,19 +27,24 @@
             {{form.password.errors}}
         </div>
 
-        <div class="d-flex justify-content-end">
+        <div class="d-sm-flex text-left">
             <input type="submit" class="me-auto btn btn-primary" value="Login">
 
         
         <input type="hidden" name="next" value="{{ next }}">
     </form>
 
+        {% if user.user_type == "seller" %}
+            <a class="btn btn-secondary me-1 ms-1 text-nowrap" href="{% url 'seller_profile_view_url' %}">Seller profile</a>
+        {% endif %}
+
         <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-outline-secondary me-1">Logout</button>
+            <button type="submit" class="btn btn-outline-secondary me-1 mt-2 mt-sm-0 mt-md-0 mt-lg-0">Logout</button>
         </form>
 
-        <a class="btn btn-secondary" href="{% url 'register' %}">Sign Up</a>
+        <a class="btn btn-secondary text-nowrap mt-2 mt-sm-0 mt-md-0 mt-lg-0" href="{% url 'register' %}">Sign Up</a>
     </div>
+</div>
 
 {% endblock %}

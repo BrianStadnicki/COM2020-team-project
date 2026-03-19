@@ -1,11 +1,11 @@
 import datetime as dt
 from django.utils import timezone
-from .models import Reservation
-
+from datetime import datetime, timedelta, time
+from .models import Bundle_posting, Reservation
+from django.core.exceptions import ObjectDoesNotExist
 
 def week_start(day):
     return day - dt.timedelta(days=day.weekday())
-
 
 def reservation_streak(request):
     user = getattr(request, "user", None)
@@ -13,10 +13,16 @@ def reservation_streak(request):
     if not getattr(user, "is_authenticated", False):
         return {"reservation_streak": 0}
 
+    try:
+        consumer = user.consumer
+    except ObjectDoesNotExist:
+        return {"reservation_streak": 0}
+
+    # only consumers get streaks
+
     if getattr(user, "user_type", None) != "consumer":
         return {"reservation_streak": 0}
 
-    consumer = user.consumer
     tz = timezone.get_current_timezone()
 
     # Gets all user's reservation time stamps
@@ -45,3 +51,26 @@ def reservation_streak(request):
         week -= dt.timedelta(weeks=1)
 
     return {"reservation_streak": streak}
+
+
+def bundle_pickup_time(request):
+    user = getattr(request, "user", None)
+
+    if user is None:
+        return {}
+
+    if not getattr(user, "is_authenticated", False):
+        return {}
+
+    if getattr(user, "user_type", None) != "consumer":
+        return {}
+
+    pickups = []
+    for reservation in Reservation.objects.filter(
+        consumer=user.consumer,
+        posting__creation_time__date=datetime.date(datetime.today()),
+        is_collected=False,
+    ).all():
+        pickups.append(reservation)
+
+    return {"pickups": pickups}

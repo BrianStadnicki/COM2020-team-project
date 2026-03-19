@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+{{ form.non_field_errors }}
+
+<div class="container-fluid">
+    <nav class="navbar">
+        <div class="container-fluid">
+            <h1 class="navbar-brand">Actions</h1>
+        </div>
+    </nav>
+</div>
+
+<div class="container-fluid">
+    {% for action in actions %}
+        <div class="row">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3>{{action.get_type_display}} for {{action.category.name}} bundles</h3>
+                    <div class="row">
+                        <div class="col-10">
+                            <p>{{action.details}}</p>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-4 col-xs-4">
+                            <p>{{action.time_stamp}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <h2>No actions logged!</h2>
+    {% endfor %}
+</div>
+
+{% endblock %}

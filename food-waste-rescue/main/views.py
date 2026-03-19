@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Count, F
 from .forms import (
     ReservationForm,
     SellerExtraForm,
@@ -8,10 +8,12 @@ from .forms import (
     BundleNewForm,
     IssueReportNewForm,
     IssueReportViewForm,
-    BundleDeleteForm,
+    ActionFormBundle,
+    ActionFormAnalytics
 )
-from .models import User, Bundle_posting, Seller, Consumer, IssueReport, Reservation
-from .forecast_calc import avePerRes, avePerNoshow, errorMSEReservations, errorMSENoShow
+from .models import Bundle_posting_category, User, Bundle_posting, Seller, Consumer, IssueReport, Reservation, Seller_actions
+from .forecast_calc import avePerNoshowCat, avePerRes, avePerNoshow, avePerResCat, errorMSENoShowCat, errorMSEReservations, errorMSENoShow, errorMSEReservationsCat
+from .badges import get_badges
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
@@ -19,9 +21,11 @@ import datetime
 from .analytics import (
     get_best_categories,
     get_best_pickup,
+    get_estimated_co2,
     get_sell_through,
     get_waste_proxy,
 )
+import json
 
 """
 Consumer: Show all bundles, search by location and pick up time, pagination
@@ -31,8 +35,6 @@ Seller: Show own bundles, pagination
 
 @login_required
 def bundles_view(request):
-    # checks to see if the user is seller or consumer
-
     ALLERGENS = [
         "Celery",
         "Crustacean",
@@ -50,6 +52,7 @@ def bundles_view(request):
         "Sulphite",
     ]
 
+    # checks to see if the user is seller or consumer
     if request.user.user_type != "seller":
         posts = Bundle_posting.objects
     else:
@@ -60,11 +63,35 @@ def bundles_view(request):
     if request.user.user_type != "seller" and location:
         posts = posts.filter(seller__location__icontains=location)
 
-    selected_category = request.GET.get("category", "")
+    selected_category_id = request.GET.get("category", "")
+    selected_category = ""
+    
     selected_allergens = request.GET.getlist("excluded-allergens")
+    selected_wheelchair = request.GET.get("wheelchair")
+    selected_inactive = request.GET.get("show-inactive")
+    selected_expired = request.GET.get("show-expired")
 
-    if selected_category and selected_category != "Select category":
+    if selected_category_id != "":
+        selected_category = Bundle_posting_category.objects.get(id=selected_category_id)
         posts = posts.filter(category=selected_category)
+
+    if selected_wheelchair:
+        posts = posts.filter(seller__wheelchair=True)
+
+    hidden_posts = posts.none()
+
+    annotated_posts = posts.annotate(collected_count=Count("reservation", filter=Q(reservation__is_collected=True)))
+
+    if not selected_inactive:
+        hidden_posts |= annotated_posts.filter(collected_count=F("quantity"))
+
+    if not selected_expired:
+        hidden_posts |= annotated_posts.exclude(collected_count=F("quantity")
+        ).exclude(creation_time__date=datetime.datetime.today().date(),
+            pickup_window_end__gt=datetime.datetime.today().time())
+
+    posts = posts.exclude(id__in=hidden_posts.values("id"))
+
     if selected_allergens:
         q = Q()
         for allergen in selected_allergens:
@@ -75,22 +102,47 @@ def bundles_view(request):
     posts = posts.order_by("-creation_time")
     posts = posts.all()
 
-    for post in posts:
-        for index, name in post.CATEGORYS:
-            if index == post.category:
-                post.category = name
-                break
+    matched_reservation = None
+    error = None
+
+    if request.method == "POST":
+        form = ReservationForm(request.POST)
+        
+        if form.data["submit"] == "validate_code":
+            c_code = request.POST.get("claim_code").strip()
+            
+            if c_code == "":
+                error = "A claim code needs to be entered"
+                
+            elif not c_code.isdigit():
+                error = "Claim code needs to be a number"
+            
+            else:
+                matched_reservation = Reservation.objects.filter(claim_code=c_code, posting__in=posts).first()
+                
+                if not matched_reservation:
+                    error = "Invalid claim code"
+        elif form.data["submit"] == "Collected?":
+            reservation = Reservation.objects.get(id=int(form.data["id"]))
+            reservation.is_collected = True
+            reservation.save()
+
 
     return render(
         request,
         "main/bundles.html",
         {
             "posts": posts,
-            "categories": Bundle_posting.CATEGORYS,
+            "categories": Bundle_posting_category.objects.all(),
             "allergens": ALLERGENS,
             "selected_category": selected_category,
             "selected_allergens": selected_allergens,
-            "selected-location": location,
+            "selected_location": location,
+            "matched_reservation": matched_reservation,
+            "error": error,
+            "selected_wheelchair": selected_wheelchair,
+            "selected_expired": selected_expired,
+            "selected_inactive": selected_inactive
         },
     )
 
@@ -100,10 +152,15 @@ Consumer: Show bundle, make new reservation or view own reservation details
 Seller: show/edit/delete bundle, change reservation status?
 """
 
-
 @login_required
 def bundle_view(request, id):
+    request.user.refresh_from_db()
+
     post = get_object_or_404(Bundle_posting, pk=id)
+
+    # Sellers without a Seller profile cannot view bundles
+    if request.user.user_type == "seller" and not Seller.objects.filter(user=request.user).exists():
+        return redirect("seller_profile_view_url")
 
     # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
     is_seller = (request.user.user_type == "seller") and (
@@ -111,24 +168,59 @@ def bundle_view(request, id):
     )
     is_today = post.creation_time.date() == datetime.datetime.today().date()
 
+    if request.user.user_type == "seller" and post.seller.user != request.user:
+        raise PermissionDenied
+
+    matched_reservation = None
+    error = None
+
     if request.method == "POST":
-        form = ReservationForm(request.POST)
+            
+        if "submit_code" in request.POST:
+            form = ReservationForm(request.POST)
+            
+            if form.data["submit_code"] == "validate_code":
+                c_code = request.POST.get("claim_code").strip()
+                
+                if c_code == "":
+                    error = "A claim code needs to be entered"
+                elif not c_code.isdigit():
+                    error = "Claim code needs to be a number"
+                else:
+                    matched_reservation = Reservation.objects.filter(claim_code=c_code).first()
+                    if not matched_reservation:
+                        error = "Invalid claim code"
+                        
+        elif "submit_res" in request.POST:
+            form = ReservationForm(request.POST)
 
-        # Consumer makes a reservation
-        if form.data["submit"] == "Reserve":
-            reservation = Reservation(
-                posting=post,
-                consumer=Consumer.objects.get(user=request.user),
-                # claim_code generated in the reservation model method.
-            )
-            reservation.save()
-            reservation.claim_code_generator()
+            # Consumer makes a reservation
+            if form.data["submit_res"] == "Reserve":
+                reservation = Reservation(
+                    posting=post,
+                    consumer=Consumer.objects.get(user=request.user),
+                    # claim_code generated in the reservation model method.
+                )
+                reservation.save()
+                reservation.claim_code_generator()
 
-        # Seller marks the reservation as collected
-        elif form.data["submit"] == "Collected?":
-            reservation = Reservation.objects.get(id=int(form.data["id"]))
-            reservation.is_collected = True
-            reservation.save()
+            # Seller marks the reservation as collected
+            elif form.data["submit_res"] == "Collected?":
+                reservation = Reservation.objects.get(id=int(form.data["id"]))
+                reservation.is_collected = True
+                reservation.save()
+                
+        elif "submit_action" in request.POST:
+            form = ActionFormBundle(request.POST)
+            if form.is_valid():
+                action = form.save(commit=False)
+                action.seller = Seller.objects.get(user=request.user)
+                action.category = post.category
+                action.save()
+                messages.success(request, "Action saved!")
+                return redirect("bundle_view_url", id=post.id) #type: ignore
+            else:
+                messages.info(request, "Invalid action")
 
     if request.user.user_type == "consumer":
         reports = post.issuereport_set.filter(consumer=request.user.consumer).all()  # type: ignore
@@ -136,11 +228,6 @@ def bundle_view(request, id):
     else:
         reports = post.issuereport_set.all()  # type: ignore
         reservations = post.reservation_set.all()  # type: ignore
-
-    for index, name in post.CATEGORYS:
-        if index == post.category:
-            post.category = name
-            break
 
     return render(
         request,
@@ -151,6 +238,9 @@ def bundle_view(request, id):
             "reservations": reservations,
             "is_seller": is_seller,
             "is_today": is_today,
+            "matched_reservation": matched_reservation,
+            "error": error,
+            "types": Seller_actions.TYPES
         },
     )
 
@@ -182,20 +272,24 @@ def bundle_new_view(request):
                 form.initial["pickup_window_end"] = form.initial[
                     "pickup_window_end"
                 ].__format__("%H:%M")
+                form.initial["category"] = bundle.category.name
 
                 exp_res = round(bundle.quantity * avePerRes(bundle.seller_id))
                 exp_no_show = round(exp_res * avePerNoshow(bundle.seller_id))
+                exp_res_cat = round(bundle.quantity * avePerResCat(bundle.seller_id, bundle.category.id))
+                exp_no_show_cat = round(exp_res * avePerNoshowCat(bundle.seller_id, bundle.category.id))
 
                 return render(
                     request,
                     "main/bundle_new.html",
                     {
                         "form": form,
-                        "edit": False,
                         "confirm": True,
-                        "categories": Bundle_posting.CATEGORYS,
+                        "categories": Bundle_posting_category.objects.all(),
                         "exp_res": exp_res,
                         "exp_no_show": exp_no_show,
+                        "exp_res_cat": exp_res_cat,
+                        "exp_no_show_cat": exp_no_show_cat
                     },
                 )
     else:
@@ -205,70 +299,9 @@ def bundle_new_view(request):
         "main/bundle_new.html",
         {
             "form": form,
-            "edit": False,
-            "categories": Bundle_posting.CATEGORYS,
+            "categories": Bundle_posting_category.objects.all(),
             "confirm": False,
         },
-    )
-
-
-"""
-Seller: edit bundle
-"""
-
-
-@login_required
-def bundle_edit_view(request, id):
-    if request.user.user_type != "seller":
-        raise PermissionDenied
-    bundle = get_object_or_404(Bundle_posting, id=id)
-
-    if request.user.seller != bundle.seller:
-        raise PermissionDenied
-
-    if request.method == "POST":
-        form = BundleNewForm(request.POST or None, instance=bundle)
-        if form.is_valid():
-            bundle = form.save()
-            return redirect("bundle_view_url", id=bundle.id)
-    else:
-        form = BundleNewForm(None, initial=bundle.__dict__)
-        form.initial["pickup_window_start"] = form.initial[
-            "pickup_window_start"
-        ].__format__("%H:%M")
-        form.initial["pickup_window_end"] = form.initial[
-            "pickup_window_end"
-        ].__format__("%H:%M")
-
-    return render(
-        request,
-        "main/bundle_new.html",
-        {"form": form, "categories": Bundle_posting.CATEGORYS, "edit": True},
-    )
-
-
-"""
-Seller: remove bundle
-"""
-
-
-@login_required
-def bundle_delete_view(request, id):
-    if request.user.user_type != "seller":
-        raise PermissionDenied
-
-    bundle = get_object_or_404(Bundle_posting, id=id)
-
-    if request.user.seller != bundle.seller:
-        raise PermissionDenied
-
-    if request.method == "POST":
-        bundle.delete()
-        return redirect("bundles_view_url")
-    else:
-        form = BundleDeleteForm(None)
-    return render(
-        request, "main/bundle_confirm_delete.html", {"form": form, "post": bundle}
     )
 
 
@@ -277,21 +310,25 @@ Consumer: Show own reservations with bundle details
 Seller: Show upcoming reservations with bundle details, edit status, search/verify code
 """
 
-
 @login_required
 def reservations_view(request):
-    return render(request, "main/reservations.html")
+    # checks to see if the user is seller or consumer
+    if request.user.user_type != "seller":
+        reservations = request.user.consumer.reservation_set
+    else:
+        # Get reservations related to seller
+        reservations = Reservation.objects.filter(posting__seller=request.user.seller)
 
+    reservations = reservations.order_by("-time_stamp")
+    reservations = reservations.all()
 
-"""
-Consumer: Show/delete own reservation with bundle details
-Seller: Show/edit own reservation with bundle details
-"""
-
-
-@login_required
-def reservation_view(request, id):
-    return render(request, "main/reservation.html")
+    return render(
+        request,
+        "main/reservations.html",
+        {
+            "reservations": reservations,
+        },
+    )
 
 
 """
@@ -306,23 +343,40 @@ def analytics_view(request):
 
     seller = getattr(request, "user", None).seller
 
-    sell_through = get_sell_through(seller)
+    sell_through = get_sell_through(seller, 0, 1000000000000)
     waste_proxy = get_waste_proxy(seller)
     best_pickup = get_best_pickup(seller)
     best_category = get_best_categories(seller)
     reservations_error = round(errorMSEReservations(seller), 2)
     reservations_no_show_error = round(errorMSENoShow(seller), 2)
+    reservations_error_cat_zip = [{"name": Bundle_posting_category.objects.get(id=category_id).name, "error": round(errorMSEReservationsCat(seller, category_id), 2), "noshow": round(errorMSENoShowCat(seller, category_id), 2)} for category_id in list(Bundle_posting_category.objects.values_list("id", flat=True))]
+
+    sell_through_price = [{"price": i/10, "data": get_sell_through(seller, i/10, (i/10)+0.5)} for i in range(0, 105, 5)]
+
+    if request.method == "POST":
+        form = ActionFormAnalytics(request.POST)
+        if form.is_valid():
+            action = form.save(commit=False)
+            action.seller = Seller.objects.get(user=request.user)
+            action.save()
+            messages.success(request, "Action saved!")
+        else:
+            messages.info(request, "Action form invalid")
 
     return render(
         request,
         "main/analytics.html",
         {
             "sell_through": sell_through,
+            "sell_through_price": json.dumps(sell_through_price),
             "waste_proxy": waste_proxy,
             "best_pickup": best_pickup,
             "best_category": best_category,
             "reservations_error": reservations_error,
             "reservations_no_show_error": reservations_no_show_error,
+            "reservations_error_cat_zip": reservations_error_cat_zip,
+            "types": Seller_actions.TYPES,
+            "categories": Bundle_posting_category.objects.all()
         },
     )
 
@@ -421,18 +475,72 @@ Seller: View impact
 
 @login_required
 def impact_view(request):
-    return render(request, "main/impact.html")
 
+    if request.user.user_type != "consumer":
+        raise PermissionDenied
 
-"""
-Consumer: View/Change accessibility settings
-Seller: View/Change accessibility settings
-"""
+    consumer = getattr(request, "user", None).consumer
 
+    badges = get_badges(consumer)
+    co2_saved = get_estimated_co2(consumer)
+    bundles = Reservation.objects.filter(consumer=consumer).count()
+
+    return render(request, "main/impact.html", {"badges": badges, "co2_saved": co2_saved, "bundles": bundles})
 
 @login_required
-def accessibility_view(request):
-    return render(request, "main/accessibility.html")
+def action_view(request):
+
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    
+    seller = getattr(request, "user", None).seller
+
+    actions = Seller_actions.objects.filter(seller=seller).order_by("-time_stamp")
+
+    return render(request, "main/actions.html", {"actions":actions})
+
+@login_required
+def seller_profile(request):
+
+    if request.user.user_type != "seller":
+        raise PermissionDenied
+    
+    #checking for existing profile:
+    profile = Seller.objects.filter(user=request.user).first()
+    
+    if hasattr(request.user, "seller"):
+        profile = request.user.seller
+    else:
+        profile = None
+    
+    if request.method == "POST":
+        form = SellerExtraForm(request.POST or None, instance=profile)
+        
+        if form.is_valid():
+            seller = form.save(commit=False)
+            seller.user = request.user
+            seller.save()
+            form.save_m2m()
+            messages.success(request, "Seller profile saved!")
+            report = form.save()
+            return redirect("seller_profile_view_url")
+    elif profile != None:
+        form = SellerExtraForm(None, initial=profile.__dict__)
+        form.initial["opening_time"] = form.initial[
+                    "opening_time"
+                ].__format__("%H:%M")
+        form.initial["closing_time"] = form.initial[
+                    "closing_time"
+                ].__format__("%H:%M")      
+    else:
+        form = SellerExtraForm()
+
+    return render(
+        request,
+        "registration/seller_profile.html",
+        {"form": form},
+    )
+
 
 
 ########### register here #####################################
@@ -469,29 +577,3 @@ def registerUser(request):
                 {"form": form, "title": "register here"},
             )
 
-
-def sellerExtra(request):
-    # attach the seller profile to request.user
-    user = request.user
-
-    # only sellers can access this page
-    if user.user_type != "seller":
-        raise PermissionDenied
-
-    # If seller profile already exists, don't let them create another
-    if hasattr(user, "seller"):
-        messages.info(request, "Seller profile already completed.")
-        return redirect("login")
-
-    if request.method == "POST":
-        form = SellerExtraForm(request.POST)
-        if form.is_valid():
-            seller = form.save(commit=False)
-            seller.user = user
-            seller.save()
-            form.save_m2m()
-            messages.success(request, "Seller profile completed!")
-            return redirect("login")
-    else:
-        form = SellerExtraForm()
-    return render(request, "registration/seller_extra.html", {"form": form})

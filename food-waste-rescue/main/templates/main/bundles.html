@@ -1,17 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{# Show Django messages (e.g., "Check your details") #}
-{% if messages%}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{{ form.non_field_errors }}
-
 <div class="container-fluid">
     <nav class="navbar">
         <div class="container-fluid">
@@ -25,17 +14,17 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-3">
-            <div class="card">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h2>Filters</h2>
                     <form method="get">
                         <p>Category</p>
                         <select class="form-select" name="category">
                             <option selected value="">Select category</option>
-                            {% for cat_short, cat in categories %}
-                                <option value="{{cat_short}}" {% if cat_short == selected_category %}selected{% endif %}>
-                                    {{cat}}
+                            {% for category in categories %}
+                                <option value="{{category.id}}" {% if category.id == selected_category.id %}selected{% endif %}>
+                                    {{category.name}}
                                 </option>
                             {% empty %}
                                 <option>No categories</option>
@@ -50,6 +39,22 @@
                                 <label class="form-check-label" for="a{{ forloop.counter }}">{{allergen}}</label>
                             </div>
                         {% endfor %}
+                        <p class="mt-3">Wheelchair</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="wheelchair" value=True {% if selected_wheelchair %}checked{% endif %}>
+                            <label class="form-check-label">Wheelchair accessible</label>
+                        </div>
+                        <p class="mt-3">Show Bundles</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="show-inactive"
+                            value="True" {% if selected_inactive %}checked{% endif %}>
+                            <label class="form-check-label">Show Inactive</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="show-expired"
+                            value="True" {% if selected_expired %}checked{% endif %}>
+                            <label class="form-check-label">Show Expired</label>
+                        </div>
                         <!-- Location filter - only visible to Consumers -->
                         {% if request.user.user_type == "consumer" %}
                             <p class="mt-3">Location</p>
@@ -63,25 +68,54 @@
                     </form>
                 </div>
             </div>
+
+            {% if user.user_type == "seller" %}
+            <div class="card">
+                <div class="card-body">
+                    <h2>Claim Code</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="text" class="form-control"name="claim_code" placeholder="Enter claim code" required>
+                            <button type="submit" name="submit" value="validate_code" class="btn btn-outline-primary mt-3"> Validate </button>
+                        </form>
+
+                        {% if error %}
+                            <p class="mt-3">{{ error }}</p>
+                        {% endif %}
+
+                        {% if matched_reservation %}
+                            <p class="mt-3">Reservation {{ matched_reservation.id }}</p>
+                            <p>{{ matched_reservation.consumer.user.username }}</p>
+
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ matched_reservation.id }}">
+                                <button type="submit" name="submit" value="Collected?" class="btn btn-outline-primary"> Mark as Collected </button>
+                            </form>
+                        {% endif %}
+                </div>
+            </div>
+            {% endif %}
         </div>
-        <div class="col-9">
+        <div class="col p-2 p-lg-0">
             <div class="row">
                 {% for post in posts %}
-                    <div class="col-4">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
                         <div class="card mb-4">
                             <div class="card-body">
                                 <h2>{{post.name}}</h2>
                                 <div class="row">
                                     <div class="col">
                                         <p>{{post.seller.user.username}}</p>
-                                        <p>{{post.category}}</p>
+                                        <p>{{post.category.name}}</p>
                                         <p>£{{post.price}}</p>
                                         <p>{{post.creation_time.date}}</p>
-                                        <p>{{post.status_str}}</p>
+                                        <p>Status: {% if post.status_str == "Reserved" and post.available != 0 %}Available{% else %}{{post.status_str}}{% endif %}</p>
                                     </div>
                                     <div class="col">
                                         <p>{{post.seller.location}}</p>
                                         <a href="{% url 'bundle_view_url' post.id %}" class="btn btn-outline-primary">View</a>
+                                    <div class="mt-2"> {% if post.seller.wheelchair %}<p><i class="bi bi-person-wheelchair"></i></p>{% endif %}</div>
                                     </div>
                                 </div>
                             </div>

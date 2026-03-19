@@ -2,32 +2,11 @@
 
 {% block content %}
 
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-
-{% endif %}
-
-{# Show Django messages (e.g., "Check your details") #}
-{% if messages%}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{message.tags}}"{%endif%}>{{message}}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
 {{ form.non_field_errors }}
 
 <nav class="navbar">
     <div class="container-fluid">
-        {% if edit %}
-            <h1 class="navbar-brand">Edit Bundle</h1>
-        {% elif confirm %}
+        {% if confirm %}
             <h1 class="navbar-brand"> Confirm Bundle</h1>
         {% else %}
             <h1 class="navbar-brand">Create Bundle</h1>
@@ -51,8 +30,8 @@
             <label class="input-group-text" for="category">Categories</label>
             <select class="form-select" name="category" value="{{ form.initial.category }}" {% if confirm %}style="pointer-events: none;"{% endif %}>
                 <option>Select Category</option>
-                {% for char, name in categories %}
-                    <option value="{{ char }}" {% if form.initial.category == char %} selected="selected"{% endif %}>{{name}}</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if form.initial.category_id == category.id %} selected="selected"{% endif %}>{{category.name}}</option>
                 {% endfor %}
             </select>
         </div>
@@ -180,13 +159,17 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Expected Reservations</th>
+                                    <th scope="col">Expected Reservations for that category</th>
                                     <th scope="col">Expected No-shows</th>
+                                    <th scope="col">Expected No-shows for that category</th>
                                 </tr>
                             </thead>
                             <tbody>
                                     <tr>
                                         <th>{{ exp_res }}</th>
+                                        <th>{{ exp_res_cat }}</th>
                                         <th>{{ exp_no_show }}</th>
+                                        <th>{{ exp_no_show_cat }}</th>
                                     </tr>
                             </tbody>
                         </table>
