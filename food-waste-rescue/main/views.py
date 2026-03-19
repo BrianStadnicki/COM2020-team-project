@@ -35,8 +35,6 @@ Seller: Show own bundles, pagination
 
 @login_required
 def bundles_view(request):
-    # checks to see if the user is seller or consumer
-
     ALLERGENS = [
         "Celery",
         "Crustacean",
@@ -54,6 +52,7 @@ def bundles_view(request):
         "Sulphite",
     ]
 
+    # checks to see if the user is seller or consumer
     if request.user.user_type != "seller":
         posts = Bundle_posting.objects
     else:
@@ -153,16 +152,24 @@ Consumer: Show bundle, make new reservation or view own reservation details
 Seller: show/edit/delete bundle, change reservation status?
 """
 
-
 @login_required
 def bundle_view(request, id):
+    request.user.refresh_from_db()
+
     post = get_object_or_404(Bundle_posting, pk=id)
+
+    # Sellers without a Seller profile cannot view bundles
+    if request.user.user_type == "seller" and not Seller.objects.filter(user=request.user).exists():
+        return redirect("seller_profile_view_url")
 
     # Determining whether the logged-in user is a Seller: True = Seller, False = Consumer
     is_seller = (request.user.user_type == "seller") and (
         post.seller == request.user.seller
     )
     is_today = post.creation_time.date() == datetime.datetime.today().date()
+
+    if request.user.user_type == "seller" and post.seller.user != request.user:
+        raise PermissionDenied
 
     matched_reservation = None
     error = None
@@ -322,17 +329,6 @@ def reservations_view(request):
             "reservations": reservations,
         },
     )
-
-
-"""
-Consumer: Show own reservation with bundle details
-Seller: Show own reservation with bundle details
-"""
-
-
-@login_required
-def reservation_view(request, id):
-    return render(request, "main/reservation.html")
 
 
 """
@@ -503,20 +499,14 @@ def action_view(request):
 
     return render(request, "main/actions.html", {"actions":actions})
 
-"""
-Consumer: View/Change accessibility settings
-Seller: View/Change accessibility settings
-"""
-
-
 @login_required
-def accessibility_view(request):
-    return render(request, "main/accessibility.html")
-
-
 def seller_profile(request):
+
     if request.user.user_type != "seller":
         raise PermissionDenied
+    
+    #checking for existing profile:
+    profile = Seller.objects.filter(user=request.user).first()
     
     if hasattr(request.user, "seller"):
         profile = request.user.seller
@@ -586,3 +576,4 @@ def registerUser(request):
                 "registration/signup.html",
                 {"form": form, "title": "register here"},
             )
+

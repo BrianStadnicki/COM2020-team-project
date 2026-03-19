@@ -15,19 +15,28 @@ def get_longest_streak(consumer):
 
     tz = timezone.get_current_timezone()
 
+    # get timestamps for all collected reservations
     res_ts = Reservation.objects.filter(
         consumer=consumer, is_collected=True
     ).values_list("time_stamp", flat=True)
 
+    # if there are no collected reservations, streak = 0
+    if not res_ts:
+        current_streak = 0
+    else:
+        current_streak = 1
+
+    # convert timestamps into week-start dates
     res_weeks = set()
     for ts in res_ts:
         res_date = timezone.localdate(ts, tz)
         week = week_start(res_date)
         res_weeks.add(week)
+    
 
     longest_streak = 0
-    current_streak = 0
 
+    # sort unique weeks
     res_weeks = list(res_weeks)
     res_weeks.sort()
 
