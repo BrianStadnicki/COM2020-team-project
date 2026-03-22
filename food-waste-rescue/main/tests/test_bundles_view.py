@@ -104,7 +104,6 @@ class TestBundlesView(TestCase):
 
     # Default behaviour 
 
-    # passes
     def test_consumer_sees_only_active_bundles(self):
         self.client.login(username="consumer1", password="consumerpass")
         response = self.client.get(reverse("bundles_view_url"))
@@ -128,9 +127,8 @@ class TestBundlesView(TestCase):
         # Inactive bundle should NOT be visible by default
         self.assertNotIn(self.bundle_posting3, posts)
 
-    # filters
+    # bundle filtering logic
 
-    # passes
     def test_filter_show_expired(self):
         self.client.login(username="consumer1", password="consumerpass")
         response = self.client.get(reverse("bundles_view_url") + "?show-expired=1")
@@ -203,8 +201,4 @@ class TestBundlesView(TestCase):
 
         reservation.refresh_from_db()
         self.assertTrue(reservation.is_collected)
-
-
-
-
 

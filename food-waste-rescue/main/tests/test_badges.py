@@ -258,9 +258,8 @@ class TestBadges(TestCase):
 
         self.assertIn("1 Month Streak", badge_names)
 
-
     def test_streak_six_months(self):
-        """User earns the 6 Month Streak badge after ~26 consecutive weeks with at least one collection each week."""
+        """User earns the 6 Month Streak badge after 26 consecutive weeks with at least one collection each week."""
         category = Bundle_posting_category.objects.get(name="Meals")
 
         for i in range(26):  # ~6 months
@@ -281,7 +280,6 @@ class TestBadges(TestCase):
         badge_names = [b["name"] for b in badges]
 
         self.assertIn("6 Month Streak", badge_names)
-
 
     def test_streak_one_year(self):
         """User earns the 1 Year Streak badge after 52 consecutive weeks with at least one collection each week."""
