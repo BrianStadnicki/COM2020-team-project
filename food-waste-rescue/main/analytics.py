@@ -78,7 +78,7 @@ def get_estimated_co2(consumer):
             case "Vegan":
                 co2 += 0.40
     
-    return co2
+    return "{0:.2f}".format(co2)
 
 
 def get_best_pickup(seller):
