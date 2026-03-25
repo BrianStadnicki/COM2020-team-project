@@ -105,14 +105,14 @@ class TestSellerOnlyPages(TestCase):
             website_url="https://example.com"
         )
     
-    #passes
+    # testing seller_profile
+
     def test_seller_profile_page_requires_login(self):
         url = reverse("seller_profile_view_url")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
 
-    #passes
     def test_seller_profile_page_accessible_to_new_seller(self):
         new_seller = User.objects.create_user(
             username="new_seller",
@@ -127,7 +127,6 @@ class TestSellerOnlyPages(TestCase):
 
         self.assertEqual(response.status_code, 200)
     
-    #passes
     def test_existing_seller_can_edit_profile(self):
         # Log in the existing seller created in setUp()
         logged_in = self.client.login(username="seller1", password="sellerpass1")
@@ -149,7 +148,6 @@ class TestSellerOnlyPages(TestCase):
         self.assertEqual(form.initial["telephone_number"], "0123456789")
         self.assertEqual(form.initial["website_url"], "https://example.com")
     
-    #passes
     def test_seller_profile_page_blocks_consumer(self):
         """Users should only be able to access 'seller-extra' if they selected 'Seller' in
         the registration page."""
@@ -167,7 +165,6 @@ class TestSellerOnlyPages(TestCase):
     # -----------------------------------------------------------------------------
     #Tests for bundle_new_view 
 
-    #passes
     def test_bundle_new_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundle_new_view_url")
@@ -176,7 +173,6 @@ class TestSellerOnlyPages(TestCase):
         self.assertIn("/accounts/login", response.url)
         self.assertTrue(response.url.startswith("/accounts/login"))
     
-    #passes
     def test_bundle_new_forbidden_for_consumer(self):
         """Consumers should get 403 Forbidden for Seller-only pages"""
         self.client.login(username="consumer1", password="consumerpass1")
@@ -184,7 +180,6 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
-    #passes
     def test_bundle_new_allows_seller(self):
         """Sellers should get 200 OK for Seller-only pages"""
         self.client.login(username="seller1", password="sellerpass1")
@@ -196,7 +191,6 @@ class TestSellerOnlyPages(TestCase):
 
     #Tests for analytics_view
 
-    #passes
     def test_analytics_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("analytics_view_url")
@@ -205,7 +199,6 @@ class TestSellerOnlyPages(TestCase):
         self.assertIn("/accounts/login", response.url)
         self.assertTrue(response.url.startswith("/accounts/login"))
 
-    #passes
     def test_analytics_view_forbidden_for_consumer(self):
         """Consumers should get 403 Forbidden for Seller-only pages"""
         self.client.login(username="consumer1", password="consumerpass1")
@@ -213,7 +206,6 @@ class TestSellerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
     
-    # passes
     def test_analytics_view_allows_seller(self):
         seller = User.objects.create_user(
             username="seller_test2",
@@ -317,7 +309,6 @@ class testSellerAndConsumerPages(TestCase):
     # -----------------------------------------------------------------------------
     #Tests for bundles_view
     
-    #passes
     def test_bundles_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundles_view_url")
@@ -325,7 +316,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
-    #passes
     def test_bundles_view_allows_consumer(self):
         """Consumers should get 200 OK"""
         self.client.login(username="test_consumer2", password="consumerpass2")
@@ -334,7 +324,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/bundles.html")
 
-    #passes
     def test_bundles_view_allows_seller(self):
         """Sellers should get 200 OK"""
         self.client.login(username="test_seller2", password="sellerpass2")
@@ -346,14 +335,12 @@ class testSellerAndConsumerPages(TestCase):
     # -----------------------------------------------------------------------------
     #Tests for bundle_view
 
-    #passes
     def test_bundle_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         
-    #passes
     def test_bundle_view_allows_consumer(self):
         """Consumers should get 200 OK or 302 Redirect"""
         self.client.login(username="consumer2", password="consumerpass2")
@@ -361,14 +348,12 @@ class testSellerAndConsumerPages(TestCase):
         response = self.client.get(url)
         self.assertIn(response.status_code, (200, 302))
 
-    #passes
     def test_bundle_view_allows_owner_seller(self):
         self.client.login(username="test_seller2", password="sellerpass2")
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    # currently failing: AssertionError: 200 != 302
     def test_bundle_view_redirects_seller_without_profile(self):
         user = User.objects.create_user(
             username="seller_without_profile",
@@ -382,7 +367,6 @@ class testSellerAndConsumerPages(TestCase):
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
 
-        # Expected behaviour: redirect to seller profile completion page
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("seller_profile_view_url"), response.url)
 
@@ -391,7 +375,13 @@ class testSellerAndConsumerPages(TestCase):
         other_user = User.objects.create_user(
             username="other_seller", email="otherseller@gmail.com", password="pass", user_type="seller"
         )
-        other_profile = Seller.objects.create(user=other_user, location="X", opening_time="09:00", closing_time="17:00", telephone_number="0", website_url="https://x")
+        other_profile = Seller.objects.create(
+            user=other_user, 
+            location="X",
+            opening_time="09:00",
+            closing_time="17:00",
+            telephone_number="0",
+            website_url="https://x")
         self.client.login(username="other_seller", password="pass")
         url = reverse("bundle_view_url", args=[self.bundle_posting.id])
         response = self.client.get(url)
@@ -401,7 +391,6 @@ class testSellerAndConsumerPages(TestCase):
 
     #Tests for reports_view
 
-    #passes
     def test_reports_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("reports_view_url")
@@ -409,7 +398,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
 
-    #passes
     def test_reports_view_allows_consumer_creator(self):
         # Create a report owned by the Consumer
         report = self.create_report(creator_consumer=self.consumer_profile)
@@ -420,7 +408,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/reports.html")
 
-    #passes
     def test_reports_view_allows_seller_owner(self):
         report = self.create_report(creator_consumer=self.consumer_profile, posting=self.bundle_posting)
         self.client.login(username="test_seller2", password="sellerpass2")
@@ -432,7 +419,7 @@ class testSellerAndConsumerPages(TestCase):
     # ---------------------------------------------------------------------------
 
     #Tests for report_view(id)
-    #passes
+
     def test_report_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("report_view_url", args=[1])
@@ -440,7 +427,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
-    #passes
     def test_report_view_allows_consumer_creator(self):
         '''Consumers should be able to view their own reports'''
         # Create a new IssueReport
@@ -482,7 +468,6 @@ class testSellerAndConsumerPages(TestCase):
         # the new consumer shouldn't be able to access the mock consumer's report
         self.assertEqual(response.status_code, 403)
     
-    #passes
     def test_report_view_allows_seller_owner(self):
         '''Seller can view reports for their bundles'''
         # creating a new IssueReport for the mock bundle 
@@ -501,7 +486,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "main/report_view.html")
 
-    # passes
     def test_report_view_forbids_non_owner_seller(self):
         '''Testing that non-owner sellers cannot access reports for bundles created by other sellers'''
 
@@ -533,9 +517,9 @@ class testSellerAndConsumerPages(TestCase):
         # the non-owner Seller should be forbidden from accessing the report
         self.assertEqual(response.status_code, 403)
     
-    #passes
     def test_report_view_seller_can_update_report(self):
-        '''The Seller that created the bundle that a report is associated with, should be able to post updates to that report'''
+        '''The Seller that created the bundle that a report is associated with, 
+        should be able to post updates to that report'''
         # creating a new IssueReport
         report = IssueReport.objects.create(
             posting=self.bundle_posting,
@@ -564,9 +548,6 @@ class testSellerAndConsumerPages(TestCase):
 
     #Tests for reservations_view
 
-    # Need to implement the logic for this
-
-    # passes
     def test_reservations_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("reservations_view_url")
@@ -574,7 +555,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
-    #passes
     def test_reservations_view_shows_consumer_reservations(self):
         # Create a reservation for the consumer
         res = Reservation.objects.create(
@@ -592,7 +572,6 @@ class testSellerAndConsumerPages(TestCase):
         self.assertIn(res, reservations)
         self.assertEqual(len(reservations), 1)
     
-    # passes
     def test_reservations_view_shows_seller_reservations(self):
     # Create a reservation for the seller's bundle
         res = Reservation.objects.create(
@@ -669,7 +648,6 @@ class testConsumerOnlyPages(TestCase):
 
     #Tests for report_new_view
 
-    #passes
     def test_report_new_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("report_new_view_url", args=[self.bundle_posting.id])
@@ -677,7 +655,6 @@ class testConsumerOnlyPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
-    #passes
     def test_report_new_view_allows_consumer(self):
         """Consumers should get 200 OK"""
         self.client.login(username="consumer1", password="consumerpass")
@@ -685,7 +662,6 @@ class testConsumerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    #passes
     def test_report_new_view_allows_seller(self):
         """Sellers shoud get 403 Forbidden"""
         self.client.login(username="seller1", password="sellerpass")
@@ -697,7 +673,6 @@ class testConsumerOnlyPages(TestCase):
 
     #Tests for impact_view
 
-    #passes
     def test_impact_view_redirects_for_anonymous(self):
         """Anonymous users should get 302 Redirect and be redirected to login"""
         url = reverse("impact_view_url")
@@ -705,7 +680,6 @@ class testConsumerOnlyPages(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login", response.url)
     
-    #passes
     def test_impact_view_allows_consumer(self):
         """Consumers should get 200 OK"""
         self.client.login(username="consumer1", password="consumerpass")
@@ -713,7 +687,6 @@ class testConsumerOnlyPages(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    #passes
     def test_impact_view_forbidden_for_seller(self):
         """Sellers shoud get 200 OK"""
         self.client.login(username="seller1", password="sellerpass")
