@@ -32,13 +32,13 @@ cd food-waste-rescue
 python -m venv .env
 ```
 
-If on Linux:
+Activating the virtual environment on Linux:
 
 ```sh
 source .env/bin/activate
 ```
 
-If on Windows:
+Activating the virtual environment on Windows:
 
 ```sh
 Set-ExecutionPolicy Unrestricted -Scope Process
@@ -75,26 +75,14 @@ SECRET_KEY="CHANGE_ME" python manage.py runserver
 This project uses Django's built-in test runner.
 All tests are located inside the main/tests/ directory.
 
-1. Navigate to the project root (where manage.py lives)
-```sh
-cd food-waste-rescue
-```
-
-2. Activate the virtual environment:
+Run all the tests or a specific test file
 
 ```sh
-python -m venv .env
-windows: Set-ExecutionPolicy Unrestricted -Scope Process
-.env\Scripts\activate
-python manage.py migrate
+food-waste-rescue$ python manage.py test
+food-waste-rescue$ python manage.py test main.tests.test_public_pages
 ```
 
-3. Run a test suite, e.g.:
-```sh
-python manage.py test main.tests.test_public_pages
-```
-
-4. You should see something like:
+3. You should see something like:
 ```sh
 Ran 3 tests in ...
 OK
